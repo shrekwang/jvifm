@@ -1,0 +1,134 @@
+
+Basic Movement 
+
+	  {n}j   cursor down 
+	  {n}k   cursor up  
+	  {n}h   change current dir to parent dir
+	  {n}l   enter dir or edit file,the editor is configured in :conf
+
+	  ^ or gg   to the top
+	  $ or G    to the bottom
+	  
+	  {n}b   backward in the visit history
+	  {n}f   forward in the visit history
+	  
+	  H   move cursor to the list head
+	  M   move cursor to the list middle
+	  L   move cursor to the list last
+
+
+	  gh   change current dir to user home directory
+	  g/    change current dir to file system root
+	  ga   pops a small input window , type and select  which file or directory to open
+	  zz   pack the file lister column
+	  gt   switch to next tab
+	  gT   switch to previous tab
+
+      /pattern search pattern
+      n    search next pattern
+      N    search previous pattern
+
+	  tab or space   switch between two file lister panel.
+	  @   switch to side panel
+
+
+Additional Normal Mode Keys 
+    cc   change the file name
+	dd   cut the selection files or directory
+	yy   yanks the selected files.
+	YY   copy the selection files or directory to system clipboard
+    DD   delete the selection files or directory
+	p    puts the last yanked or deleted files.
+    P    paste file from system clipboard
+	t    tag the current file.
+	v    start visual mode.
+	i    disable jvifm keys.
+	o   open file  with default program associate to file in system
+	x   uncompress the current archive file ( support tar, tar.gz,tar.bz2,zip,jar,war)
+
+	
+Marks 
+	Marks are set the same way as they are in vi. 
+	m[a-z] to set a mark for the current file.
+	'[a-z] moves to the file set for the mark.
+
+      
+
+Command: in file lister press ":" enter command mode,current implemented command list as follows:
+
+	 :hide                   ,hide the main window
+	 :quit                   ,quit the application
+	 :only                   ,one panel mode
+	 :split                  ,two panel mode
+	 :sync                   ,sync between left and right file lister view
+	 :sort                   ,popup menu of different sorting methods
+	 :tabnew  name           ,open a new file lister tab with the name as title
+	 :tabclose               ,close current tab
+	 
+	 :cd path                ,cd the the path
+	 :sh                     ,open terminal window
+	 :mkdir file{ file..}    ,make dir  if not exists
+	 :rename from to files   ,rename the files by replacing the "from" to "to"
+	 :du  file               ,calc the file of directory info
+	 :md5sum file            ,calc the md5sum value of file
+	 :sha1sum file           ,calc the sha1sum value of file
+	 :kill                   ,stop the current job. like coping file etc.
+	 
+	 :help                   ,display this simple help text
+	 :conf                   ,configuration for the jvifm
+	
+	 :bookmarks              ,show bookmarks in side panel
+	 :history                ,show history in side panel
+	 :shortcuts               ,show shortcuts in side panel
+	 :folder                 ,show folder tree in side panel
+	 
+	 
+	 :compress filename      ,compress current selection files into filename
+             archive. the archive type depends on the extension 
+             name of the filename. the archive type supported 
+             now are "tar, tar.gz, tar.bz2, zip".
+	 
+	 
+	 
+	 :find [options]
+	 
+			 -name  filename  ,file name that can contains wildcard
+			 
+			 -size  [+-]n[kmg] or n[kmg]-n[kmg]
+			   +:bigger than, -:smaller than
+			   k:KiloByte,m:MegaByte,g:GigaByte 
+			   
+			 -text text      ,file that contains text in content
+			 
+			 -mtime [+-]n[mhd] or n[mhd]-n[mhd]
+			   +:bigger than,-:smaller than
+			   m:minute,h:hour,d:day
+			 
+			 :touch [options] filename
+			   -d date,  date in yyyy-MM-dd format
+			   -r file,  reference file 
+			   
+	 
+	 :ls [options] name      ,list file
+	 
+			   -a  do not ignore entries starting with .
+			   -r  reverse order while sorting
+			   -R  list subdirectories recursively
+			   -S  sort by file size
+			   -t  sort by modification time
+			   -U  do not sort, list entries in directory oder
+			   -X  sort alphabetically by entry extendsion
+		
+			   
+	 
+  command macros
+	%f all of the selected files
+	%F all of the selected files in the other directory list.
+	%d current directory name
+	%D other file list directory name
+
+
+  system hotkeys
+  Ctrl+Alt+j :  show main window
+  Ctrl+Alt+h:  pops a small window, type and select  which file or directory to open
+  

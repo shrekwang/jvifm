@@ -1,0 +1,91 @@
+<project name="jvifm" basedir="." default="build">
+
+	<property name="version" value="0.8.1b">
+	</property>
+	<property name="src" value="src" />
+	<property name="dist" value="dist" />
+	<property name="lib" value="lib" />
+
+	<path id="myclasspath">
+		<fileset dir="${lib}">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement location="${dist}" />
+	</path>
+
+
+	<target name="build">
+		<javac classpathref="myclasspath" srcdir="${src}" destdir="${dist}" />
+		<copy todir="${dist}">
+			<fileset dir="${src}">
+				<exclude name="**/*.java" />
+				<exclude name="**/*.swp" />
+			</fileset>
+		</copy>
+
+	</target>
+
+	<target name="jar" depends="build">
+		<jar jarfile="${lib}/jvifm.jar" basedir="${dist}" />
+	</target>
+
+	<target name="windows-dist" depends="jar">
+		<mkdir dir="jvifm" />
+		<copy todir="jvifm">
+			<fileset dir=".">
+				<include name="lib/**.*" />
+				<include name="lib/swt-win/**.*" />
+				<include name="bin/**.*" />
+				<include name="doc/**.*" />
+
+				<exclude name="lib/swt-linux/**" />
+				<exclude name="bin/*.sh" />
+				<exclude name="src/**" />
+
+			</fileset>
+		</copy>
+		<zip destfile="jvifm-win-bin-${version}.zip" basedir="jvifm">
+		</zip>
+		<delete dir="jvifm"></delete>
+
+	</target>
+
+	<target name="linux-dist" depends="jar">
+		<mkdir dir="jvifm" />
+		<copy todir="jvifm">
+			<fileset dir=".">
+				<include name="lib/**.*" />
+				<include name="lib/swt-linux/**.*" />
+				<include name="bin/**.*" />
+				<include name="doc/**.*" />
+
+				<exclude name="lib/swt-win/**" />
+				<exclude name="bin/*.bat" />
+				<exclude name="src/**" />
+
+			</fileset>
+		</copy>
+		<zip destfile="jvifm-linux-bin-${version}.zip" basedir="jvifm">
+		</zip>
+		<delete dir="jvifm"></delete>
+	</target>
+
+	<target name="src-dist" depends="jar">
+		<mkdir dir="jvifm" />
+		<copy todir="jvifm">
+			<fileset dir=".">
+				<include name="lib/**/*.*" />
+				<include name="src/**/*.*" />
+				<include name="doc/**.*" />
+				<exclude name="bin/**" />
+
+			</fileset>
+		</copy>
+		<zip destfile="jvifm-src-${version}.zip" basedir="jvifm">
+		</zip>
+		<delete dir="jvifm"></delete>
+	</target>
+
+
+</project>
+
