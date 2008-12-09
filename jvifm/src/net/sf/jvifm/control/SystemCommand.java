@@ -56,7 +56,7 @@ public class SystemCommand extends Command {
 	
 	public void execute() throws Exception {
 		String ext=FilenameUtils.getExtension(cmd);
-		if (!isFileShortcut) {
+		if (!isFileShortcut || cmdArray.length>1 ) {
 			if (ext.equals("bat") || ext.equals("sh") ) {
 	    		Runtime.getRuntime().exec(cmdArray,null,new File(cmd).getParentFile());
 			} else {
