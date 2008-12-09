@@ -38,8 +38,6 @@ import net.sf.jvifm.control.CopyCommand;
 import net.sf.jvifm.control.MoveCommand;
 import net.sf.jvifm.control.RemoveCommand;
 import net.sf.jvifm.control.UnCompressCommand;
-import net.sf.jvifm.model.Bookmark;
-import net.sf.jvifm.model.BookmarkListener;
 import net.sf.jvifm.model.FileListerListener;
 import net.sf.jvifm.model.HistoryManager;
 import net.sf.jvifm.model.Preference;
@@ -79,6 +77,7 @@ import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -1113,11 +1112,16 @@ public class FileLister implements ViLister,Panel {
     	return longestPath;
     	
     }
+    
+    public Point getSize() {
+		return table.computeSize(SWT.DEFAULT,SWT.DEFAULT);
+    }
    
     public void pack() {
 		for (int i=0; i<table.getColumnCount(); i++) {
 			table.getColumn(i).pack();
 		}
+    	Main.fileManager.pack();
     }
     public void setTabTitle() {
     	

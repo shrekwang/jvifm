@@ -906,6 +906,20 @@ public class FileManager implements FileListerListener{
 		sashForm.layout(true);
 		
 	}
+	public void pack() {
+		Point size=getActivePanel().getSize();
+		int width1=(size.x+10)*100 / sashForm.getSize().x ;
+		int width2=100-width1;
+		
+		String activePanel = (String) sashForm.getData("activePanel"); 
+		if (activePanel.equals("left")) { 
+			sashForm.setWeights(new int[] {width1,width2});
+		} else {
+			sashForm.setWeights(new int[] {width2,width1});
+		}
+		
+		
+	}
 	public void tabnew(String leftPath,String rightPath) {
 
 		TabItem one = new TabItem(tabFolder, SWT.NONE);
