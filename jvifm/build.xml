@@ -13,7 +13,6 @@
 		<pathelement location="${dist}" />
 	</path>
 
-
 	<target name="build">
 		<javac classpathref="myclasspath" srcdir="${src}" destdir="${dist}" />
 		<copy todir="${dist}">
