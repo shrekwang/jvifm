@@ -1,6 +1,6 @@
 <project name="jvifm" basedir="." default="build">
 
-	<property name="version" value="0.8.1b">
+	<property name="version" value="0.9b">
 	</property>
 	<property name="src" value="src" />
 	<property name="dist" value="dist" />
