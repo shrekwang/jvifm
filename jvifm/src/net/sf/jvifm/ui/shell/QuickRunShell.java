@@ -279,16 +279,23 @@ public class QuickRunShell {
 
 	public boolean doCommand() {
 		String cmd = null;
+		String[] args=new String[]{};
 		if (completeOptions != null && completeOptions.length > 0) {
 			cmd = getCompletionText();
 		} else {
 			cmd = txtCommand.getText();
+			if (cmd.indexOf("\"")>0) { //arg
+				String arg=cmd.substring(cmd.indexOf("\"")+1,cmd.lastIndexOf("\""));
+				cmd=cmd.substring(0,cmd.indexOf("\"")).trim();
+				args=new String[]{arg};
+			}
 		}
-
+		
 		ShortcutsManager scm = ShortcutsManager.getInstance();
 		if (scm.isShortCut(cmd)) {
 			Shortcut cc = scm.findByName(cmd);
-			Command command = new SystemCommand(cc.getText(), new String[] {},true);
+			Command command = new SystemCommand(cc.getText(), args,true);
+			command.setPwd(Main.fileManager.getActivePanel().getPwd());
 			commandRunner.run(command);
 			return true;
 		}
@@ -297,13 +304,17 @@ public class QuickRunShell {
 		File file = new File(newPath);
 		if (file.exists()) {
 			if (file.isFile()) {
-				Util.openFileWithDefaultApp(newPath);
-			} else {
-				FileManager fileManager = Main.fileManager;
-				FileLister activeLister = fileManager.getActivePanel();
-				fileManager.activeGUI();
-				activeLister.visit(newPath);
+				//Util.openFileWithDefaultApp(newPath);
+				Command command = new SystemCommand(newPath, args,true);
+				command.setPwd(Main.fileManager.getActivePanel().getPwd());
+				commandRunner.run(command);
+				return true;
 			}
+			
+			FileManager fileManager = Main.fileManager;
+			FileLister activeLister = fileManager.getActivePanel();
+			fileManager.activeGUI();
+			activeLister.visit(newPath);
 			return true;
 		}
 		return false;
