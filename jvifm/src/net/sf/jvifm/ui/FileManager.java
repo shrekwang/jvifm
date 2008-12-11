@@ -909,6 +909,7 @@ public class FileManager implements FileListerListener{
 	public void pack() {
 		Point size=getActivePanel().getSize();
 		int width1=(size.x+10)*100 / sashForm.getSize().x ;
+		if (width1>90) width1=80;
 		int width2=100-width1;
 		
 		String activePanel = (String) sashForm.getData("activePanel"); 
