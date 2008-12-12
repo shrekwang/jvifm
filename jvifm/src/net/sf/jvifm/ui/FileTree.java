@@ -49,6 +49,8 @@ public class FileTree extends Canvas implements ViLister {
 	private TreeItem currentItem;
 
 	private Image folderImage;
+	private Image computerImage;
+	private Image driveImage;
 	
 	private FileLister fileLister;
 
@@ -57,6 +59,8 @@ public class FileTree extends Canvas implements ViLister {
 	public FileTree(Composite parent,int style) {
 		super(parent, style);
 		folderImage = ResourceManager.getImage("folder16.png");
+		driveImage=ResourceManager.getImage("drive16.png");
+		computerImage=ResourceManager.getImage("computer.png");
 
 		this.setLayout(new FillLayout());
 		
@@ -64,12 +68,12 @@ public class FileTree extends Canvas implements ViLister {
 		tree = new Tree(this, SWT.NONE);
 		root = new TreeItem(tree, 0);
 		root.setText("file system");
-		root.setImage(folderImage);
+		root.setImage(computerImage);
 		root.setData(new File(""));
 		
 		File[] files = File.listRoots();
 		for (int i = 0; files != null && i < files.length; i++)
-			addFileToTree(root, files[i]);
+			addFileToTree(root, files[i],driveImage);
 		
 
 
@@ -131,11 +135,11 @@ public class FileTree extends Canvas implements ViLister {
 		File[] files = ((File) item.getData())
 				.listFiles(new DirFilter());
 		for (int i = 0; files != null && i < files.length; i++)
-			addFileToTree(item, files[i]);
+			addFileToTree(item, files[i],folderImage);
 	}
 	
 
-	private void addFileToTree(Object parent, File file) {
+	private void addFileToTree(Object parent, File file,Image image) {
 		TreeItem item = null;
 
 		if (parent instanceof Tree)
@@ -151,7 +155,7 @@ public class FileTree extends Canvas implements ViLister {
 		} else {
 			item.setText(file.getName());
 		}
-		item.setImage(folderImage);
+		item.setImage(image);
 		item.setData(file);
 		
 

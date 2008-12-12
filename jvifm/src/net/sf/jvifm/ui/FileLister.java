@@ -126,6 +126,7 @@ public class FileLister implements ViLister,Panel {
     private TableColumn columnDate;
     private Image folderImage = null;
     private Image fileImage = null;
+    private Image driveImage = null;
     private FileManager fileManager=null;
     private String commandBuffer=null;
     
@@ -437,6 +438,7 @@ public class FileLister implements ViLister,Panel {
     private void initResource() {
     	fileImage=ResourceManager.getImage("file.png"); //$NON-NLS-1$
     	folderImage=ResourceManager.getImage("folder.png"); //$NON-NLS-1$
+    	driveImage=ResourceManager.getImage("drive.png"); //$NON-NLS-1$
     	
     	GC gc=new GC(Display.getDefault());
     	sizeWidth = gc.stringExtent("000Kb.00").x+10; //$NON-NLS-1$
@@ -1012,7 +1014,7 @@ public class FileLister implements ViLister,Panel {
 					if (currentFiles[i].getPath().equalsIgnoreCase(selection+File.separator)) {
 						currentRow=i;
 					}
-		    		item.setImage(0,folderImage);
+		    		item.setImage(0,driveImage);
 				}	
 				table.setSelection(currentRow);
 				pwd = ""; //$NON-NLS-1$
