@@ -37,7 +37,7 @@ import org.apache.commons.io.FilenameUtils;
 
 public class MiscFileCommand extends Command {
 	private static String[] cmdNames=new String[]{"du","md5sum","sha1sum","tabnew",
-			"tabclose","cd","sort"};
+			"cd","sort"};
 			
 	private String cmd;
 
@@ -103,20 +103,8 @@ public class MiscFileCommand extends Command {
 		
 		if (cmd.equals("tabnew")) {
 			fileManager.tabnew(pwd,FileLister.FS_ROOT);
-			/*
-			if (args!=null && args.length > 0) {
-				fileManager.tabnew((String) args[0],FileLister.FS_ROOT);
-			} else {
-				fileManager.tabnew(pwd,FileLister.FS_ROOT);
-			}
-			*/
 			return;
 		}
-		
-		if (cmd.equals("tabclose")) {
-			fileManager.tabclose();
-		}
-	
 
 		if (cmd.equals("cd") && args!=null && args.length >0) {
 			String newPath = FilenameUtils.concat(pwd, args[0]);

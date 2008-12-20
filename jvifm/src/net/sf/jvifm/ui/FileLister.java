@@ -354,13 +354,15 @@ public class FileLister implements ViLister,Panel {
     	});
     	table.addKeyListener(new FileListerKeyListener(this)) ;
     	
+    	table.addFocusListener(new FocusAdapter() {
+    		public void focusGained(FocusEvent e) {
+    			setTabTitle();
+    		}
+    	});
     	table.addSelectionListener(new SelectionAdapter() {
     		public void widgetSelected(SelectionEvent arg0) {
     			currentRow=table.getSelectionIndex();
     			setTabTitle();
-    			//operateMode=NOMAL_MODE;
-    			//fileManager.activePanel(pos);
-    			
     		}
     		public void widgetDefaultSelected(SelectionEvent arg0) {
     			enterPath();
@@ -1126,7 +1128,7 @@ public class FileLister implements ViLister,Panel {
     	Main.fileManager.pack();
     }
     public void setTabTitle() {
-    	
+    	if (!table.isFocusControl()) return;
     	if (fileManager==null) return;
     	if (pwd.trim().equals("")) fileManager.renameTab("File System"); //$NON-NLS-1$ //$NON-NLS-2$
     	File file=new File(pwd);

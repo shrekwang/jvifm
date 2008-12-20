@@ -36,7 +36,7 @@ import org.eclipse.swt.program.Program;
 public class MetaCommand extends Command {
 	
 	private static String[] cmdNames=new String[]{
-		"quit","hide","only","split","help",
+		"quit","quitall","hide","only","split","help",
 		"sync","conf","locate","sh",
 		"bookmarks","history","folder","shortcuts",
 		"hidesidebar","kill","about","preview","nopreview",
@@ -67,8 +67,12 @@ public class MetaCommand extends Command {
 		
 		
 		if (cmd.equals("quit")) {
-			Main.exit();
+			fileManager.quit();
 			return;
+		}
+		if (cmd.equals("quitall")) {
+			Main.exit();
+			return ;
 		}
 		
 		if (cmd.equals("hide")) {
@@ -82,6 +86,7 @@ public class MetaCommand extends Command {
 		if (cmd.equals("split")) {
 			fileManager.split();
 		}
+		/*
 		if (cmd.equals("preview")) {
 			fileManager.getActivePanel().addListener(fileManager);
 			fileManager.getActivePanel().notifyChangeSelection();
@@ -90,6 +95,7 @@ public class MetaCommand extends Command {
 			fileManager.getActivePanel().removeListener(fileManager);
 			fileManager.nopreview();
 		}
+		*/
 
 		if (cmd.equals("detail")) {
 			fileManager.getActivePanel().detail();

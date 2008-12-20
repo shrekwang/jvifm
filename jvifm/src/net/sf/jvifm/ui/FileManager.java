@@ -868,9 +868,14 @@ public class FileManager implements FileListerListener{
 		activeTab();
 	}
 
-	public void tabclose() {
+	public void quit() {
+		
+		if (tabFolder.getItemCount()>1) {
 		 TabItem currentItem = (tabFolder.getSelection())[0];
 		 currentItem.dispose();
+		} else {
+			Main.exit();
+		}
 
 	}
 	
