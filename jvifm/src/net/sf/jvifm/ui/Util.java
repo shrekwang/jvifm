@@ -104,9 +104,9 @@ public class Util {
 			try {
 				Runtime.getRuntime().exec(new String[]{path},null,file.getParentFile());
 			} catch ( Exception e ) {
+				e.printStackTrace();
 			}
-		}
-		if (file.isFile()) {
+		} else {
 			Program.launch(path);
 		}
 		
