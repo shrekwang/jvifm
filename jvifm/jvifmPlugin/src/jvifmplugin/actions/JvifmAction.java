@@ -1,5 +1,6 @@
 package jvifmplugin.actions;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -36,7 +37,10 @@ public class JvifmAction implements IWorkbenchWindowActionDelegate {
 
 	public void run(IAction action) {
 		String path=getSelectedFolderPath(selection);
-		activeJvifm(path);
+		File file=new File(path);
+		if (file==null) return ;
+		if (file.isFile()) file=file.getParentFile();
+		activeJvifm(file.getPath());
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
