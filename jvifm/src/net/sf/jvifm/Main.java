@@ -38,6 +38,7 @@ import net.sf.jvifm.model.ShortcutsManager;
 import net.sf.jvifm.ui.FileLister;
 import net.sf.jvifm.ui.FileManager;
 import net.sf.jvifm.util.HomeLocator;
+import net.sf.jvifm.util.FileListerServer;
 
 import org.apache.commons.cli.Options;
 import org.eclipse.swt.widgets.Display;
@@ -65,6 +66,7 @@ public class Main {
 	public static void main(String[] args) {
 		initConfigDir();
 		initCommandRegister();
+        initServer();
 		
 		try {
 			 File logFile=new File(HomeLocator.getConfigHome() + File.separator + "jvifm.log");
@@ -102,6 +104,14 @@ public class Main {
 		File file = new File(HomeLocator.getConfigHome());
 		if (!file.exists()) file.mkdir();
 	}
+
+    public static void initServer() {
+        try {
+            new FileListerServer().start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 	
 	public static void exit() {
 		BookmarkManager.getInstance().store();

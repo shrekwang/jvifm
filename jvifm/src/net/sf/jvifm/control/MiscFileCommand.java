@@ -36,16 +36,12 @@ import net.sf.jvifm.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
 
 public class MiscFileCommand extends Command {
-	private static String[] cmdNames=new String[]{"du","md5sum","sha1sum","tabnew",
-			"cd","sort"};
+	private static String[] cmdNames=new String[]{"du","md5sum","sha1sum",
+		"tabnew", "cd","sort","swap"};
 			
 	private String cmd;
-
 	private String[] args;
-
 	private FileManager fileManager = Main.fileManager;
-
-	private FileOperator fileOperator = FileOperator.getInstance();
 
 	public static String[] getCmdNames() {
 		return cmdNames;
@@ -75,7 +71,7 @@ public class MiscFileCommand extends Command {
 			long[] infos =new long[]{0,0,0};
 			for (int i = 0; i < args.length; i++) {
 				File file = new File(args[i]);
-				fileOperator.calcDirInfo(file, infos);
+				FileOperator.calcDirInfo(file, infos);
 			}
 			fileManager.setTipInfo(infos[1]+ " dirs,"+infos[2]+" files, total size is " + StringUtil.formatSize(infos[0]));
 			return;
@@ -113,6 +109,9 @@ public class MiscFileCommand extends Command {
     				newPath=newPath.substring(0,newPath.length()-1);
 			fileLister.visit(newPath);
 			return;
+		}
+		if (cmd.equals("swap") ) {
+			fileManager.swapPanel();
 		}
 
 		if (cmd.equals("sort") ) {

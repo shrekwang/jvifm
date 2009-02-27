@@ -845,6 +845,17 @@ public class FileManager implements FileListerListener{
 		activeTab();
 
 	}
+	
+	public void swapPanel() {
+		
+		if (leftPanel instanceof FileLister && 
+				rightPanel instanceof FileLister ) {
+			String leftPwd=((FileLister)leftPanel).getPwd();
+			String rightPwd=((FileLister)rightPanel).getPwd();
+			((FileLister)leftPanel).visit(rightPwd);
+			((FileLister)rightPanel).visit(leftPwd);
+		}
+	}
 
 	public void switchToNextTab() {
 		int index = tabFolder.getSelectionIndex();
