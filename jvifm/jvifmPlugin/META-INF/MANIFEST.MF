@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JvifmPlugin Plug-in
+Bundle-SymbolicName: jvifmPlugin; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: jvifmplugin.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.filesystem,
+ org.eclipse.core.resources,
+ org.eclipse.jdt,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.navigator.resources,
+ org.eclipse.ui.views
+Eclipse-LazyStart: true
