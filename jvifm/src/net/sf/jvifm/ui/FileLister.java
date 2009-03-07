@@ -491,7 +491,7 @@ public class FileLister implements ViLister, Panel {
 			}
 		});
 
-		MenuItem separateItem = new MenuItem(menu, SWT.SEPARATOR);
+		new MenuItem(menu, SWT.SEPARATOR);
 
 		MenuItem cutItem = new MenuItem(menu, SWT.PUSH);
 		cutItem.setText(Messages.getString("FileLister.menuitemCut")); //$NON-NLS-1$
