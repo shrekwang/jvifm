@@ -40,87 +40,83 @@ public class HistoryLister extends AbstractViLister implements HistoryListener {
 
 	private Image folderImage = ResourceManager.getImage("folder.png");
 	private FileLister fileLister;
-	private	HistoryManager historyManager;
+	private HistoryManager historyManager;
 
-
-	public void onAddHistoryRecord(String path,boolean needRemove) {
+	public void onAddHistoryRecord(String path, boolean needRemove) {
 		if (needRemove) {
-    		refresh();
+			refresh();
 		} else {
 			addRecord(path);
 		}
 	}
 
 	public void onChangePos() {
-		currentRow=historyManager.getPosition();
+		currentRow = historyManager.getPosition();
 		table.setSelection(currentRow);
 	}
-	
+
 	public void loadHistoryRecord() {
-		this.fileLister=Main.fileManager.getActivePanel();
-		historyManager=fileLister.getHistoryInfo();
+		this.fileLister = Main.fileManager.getActivePanel();
+		historyManager = fileLister.getHistoryInfo();
 		historyManager.addListener(this);
 		refresh();
 	}
-	
 
 	public HistoryLister(Composite parent, int style) {
-		super(parent, style );
+		super(parent, style);
 		this.setLayout(new FillLayout());
 		loadHistoryRecord();
 	}
+
 	private void addRecord(String path) {
-		TableItem[] items=table.getItems();
-		for (int i=0; i<items.length; i++) {
-			if (items[i].getText().equals(path))  table.remove(i);
+		TableItem[] items = table.getItems();
+		for (int i = 0; i < items.length; i++) {
+			if (items[i].getText().equals(path))
+				table.remove(i);
 		}
-		
-		TableItem item=new TableItem(table,SWT.NONE);
+
+		TableItem item = new TableItem(table, SWT.NONE);
 		item.setImage(folderImage);
 		item.setText(path);
-		currentRow=table.getItemCount()-1;
+		currentRow = table.getItemCount() - 1;
 		table.setSelection(currentRow);
 	}
 
 	public void refresh() {
 		table.removeAll();
-		 TableItem item;
-		
-		LinkedList list=historyManager.getFullHistory();
-		currentRow=historyManager.getPosition();
-		
-		for (int i=0; i<list.size(); i++) {
-			String dir=(String)list.get(i);
-			item=new TableItem(table,SWT.NONE);
-    		item.setImage(folderImage);
-    		item.setText(dir);
+		TableItem item;
+
+		LinkedList list = historyManager.getFullHistory();
+		currentRow = historyManager.getPosition();
+
+		for (int i = 0; i < list.size(); i++) {
+			String dir = (String) list.get(i);
+			item = new TableItem(table, SWT.NONE);
+			item.setImage(folderImage);
+			item.setText(dir);
 		}
 		table.setSelection(currentRow);
 	}
 
-
-
 	public void enterPath() {
-		
-		
-	 	fileLister.changePwd(table.getItem(currentRow).getText());
-    	fileLister.active();
-    	historyManager.gotoPath(table.getItem(currentRow).getText());
+
+		fileLister.changePwd(table.getItem(currentRow).getText());
+		fileLister.active();
+		historyManager.gotoPath(table.getItem(currentRow).getText());
 	}
 
 	public void cancelOperate() {
-		if (this.operateMode==NOMAL_MODE) {
-        	FileLister fileLister=Main.fileManager.getActivePanel();
-        	fileLister.active();
-    	} else {
-        	super.cancelOperate();
-    	}
+		if (this.operateMode == NOMAL_MODE) {
+			FileLister fileLister = Main.fileManager.getActivePanel();
+			fileLister.active();
+		} else {
+			super.cancelOperate();
+		}
 	}
 
 	public void dispose() {
 		super.dispose();
 		historyManager.removeListener(this);
 	}
-	
 
 }

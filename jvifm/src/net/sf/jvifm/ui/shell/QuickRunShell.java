@@ -248,7 +248,7 @@ public class QuickRunShell {
 	private String getCompletionText() {
 		String tmpText = null;
 
-		if (completeOptions == null || completeOptions.length<1)
+		if (completeOptions == null || completeOptions.length < 1)
 			return null;
 
 		TipOption currentOption = completeOptions[currentOptionIndex];
@@ -262,9 +262,11 @@ public class QuickRunShell {
 			if (path.equalsIgnoreCase(pwd) || path.endsWith(":\\")) {
 				tmpText = currentOption.getName();
 			} else if (pwd.endsWith(File.separator)) {
-				tmpText = path.substring(pwd.length()) + File.separator + currentOption.getName();
+				tmpText = path.substring(pwd.length()) + File.separator
+						+ currentOption.getName();
 			} else {
-				tmpText = path.substring(pwd.length() + 1) + File.separator + currentOption.getName();
+				tmpText = path.substring(pwd.length() + 1) + File.separator
+						+ currentOption.getName();
 			}
 		} else {
 			if (path.endsWith(File.separator)) {
@@ -279,22 +281,23 @@ public class QuickRunShell {
 
 	public boolean doCommand() {
 		String cmd = null;
-		String[] args=new String[]{};
+		String[] args = new String[] {};
 		if (completeOptions != null && completeOptions.length > 0) {
 			cmd = getCompletionText();
 		} else {
 			cmd = txtCommand.getText();
-			if (cmd.indexOf("\"")>0) { //arg
-				String arg=cmd.substring(cmd.indexOf("\"")+1,cmd.lastIndexOf("\""));
-				cmd=cmd.substring(0,cmd.indexOf("\"")).trim();
-				args=new String[]{arg};
+			if (cmd.indexOf("\"") > 0) { // arg
+				String arg = cmd.substring(cmd.indexOf("\"") + 1, cmd
+						.lastIndexOf("\""));
+				cmd = cmd.substring(0, cmd.indexOf("\"")).trim();
+				args = new String[] { arg };
 			}
 		}
-		
+
 		ShortcutsManager scm = ShortcutsManager.getInstance();
 		if (scm.isShortCut(cmd)) {
 			Shortcut cc = scm.findByName(cmd);
-			Command command = new SystemCommand(cc.getText(), args,true);
+			Command command = new SystemCommand(cc.getText(), args, true);
 			command.setPwd(Main.fileManager.getActivePanel().getPwd());
 			commandRunner.run(command);
 			return true;
@@ -304,13 +307,13 @@ public class QuickRunShell {
 		File file = new File(newPath);
 		if (file.exists()) {
 			if (file.isFile()) {
-				//Util.openFileWithDefaultApp(newPath);
-				Command command = new SystemCommand(newPath, args,true);
+				// Util.openFileWithDefaultApp(newPath);
+				Command command = new SystemCommand(newPath, args, true);
 				command.setPwd(Main.fileManager.getActivePanel().getPwd());
 				commandRunner.run(command);
 				return true;
 			}
-			
+
 			FileManager fileManager = Main.fileManager;
 			FileLister activeLister = fileManager.getActivePanel();
 			fileManager.activeGUI();

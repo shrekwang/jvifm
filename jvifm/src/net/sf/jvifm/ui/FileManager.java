@@ -70,7 +70,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
-public class FileManager implements FileListerListener{
+public class FileManager implements FileListerListener {
 	private Shell shell;
 
 	private Panel leftPanel;
@@ -99,9 +99,9 @@ public class FileManager implements FileListerListener{
 	private Menu navigateMenu;
 	private MenuItem backMenuItem;
 	private MenuItem forwardMenuItem;
-	private  MenuItem uponeleveMenuItem;
-	private  MenuItem goHomeMenuItem;
-	private  MenuItem goRootMenuItem;
+	private MenuItem uponeleveMenuItem;
+	private MenuItem goHomeMenuItem;
+	private MenuItem goRootMenuItem;
 	private MenuItem fileMenuItem;
 	private MenuItem editMenuItem;
 	private MenuItem showFileTreeMenuItem;
@@ -123,11 +123,9 @@ public class FileManager implements FileListerListener{
 	private Menu helpMenu;
 	private MenuItem helpMenuItem;
 
-
-
 	private ToolItem goRootToolItem;
 	private ToolItem goHomeToolItem;
-	
+
 	private ToolItem goUpToolItem;
 	private ToolItem goForwardToolItem;
 	private ToolItem goBackToolItem;
@@ -137,36 +135,34 @@ public class FileManager implements FileListerListener{
 	private ToolItem findFileToolItem;
 	private ToolItem sideviewTypeToolItem;
 
-
 	// private String activePanel = "left";
 
-	public static final int ACTION_CUT=101;
-	public static final int ACTION_COPY=102;
-	public static final int ACTION_PASTE=103;
-	public static final int ACTION_RENAME=104;
-	public static final int ACTION_DEL=105;
-	public static final int ACTION_SELECTALL=106;
-	public static final int ACTION_NEWFILE=107;
-	public static final int ACTION_NEWFOLDER=108;
-	public static final int ACTION_OPENINTAB=109;
-	public static final int ACTION_OPENINTERMINAL=110;
-	
-	public static final int NV_BACK=201;
-	public static final int NV_FORWARD=202;
-	public static final int NV_UP=203;
-	public static final int NV_ROOT=204;
-	public static final int NV_HOME=205;
-	
-	public static final int SIDE_BOOKMARK=301;
-	public static final int SIDE_HISTORY=302;
-	public static final int SIDE_PROGRAM=303;
-	public static final int SIDE_FOLDER=304;
-	
-	public static final int MISC_PREFERENCE=401;
-	public static final int MISC_ABOUT=402;
-	public static final int MISC_CONTENT=403;
-	public static final int MISC_QUIT=404;
- 
+	public static final int ACTION_CUT = 101;
+	public static final int ACTION_COPY = 102;
+	public static final int ACTION_PASTE = 103;
+	public static final int ACTION_RENAME = 104;
+	public static final int ACTION_DEL = 105;
+	public static final int ACTION_SELECTALL = 106;
+	public static final int ACTION_NEWFILE = 107;
+	public static final int ACTION_NEWFOLDER = 108;
+	public static final int ACTION_OPENINTAB = 109;
+	public static final int ACTION_OPENINTERMINAL = 110;
+
+	public static final int NV_BACK = 201;
+	public static final int NV_FORWARD = 202;
+	public static final int NV_UP = 203;
+	public static final int NV_ROOT = 204;
+	public static final int NV_HOME = 205;
+
+	public static final int SIDE_BOOKMARK = 301;
+	public static final int SIDE_HISTORY = 302;
+	public static final int SIDE_PROGRAM = 303;
+	public static final int SIDE_FOLDER = 304;
+
+	public static final int MISC_PREFERENCE = 401;
+	public static final int MISC_ABOUT = 402;
+	public static final int MISC_CONTENT = 403;
+	public static final int MISC_QUIT = 404;
 
 	public Shell open(Display display) {
 		shell = new Shell(display);
@@ -182,11 +178,11 @@ public class FileManager implements FileListerListener{
 		initContent();
 		initSysTray();
 
-		//shell.setMaximized(true);
-		shell.setSize(700,500);
+		// shell.setMaximized(true);
+		shell.setSize(700, 500);
 		shell.setText("jvifm"); //$NON-NLS-1$
 		shell.setImage(ResourceManager.getImage("filemanager.png")); //$NON-NLS-1$
-		
+
 		shell.addShellListener(new ShellAdapter() {
 			public void shellIconified(ShellEvent arg0) {
 				// shell.setVisible(false);
@@ -206,79 +202,75 @@ public class FileManager implements FileListerListener{
 		});
 
 		shell.open();
-	
+
 		// hot key
 		// JIntellitype.getInstance().
 		/*
-		try {
-    		JIntellitype hotkeyProxy = JIntellitype.getInstance();
-    		hotkeyProxy.addHotKeyListener(this);
-    		hotkeyProxy.registerHotKey(88, JIntellitype.MOD_CONTROL + JIntellitype.MOD_ALT, (int) 'J');
-    		hotkeyProxy.registerHotKey(89, JIntellitype.MOD_CONTROL + JIntellitype.MOD_ALT, (int) 'H');
-		} catch (Exception e ) {
-			e.printStackTrace();
-		}
-		*/
+		 * try { JIntellitype hotkeyProxy = JIntellitype.getInstance();
+		 * hotkeyProxy.addHotKeyListener(this); hotkeyProxy.registerHotKey(88,
+		 * JIntellitype.MOD_CONTROL + JIntellitype.MOD_ALT, (int) 'J');
+		 * hotkeyProxy.registerHotKey(89, JIntellitype.MOD_CONTROL +
+		 * JIntellitype.MOD_ALT, (int) 'H'); } catch (Exception e ) {
+		 * e.printStackTrace(); }
+		 */
 
 		Hotkeys.bindKeys();
-	
+
 		// leftPanel.setFocus();
 		return shell;
 	}
 
-	
-	
-	
-	
 	private Menu createBackwardMenu() {
-			Menu menu = new Menu(shell, SWT.POP_UP);
-			final FileLister fileLister=getActivePanel();
-			final HistoryManager historyManager = fileLister.getHistoryInfo();
-			List list = historyManager.getBackList();
-			int count=1;
-			if (list==null || list.size()<=0) return null;
-			for (Iterator it = list.iterator(); it.hasNext();) {
-				String path = (String) it.next();
-				MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
-				menuItem.setText(path);
-				menuItem.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						MenuItem item=(MenuItem)e.widget;
-						fileLister.changePwd(item.getText());
-						historyManager.backTo(item.getText());
-					}
-				});
-			}
-			return menu;
-	}
-	
-	
-	private Menu createForwardMenu() {
 		Menu menu = new Menu(shell, SWT.POP_UP);
-		final FileLister fileLister=getActivePanel();
+		final FileLister fileLister = getActivePanel();
 		final HistoryManager historyManager = fileLister.getHistoryInfo();
-		List list = historyManager.getForwardList();
-		int count=1;
-		if (list==null || list.size()<=0) return null;
+		List list = historyManager.getBackList();
+		int count = 1;
+		if (list == null || list.size() <= 0)
+			return null;
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			String path = (String) it.next();
 			MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
 			menuItem.setText(path);
 			menuItem.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
-					MenuItem item=(MenuItem)e.widget;
+					MenuItem item = (MenuItem) e.widget;
+					fileLister.changePwd(item.getText());
+					historyManager.backTo(item.getText());
+				}
+			});
+		}
+		return menu;
+	}
+
+	private Menu createForwardMenu() {
+		Menu menu = new Menu(shell, SWT.POP_UP);
+		final FileLister fileLister = getActivePanel();
+		final HistoryManager historyManager = fileLister.getHistoryInfo();
+		List list = historyManager.getForwardList();
+		int count = 1;
+		if (list == null || list.size() <= 0)
+			return null;
+		for (Iterator it = list.iterator(); it.hasNext();) {
+			String path = (String) it.next();
+			MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
+			menuItem.setText(path);
+			menuItem.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					MenuItem item = (MenuItem) e.widget;
 					fileLister.changePwd(item.getText());
 					historyManager.forwardTo(item.getText());
 				}
 			});
 		}
 		return menu;
-}
-	
+	}
+
 	private Menu createSideviewTypeMenu() {
 		Menu menu = new Menu(shell, SWT.POP_UP);
 		MenuItem bookmarkItem = new MenuItem(menu, SWT.PUSH);
-		bookmarkItem.setText(Messages.getString("FileManager.menuitemBookmark")); //$NON-NLS-1$
+		bookmarkItem
+				.setText(Messages.getString("FileManager.menuitemBookmark")); //$NON-NLS-1$
 		bookmarkItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				showBookmarkSidevew();
@@ -294,16 +286,18 @@ public class FileManager implements FileListerListener{
 			}
 
 		});
-		
+
 		MenuItem foldertreeItem = new MenuItem(menu, SWT.PUSH);
-		foldertreeItem.setText(Messages.getString("FileManager.menuitemFolderTree")); //$NON-NLS-1$
+		foldertreeItem.setText(Messages
+				.getString("FileManager.menuitemFolderTree")); //$NON-NLS-1$
 		foldertreeItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				showFileTree();
 			}
 		});
 		MenuItem shortcutsItem = new MenuItem(menu, SWT.PUSH);
-		shortcutsItem.setText(Messages.getString("FileManager.menuitemShortcuts")); //$NON-NLS-1$
+		shortcutsItem.setText(Messages
+				.getString("FileManager.menuitemShortcuts")); //$NON-NLS-1$
 		shortcutsItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				showShortcutsSideview();
@@ -319,7 +313,7 @@ public class FileManager implements FileListerListener{
 		final Menu systemTrayItemMenu = new Menu(shell, SWT.POP_UP);
 		MenuItem showItem = new MenuItem(systemTrayItemMenu, SWT.NONE);
 		showItem.setText(Messages.getString("FileManager.menuitemShowMainWin")); //$NON-NLS-1$
-		
+
 		showItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				shell.setVisible(true);
@@ -328,11 +322,11 @@ public class FileManager implements FileListerListener{
 				shell.setFocus();
 			}
 		});
-		
-		new MenuItem(systemTrayItemMenu,SWT.SEPARATOR);
-		
+
+		new MenuItem(systemTrayItemMenu, SWT.SEPARATOR);
+
 		MenuItem quitItem = new MenuItem(systemTrayItemMenu, SWT.NONE);
-		
+
 		quitItem.setText(Messages.getString("FileManager.menuitemQuit")); //$NON-NLS-1$
 		quitItem.setImage(ResourceManager.getImage("quit.png"));
 		quitItem.addSelectionListener(new SelectionAdapter() {
@@ -379,37 +373,53 @@ public class FileManager implements FileListerListener{
 				fileMenuItem.setMenu(fileMenu);
 				{
 					createFolderMenuItem = new MenuItem(fileMenu, SWT.PUSH);
-					createFolderMenuItem.setText(Messages.getString("FileManager.menuitemCreateFolder")); //$NON-NLS-1$
-					createFolderMenuItem.addSelectionListener(new FileOperateListener(ACTION_NEWFOLDER));
+					createFolderMenuItem.setText(Messages
+							.getString("FileManager.menuitemCreateFolder")); //$NON-NLS-1$
+					createFolderMenuItem
+							.addSelectionListener(new FileOperateListener(
+									ACTION_NEWFOLDER));
 				}
 				{
 					createFileMenuItem = new MenuItem(fileMenu, SWT.PUSH);
-					createFileMenuItem.setText(Messages.getString("FileManager.menuitemCreateFile")); //$NON-NLS-1$
-					createFileMenuItem.addSelectionListener(new FileOperateListener(ACTION_NEWFILE));
+					createFileMenuItem.setText(Messages
+							.getString("FileManager.menuitemCreateFile")); //$NON-NLS-1$
+					createFileMenuItem
+							.addSelectionListener(new FileOperateListener(
+									ACTION_NEWFILE));
 				}
 				{
-					 new MenuItem(fileMenu, SWT.SEPARATOR);
+					new MenuItem(fileMenu, SWT.SEPARATOR);
 				}
 				{
 					openInNewTabMenuItem = new MenuItem(fileMenu, SWT.PUSH);
-					openInNewTabMenuItem.setText(Messages.getString("FileManager.menuitemOpenInNewTab")); //$NON-NLS-1$
-					openInNewTabMenuItem.setImage(ResourceManager .getImage("folder-new.png")); //$NON-NLS-1$
-					openInNewTabMenuItem.addSelectionListener(new FileOperateListener(ACTION_OPENINTAB));
-					
+					openInNewTabMenuItem.setText(Messages
+							.getString("FileManager.menuitemOpenInNewTab")); //$NON-NLS-1$
+					openInNewTabMenuItem.setImage(ResourceManager
+							.getImage("folder-new.png")); //$NON-NLS-1$
+					openInNewTabMenuItem
+							.addSelectionListener(new FileOperateListener(
+									ACTION_OPENINTAB));
+
 					openInTerminalMenuItem = new MenuItem(fileMenu, SWT.PUSH);
-					openInTerminalMenuItem.setText(Messages.getString("FileManager.menuitemOpenInTerminal")); //$NON-NLS-1$
-					openInTerminalMenuItem.setImage(ResourceManager .getImage("terminal.png")); //$NON-NLS-1$
-					openInTerminalMenuItem.addSelectionListener(new FileOperateListener(ACTION_OPENINTERMINAL));
+					openInTerminalMenuItem.setText(Messages
+							.getString("FileManager.menuitemOpenInTerminal")); //$NON-NLS-1$
+					openInTerminalMenuItem.setImage(ResourceManager
+							.getImage("terminal.png")); //$NON-NLS-1$
+					openInTerminalMenuItem
+							.addSelectionListener(new FileOperateListener(
+									ACTION_OPENINTERMINAL));
 				}
 				{
 					new MenuItem(fileMenu, SWT.SEPARATOR);
 				}
 				{
 					quitMenuItem = new MenuItem(fileMenu, SWT.PUSH);
-					quitMenuItem.setText(Messages.getString("FileManager.menuitemQuit")); //$NON-NLS-1$
+					quitMenuItem.setText(Messages
+							.getString("FileManager.menuitemQuit")); //$NON-NLS-1$
 					quitMenuItem.setImage(ResourceManager.getImage("quit.png"));
-					quitMenuItem.addSelectionListener(new MiscListener(MISC_QUIT));
-				
+					quitMenuItem.addSelectionListener(new MiscListener(
+							MISC_QUIT));
+
 				}
 			}
 		}
@@ -421,121 +431,171 @@ public class FileManager implements FileListerListener{
 				editMenuItem.setMenu(editMenu);
 				{
 					cutMenuItem = new MenuItem(editMenu, SWT.PUSH);
-					cutMenuItem.setText(Messages.getString("FileManager.menuitemCut")); //$NON-NLS-1$
-					cutMenuItem.setImage(ResourceManager.getImage("edit-cut.png")); //$NON-NLS-1$
-					cutMenuItem.addSelectionListener(new FileOperateListener(ACTION_CUT));
+					cutMenuItem.setText(Messages
+							.getString("FileManager.menuitemCut")); //$NON-NLS-1$
+					cutMenuItem.setImage(ResourceManager
+							.getImage("edit-cut.png")); //$NON-NLS-1$
+					cutMenuItem.addSelectionListener(new FileOperateListener(
+							ACTION_CUT));
 				}
 				{
 					copyMenuItem = new MenuItem(editMenu, SWT.PUSH);
-					copyMenuItem.setText(Messages.getString("FileManager.menuitemCopy")); //$NON-NLS-1$
-					copyMenuItem.setImage(ResourceManager.getImage("edit-copy.png")); //$NON-NLS-1$
-					copyMenuItem.addSelectionListener(new FileOperateListener(ACTION_COPY));
+					copyMenuItem.setText(Messages
+							.getString("FileManager.menuitemCopy")); //$NON-NLS-1$
+					copyMenuItem.setImage(ResourceManager
+							.getImage("edit-copy.png")); //$NON-NLS-1$
+					copyMenuItem.addSelectionListener(new FileOperateListener(
+							ACTION_COPY));
 				}
 				{
 					pasteMenuItem = new MenuItem(editMenu, SWT.PUSH);
-					pasteMenuItem.setText(Messages.getString("FileManager.menuitemPaste")); //$NON-NLS-1$
-					pasteMenuItem.setImage(ResourceManager.getImage("edit-paste.png")); //$NON-NLS-1$
-					pasteMenuItem.addSelectionListener(new FileOperateListener(ACTION_PASTE));
+					pasteMenuItem.setText(Messages
+							.getString("FileManager.menuitemPaste")); //$NON-NLS-1$
+					pasteMenuItem.setImage(ResourceManager
+							.getImage("edit-paste.png")); //$NON-NLS-1$
+					pasteMenuItem.addSelectionListener(new FileOperateListener(
+							ACTION_PASTE));
 				}
 				{
-					 new MenuItem(editMenu, SWT.SEPARATOR);
+					new MenuItem(editMenu, SWT.SEPARATOR);
 				}
 				{
 					renameMenuItem = new MenuItem(editMenu, SWT.PUSH);
-					renameMenuItem.setText(Messages.getString("FileManager.menuitemRename")); //$NON-NLS-1$
-					renameMenuItem.addSelectionListener(new FileOperateListener(ACTION_RENAME));
+					renameMenuItem.setText(Messages
+							.getString("FileManager.menuitemRename")); //$NON-NLS-1$
+					renameMenuItem
+							.addSelectionListener(new FileOperateListener(
+									ACTION_RENAME));
 				}
 				{
 					delMenuItem = new MenuItem(editMenu, SWT.PUSH);
-					delMenuItem.setText(Messages.getString("FileManager.menuitemDelete")); //$NON-NLS-1$
-					delMenuItem.setImage(ResourceManager.getImage("edit-delete.png")); //$NON-NLS-1$
-					delMenuItem.addSelectionListener(new FileOperateListener(ACTION_DEL));
+					delMenuItem.setText(Messages
+							.getString("FileManager.menuitemDelete")); //$NON-NLS-1$
+					delMenuItem.setImage(ResourceManager
+							.getImage("edit-delete.png")); //$NON-NLS-1$
+					delMenuItem.addSelectionListener(new FileOperateListener(
+							ACTION_DEL));
 				}
 				{
-					 new MenuItem(editMenu, SWT.SEPARATOR);
+					new MenuItem(editMenu, SWT.SEPARATOR);
 				}
 				{
 					selectAllMenuItem = new MenuItem(editMenu, SWT.PUSH);
-					selectAllMenuItem.setText(Messages.getString("FileManager.menuitemSelectAll")); //$NON-NLS-1$
-					selectAllMenuItem.addSelectionListener(new FileOperateListener(ACTION_SELECTALL));
+					selectAllMenuItem.setText(Messages
+							.getString("FileManager.menuitemSelectAll")); //$NON-NLS-1$
+					selectAllMenuItem
+							.addSelectionListener(new FileOperateListener(
+									ACTION_SELECTALL));
 				}
 				{
-					 new MenuItem(editMenu, SWT.SEPARATOR);
+					new MenuItem(editMenu, SWT.SEPARATOR);
 				}
 				{
-					preferenceMenuItem=new MenuItem(editMenu,SWT.PUSH);
-					preferenceMenuItem.setText(Messages.getString("FileManager.menuitemPreference")); //$NON-NLS-1$
-					preferenceMenuItem.setImage(ResourceManager.getImage("preferences.png"));
-					preferenceMenuItem.addSelectionListener(new MiscListener(MISC_PREFERENCE));
-				
+					preferenceMenuItem = new MenuItem(editMenu, SWT.PUSH);
+					preferenceMenuItem.setText(Messages
+							.getString("FileManager.menuitemPreference")); //$NON-NLS-1$
+					preferenceMenuItem.setImage(ResourceManager
+							.getImage("preferences.png"));
+					preferenceMenuItem.addSelectionListener(new MiscListener(
+							MISC_PREFERENCE));
+
 				}
 			}
 		}
 		{
-			navigateMenuItem=new MenuItem(menuBar,SWT.CASCADE) ;
-			navigateMenuItem.setText(Messages.getString("FileManager.menuitemNavigate"));
+			navigateMenuItem = new MenuItem(menuBar, SWT.CASCADE);
+			navigateMenuItem.setText(Messages
+					.getString("FileManager.menuitemNavigate"));
 			{
-				navigateMenu=new Menu(navigateMenuItem);
-				navigateMenuItem.setMenu(navigateMenu); 
+				navigateMenu = new Menu(navigateMenuItem);
+				navigateMenuItem.setMenu(navigateMenu);
 				{
-					backMenuItem=new MenuItem(navigateMenu,SWT.PUSH);
-					backMenuItem.setText(Messages.getString("FileManager.menuitemBack"));
-					backMenuItem.setImage(ResourceManager.getImage("go-previous.png"));//$NON-NLS-1$
-					backMenuItem.addSelectionListener(new NavigateListener(NV_BACK));
+					backMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
+					backMenuItem.setText(Messages
+							.getString("FileManager.menuitemBack"));
+					backMenuItem.setImage(ResourceManager
+							.getImage("go-previous.png"));//$NON-NLS-1$
+					backMenuItem.addSelectionListener(new NavigateListener(
+							NV_BACK));
 				}
 				{
-					forwardMenuItem=new MenuItem(navigateMenu,SWT.PUSH);
-					forwardMenuItem.setText(Messages.getString("FileManager.menuitemForward"));
-					forwardMenuItem.setImage(ResourceManager.getImage("go-next.png"));//$NON-NLS-1$
-					forwardMenuItem.addSelectionListener(new NavigateListener(NV_FORWARD));
+					forwardMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
+					forwardMenuItem.setText(Messages
+							.getString("FileManager.menuitemForward"));
+					forwardMenuItem.setImage(ResourceManager
+							.getImage("go-next.png"));//$NON-NLS-1$
+					forwardMenuItem.addSelectionListener(new NavigateListener(
+							NV_FORWARD));
 				}
 				{
-					uponeleveMenuItem=new MenuItem(navigateMenu,SWT.PUSH);
-					uponeleveMenuItem.setText(Messages.getString("FileManager.menuitemUponeLevel"));
-					uponeleveMenuItem.setImage(ResourceManager.getImage("go-up.png")); //$NON-NLS-1$
-					uponeleveMenuItem.addSelectionListener(new NavigateListener(NV_UP));
+					uponeleveMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
+					uponeleveMenuItem.setText(Messages
+							.getString("FileManager.menuitemUponeLevel"));
+					uponeleveMenuItem.setImage(ResourceManager
+							.getImage("go-up.png")); //$NON-NLS-1$
+					uponeleveMenuItem
+							.addSelectionListener(new NavigateListener(NV_UP));
 				}
 				{
-					goHomeMenuItem=new MenuItem(navigateMenu,SWT.PUSH);
-					goHomeMenuItem.setText(Messages.getString("FileManager.menuitemGoHome"));
-					goHomeMenuItem.setImage(ResourceManager.getImage("go-home.png")); //$NON-NLS-1$
-					goHomeMenuItem.addSelectionListener(new NavigateListener(NV_HOME));
+					goHomeMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
+					goHomeMenuItem.setText(Messages
+							.getString("FileManager.menuitemGoHome"));
+					goHomeMenuItem.setImage(ResourceManager
+							.getImage("go-home.png")); //$NON-NLS-1$
+					goHomeMenuItem.addSelectionListener(new NavigateListener(
+							NV_HOME));
 				}
 				{
-					goRootMenuItem=new MenuItem(navigateMenu,SWT.PUSH);
-					goRootMenuItem.setText(Messages.getString("FileManager.menuitemGoRoot"));
-					goRootMenuItem.setImage(ResourceManager.getImage("computer.png")); //$NON-NLS-1$
-					goRootMenuItem.addSelectionListener(new NavigateListener(NV_ROOT));
+					goRootMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
+					goRootMenuItem.setText(Messages
+							.getString("FileManager.menuitemGoRoot"));
+					goRootMenuItem.setImage(ResourceManager
+							.getImage("computer.png")); //$NON-NLS-1$
+					goRootMenuItem.addSelectionListener(new NavigateListener(
+							NV_ROOT));
 				}
 				{
-					 new MenuItem(navigateMenu, SWT.SEPARATOR);
+					new MenuItem(navigateMenu, SWT.SEPARATOR);
 				}
 				{
 					showBookMarkMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
-					showBookMarkMenuItem.setText(Messages.getString("FileManager.menuitemBookmark")); //$NON-NLS-1$
-					showBookMarkMenuItem.addSelectionListener(new ShowSideViewListener(SIDE_BOOKMARK));
+					showBookMarkMenuItem.setText(Messages
+							.getString("FileManager.menuitemBookmark")); //$NON-NLS-1$
+					showBookMarkMenuItem
+							.addSelectionListener(new ShowSideViewListener(
+									SIDE_BOOKMARK));
 				}
 				{
 					showHistoryMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
-					showHistoryMenuItem.setText(Messages.getString("FileManager.menuitemHistory")); //$NON-NLS-1$
-					showHistoryMenuItem.addSelectionListener(new ShowSideViewListener(SIDE_HISTORY));
+					showHistoryMenuItem.setText(Messages
+							.getString("FileManager.menuitemHistory")); //$NON-NLS-1$
+					showHistoryMenuItem
+							.addSelectionListener(new ShowSideViewListener(
+									SIDE_HISTORY));
 				}
 				{
 					showFileTreeMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
-					showFileTreeMenuItem.setText(Messages.getString("FileManager.menuitemFolderTree")); //$NON-NLS-1$
-					showFileTreeMenuItem.addSelectionListener(new ShowSideViewListener(SIDE_FOLDER));
+					showFileTreeMenuItem.setText(Messages
+							.getString("FileManager.menuitemFolderTree")); //$NON-NLS-1$
+					showFileTreeMenuItem
+							.addSelectionListener(new ShowSideViewListener(
+									SIDE_FOLDER));
 				}
 				{
 					showShortcutsMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
-					showShortcutsMenuItem.setText(Messages.getString("FileManager.menuitemShortcuts")); //$NON-NLS-1$
-					showShortcutsMenuItem.addSelectionListener(new ShowSideViewListener(SIDE_PROGRAM));
+					showShortcutsMenuItem.setText(Messages
+							.getString("FileManager.menuitemShortcuts")); //$NON-NLS-1$
+					showShortcutsMenuItem
+							.addSelectionListener(new ShowSideViewListener(
+									SIDE_PROGRAM));
 				}
 			}
 		}
-	
+
 		{
 			searchMenuItem = new MenuItem(menuBar, SWT.CASCADE);
-			searchMenuItem.setText(Messages.getString("FileManager.menuitemSearch")); //$NON-NLS-1$
+			searchMenuItem.setText(Messages
+					.getString("FileManager.menuitemSearch")); //$NON-NLS-1$
 			{
 				searchMenu = new Menu(searchMenuItem);
 				searchMenuItem.setMenu(searchMenu);
@@ -543,43 +603,50 @@ public class FileManager implements FileListerListener{
 					searchCurrentFolderMenuItem = new MenuItem(searchMenu,
 							SWT.PUSH);
 					searchCurrentFolderMenuItem
-							.setText(Messages.getString("FileManager.menuitemSearchInCurrentFolder")); //$NON-NLS-1$
+							.setText(Messages
+									.getString("FileManager.menuitemSearchInCurrentFolder")); //$NON-NLS-1$
 					searchCurrentFolderMenuItem.setSelection(true);
 				}
 				{
 					findMenuItem = new MenuItem(searchMenu, SWT.PUSH);
-					findMenuItem.setText(Messages.getString("FileManager.menuitemFind")); //$NON-NLS-1$
-					findMenuItem.setImage(ResourceManager.getImage("edit-find.png")); //$NON-NLS-1$
+					findMenuItem.setText(Messages
+							.getString("FileManager.menuitemFind")); //$NON-NLS-1$
+					findMenuItem.setImage(ResourceManager
+							.getImage("edit-find.png")); //$NON-NLS-1$
 				}
 			}
 		}
-	
+
 		{
 			helpMenuItem = new MenuItem(menuBar, SWT.CASCADE);
-			helpMenuItem.setText(Messages.getString("FileManager.menuitemHelp")); //$NON-NLS-1$
+			helpMenuItem
+					.setText(Messages.getString("FileManager.menuitemHelp")); //$NON-NLS-1$
 			{
 				helpMenu = new Menu(helpMenuItem);
 				{
 					contentsMenuItem = new MenuItem(helpMenu, SWT.CASCADE);
-					contentsMenuItem.setText(Messages.getString("FileManager.menuitemContents")); //$NON-NLS-1$
-					contentsMenuItem.setImage(ResourceManager.getImage("help.png"));
-					contentsMenuItem.addSelectionListener(new MiscListener(MISC_CONTENT));
-					
+					contentsMenuItem.setText(Messages
+							.getString("FileManager.menuitemContents")); //$NON-NLS-1$
+					contentsMenuItem.setImage(ResourceManager
+							.getImage("help.png"));
+					contentsMenuItem.addSelectionListener(new MiscListener(
+							MISC_CONTENT));
+
 				}
 				{
 					aboutMenuItem = new MenuItem(helpMenu, SWT.CASCADE);
-					aboutMenuItem.setText(Messages.getString("FileManager.menuitemAbout")); //$NON-NLS-1$
-					aboutMenuItem.addSelectionListener(new MiscListener(MISC_ABOUT));
-				
+					aboutMenuItem.setText(Messages
+							.getString("FileManager.menuitemAbout")); //$NON-NLS-1$
+					aboutMenuItem.addSelectionListener(new MiscListener(
+							MISC_ABOUT));
+
 				}
 				helpMenuItem.setMenu(helpMenu);
 			}
 		}
 
-	
-
 	}
-	
+
 	private void initToolBar() {
 		GridData gridData = new GridData();
 		gridData.grabExcessHorizontalSpace = true;
@@ -589,92 +656,108 @@ public class FileManager implements FileListerListener{
 		toolBar1.setLayoutData(gridData);
 		{
 			goBackToolItem = new ToolItem(toolBar1, SWT.DROP_DOWN);
-			goBackToolItem.setImage(ResourceManager.getImage("go-previous.png")); //$NON-NLS-1$
+			goBackToolItem
+					.setImage(ResourceManager.getImage("go-previous.png")); //$NON-NLS-1$
 			goBackToolItem.addSelectionListener(new NavigateListener(NV_BACK));
-			
+
 			goForwardToolItem = new ToolItem(toolBar1, SWT.DROP_DOWN);
 			goForwardToolItem.setImage(ResourceManager.getImage("go-next.png")); //$NON-NLS-1$
-			goForwardToolItem.addSelectionListener(new NavigateListener(NV_FORWARD));
-			
+			goForwardToolItem.addSelectionListener(new NavigateListener(
+					NV_FORWARD));
+
 			goUpToolItem = new ToolItem(toolBar1, SWT.NONE);
 			goUpToolItem.setImage(ResourceManager.getImage("go-up.png")); //$NON-NLS-1$
 			goUpToolItem.addSelectionListener(new NavigateListener(NV_UP));
-			
+
 		}
 		{
-			 new ToolItem(toolBar1, SWT.SEPARATOR);
+			new ToolItem(toolBar1, SWT.SEPARATOR);
 		}
 		{
 			goHomeToolItem = new ToolItem(toolBar1, SWT.NONE);
 			goHomeToolItem.setImage(ResourceManager.getImage("go-home.png")); //$NON-NLS-1$
 			goHomeToolItem.addSelectionListener(new NavigateListener(NV_HOME));
-			
+
 			goRootToolItem = new ToolItem(toolBar1, SWT.NONE);
 			goRootToolItem.setImage(ResourceManager.getImage("computer.png")); //$NON-NLS-1$
 			goRootToolItem.addSelectionListener(new NavigateListener(NV_ROOT));
 		}
 		{
-			 new ToolItem(toolBar1, SWT.SEPARATOR);
+			new ToolItem(toolBar1, SWT.SEPARATOR);
 		}
 		{
 			editCutToolItem = new ToolItem(toolBar1, SWT.NONE);
 			editCutToolItem.setImage(ResourceManager.getImage("edit-cut.png")); //$NON-NLS-1$
-			editCutToolItem.addSelectionListener(new FileOperateListener(ACTION_CUT));
-			
+			editCutToolItem.addSelectionListener(new FileOperateListener(
+					ACTION_CUT));
+
 			editCopyToolItem = new ToolItem(toolBar1, SWT.NONE);
-			editCopyToolItem.setImage(ResourceManager.getImage("edit-copy.png")); //$NON-NLS-1$
-			editCopyToolItem.addSelectionListener(new FileOperateListener(ACTION_COPY));
-			
+			editCopyToolItem
+					.setImage(ResourceManager.getImage("edit-copy.png")); //$NON-NLS-1$
+			editCopyToolItem.addSelectionListener(new FileOperateListener(
+					ACTION_COPY));
+
 			editPasteToolItem = new ToolItem(toolBar1, SWT.NONE);
-			editPasteToolItem.setImage(ResourceManager.getImage("edit-paste.png")); //$NON-NLS-1$
-			editPasteToolItem.addSelectionListener(new FileOperateListener(ACTION_PASTE));
-			
+			editPasteToolItem.setImage(ResourceManager
+					.getImage("edit-paste.png")); //$NON-NLS-1$
+			editPasteToolItem.addSelectionListener(new FileOperateListener(
+					ACTION_PASTE));
+
 		}
 		{
-			 new ToolItem(toolBar1, SWT.SEPARATOR);
+			new ToolItem(toolBar1, SWT.SEPARATOR);
 		}
 		{
 			findFileToolItem = new ToolItem(toolBar1, SWT.NONE);
-			findFileToolItem.setImage(ResourceManager.getImage("edit-find.png")); //$NON-NLS-1$
+			findFileToolItem
+					.setImage(ResourceManager.getImage("edit-find.png")); //$NON-NLS-1$
 		}
-		
+
 	}
 
 	private void initContent() {
 
-		GridData gridData=null;
+		GridData gridData = null;
 
-		mainSashForm = new SashForm(shell,  SWT.HORIZONTAL | SWT.SMOOTH);
+		mainSashForm = new SashForm(shell, SWT.HORIZONTAL | SWT.SMOOTH);
 
 		Composite sideViewContainer = new Composite(mainSashForm, SWT.NONE);
-	
-		sideViewContainer.setLayout(GuiDataFactory.createkGridLayout(1, 0, 0, 0, 0,true));
+
+		sideViewContainer.setLayout(GuiDataFactory.createkGridLayout(1, 0, 0,
+				0, 0, true));
 		{
-			Composite sideViewHeadContainer = new Composite(sideViewContainer, SWT.BORDER);
-			sideViewHeadContainer.setLayout(GuiDataFactory.createkGridLayout(2, 0, 0, 0, 0,false));
-			sideViewHeadContainer.setLayoutData(
-					GuiDataFactory.createGridData(GridData.BEGINNING, GridData.FILL, true,false));
+			Composite sideViewHeadContainer = new Composite(sideViewContainer,
+					SWT.BORDER);
+			sideViewHeadContainer.setLayout(GuiDataFactory.createkGridLayout(2,
+					0, 0, 0, 0, false));
+			sideViewHeadContainer.setLayoutData(GuiDataFactory.createGridData(
+					GridData.BEGINNING, GridData.FILL, true, false));
 			{
 				ToolBar toolBar1 = new ToolBar(sideViewHeadContainer, SWT.FLAT);
 				sideviewTypeToolItem = new ToolItem(toolBar1, SWT.DROP_DOWN);
 				GridData label1LData = new GridData();
 				label1LData.grabExcessHorizontalSpace = true;
 				toolBar1.setLayoutData(label1LData);
-				sideviewTypeToolItem.setText(Messages.getString("FileManager.labelBookmark")); //$NON-NLS-1$
-				sideviewTypeToolItem.addSelectionListener(new SelectionAdapter(){
-					public void widgetSelected(SelectionEvent event) {
-						 if (event.detail == SWT.ARROW) {
-					          Rectangle rect = sideviewTypeToolItem.getBounds();
-					          Point pt = new Point(rect.x, rect.y + rect.height);
-					          pt=sideviewTypeToolItem.getParent().toDisplay(pt);
-					          Menu menu=createSideviewTypeMenu();
-		    			  	    menu.setLocation(pt);
-		    			  	    menu.setVisible(true);
-					        }
-					}
-					
-				});
-				
+				sideviewTypeToolItem.setText(Messages
+						.getString("FileManager.labelBookmark")); //$NON-NLS-1$
+				sideviewTypeToolItem
+						.addSelectionListener(new SelectionAdapter() {
+							public void widgetSelected(SelectionEvent event) {
+								if (event.detail == SWT.ARROW) {
+									Rectangle rect = sideviewTypeToolItem
+											.getBounds();
+									Point pt = new Point(rect.x, rect.y
+											+ rect.height);
+									pt = sideviewTypeToolItem.getParent()
+											.toDisplay(pt);
+									Menu menu = createSideviewTypeMenu();
+									menu.setLocation(pt);
+									menu.setVisible(true);
+								}
+							}
+
+						});
+
 			}
 			{
 				gridData = new GridData();
@@ -683,8 +766,9 @@ public class FileManager implements FileListerListener{
 				toolBar2.setLayoutData(gridData);
 				{
 					ToolItem toolItem1 = new ToolItem(toolBar2, SWT.NONE);
-					toolItem1.setImage(ResourceManager.getImage("window-close.png")); //$NON-NLS-1$
-					toolItem1.addSelectionListener(new SelectionAdapter(){
+					toolItem1.setImage(ResourceManager
+							.getImage("window-close.png")); //$NON-NLS-1$
+					toolItem1.addSelectionListener(new SelectionAdapter() {
 						public void widgetSelected(SelectionEvent e) {
 							hideSideBar();
 						}
@@ -693,17 +777,19 @@ public class FileManager implements FileListerListener{
 			}
 		}
 		{
-			sideViewContentContainer = new Composite( sideViewContainer, SWT.NONE);
+			sideViewContentContainer = new Composite(sideViewContainer,
+					SWT.NONE);
 			sideViewContentContainer.setLayout(new FillLayout(SWT.HORIZONTAL));
-			sideViewContentContainer.setLayoutData(
-					GuiDataFactory.createGridData(GridData.FILL, GridData.FILL, true, true));
-					
-			sideViLister = new BookmarkLister( sideViewContentContainer, SWT.NONE);
+			sideViewContentContainer.setLayoutData(GuiDataFactory
+					.createGridData(GridData.FILL, GridData.FILL, true, true));
+
+			sideViLister = new BookmarkLister(sideViewContentContainer,
+					SWT.NONE);
 			sideViewContainer.layout();
 		}
 
-	
-		mainSashForm.setLayoutData( GuiDataFactory.createGridData(GridData.FILL, GridData.FILL, true, true));
+		mainSashForm.setLayoutData(GuiDataFactory.createGridData(GridData.FILL,
+				GridData.FILL, true, true));
 
 		tabFolder = new TabFolder(mainSashForm, SWT.NONE);
 
@@ -713,22 +799,20 @@ public class FileManager implements FileListerListener{
 			}
 		});
 
-	
-
-		statusBar=new JobStatus(shell,SWT.NONE);
-    	gridData = new GridData();
-    	//gridData.heightHint=20;
+		statusBar = new JobStatus(shell, SWT.NONE);
+		gridData = new GridData();
+		// gridData.heightHint=20;
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
 		statusBar.setLayoutData(gridData);
-		
+
 		miniShell = new MiniShell(shell, SWT.NONE | SWT.SINGLE);
 
 		gridData = new GridData();
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
 		miniShell.setLayoutData(gridData);
-		
+
 		mainSashForm.setWeights(new int[] { 2, 8 });
 
 	}
@@ -736,9 +820,11 @@ public class FileManager implements FileListerListener{
 	public void activeTab() {
 
 		TabItem currentItem = (tabFolder.getSelection())[0];
-		if (currentItem==null) currentItem=tabFolder.getItem(0);
+		if (currentItem == null)
+			currentItem = tabFolder.getItem(0);
 		String tabtype = (String) currentItem.getData("tabtype"); //$NON-NLS-1$
-		if (tabtype==null) return;
+		if (tabtype == null)
+			return;
 
 		if (tabtype.equals("fileLister")) { //$NON-NLS-1$
 			sashForm = (SashForm) currentItem.getControl();
@@ -775,17 +861,12 @@ public class FileManager implements FileListerListener{
 	}
 
 	public void onChangePwd(String oldPath, String newPath) {
-		
-	}
 
+	}
 
 	public void onChangeSelection(String fullpath) {
 		preview(fullpath);
 	}
-
-
-
-
 
 	public void showBookmarkSidevew() {
 		Control[] childrens = sideViewContentContainer.getChildren();
@@ -795,10 +876,11 @@ public class FileManager implements FileListerListener{
 		}
 		sideViLister = new BookmarkLister(sideViewContentContainer, SWT.NONE);
 		sideViewContentContainer.layout();
-		sideviewTypeToolItem.setText(Messages.getString("FileManager.labelBookmark")); //$NON-NLS-1$
+		sideviewTypeToolItem.setText(Messages
+				.getString("FileManager.labelBookmark")); //$NON-NLS-1$
 		showSideBar();
 	}
-	
+
 	public void showShortcutsSideview() {
 		Control[] childrens = sideViewContentContainer.getChildren();
 		for (int i = 0; i < childrens.length; i++) {
@@ -807,7 +889,8 @@ public class FileManager implements FileListerListener{
 		}
 		sideViLister = new ShortcutsLister(sideViewContentContainer, SWT.NONE);
 		sideViewContentContainer.layout();
-		sideviewTypeToolItem.setText(Messages.getString("FileManager.labelShortcuts")); //$NON-NLS-1$
+		sideviewTypeToolItem.setText(Messages
+				.getString("FileManager.labelShortcuts")); //$NON-NLS-1$
 		showSideBar();
 	}
 
@@ -819,8 +902,9 @@ public class FileManager implements FileListerListener{
 		}
 		sideViLister = new HistoryLister(sideViewContentContainer, SWT.NONE);
 		sideViewContentContainer.layout();
-		
-		sideviewTypeToolItem.setText(Messages.getString("FileManager.labelHistory")); //$NON-NLS-1$
+
+		sideviewTypeToolItem.setText(Messages
+				.getString("FileManager.labelHistory")); //$NON-NLS-1$
 		showSideBar();
 
 	}
@@ -833,8 +917,9 @@ public class FileManager implements FileListerListener{
 		}
 		sideViLister = new FileTree(sideViewContentContainer, SWT.NONE);
 		sideViewContentContainer.layout();
-		
-		sideviewTypeToolItem.setText(Messages.getString("FileManager.labelFolderTree")); //$NON-NLS-1$
+
+		sideviewTypeToolItem.setText(Messages
+				.getString("FileManager.labelFolderTree")); //$NON-NLS-1$
 		showSideBar();
 	}
 
@@ -845,15 +930,14 @@ public class FileManager implements FileListerListener{
 		activeTab();
 
 	}
-	
+
 	public void swapPanel() {
-		
-		if (leftPanel instanceof FileLister && 
-				rightPanel instanceof FileLister ) {
-			String leftPwd=((FileLister)leftPanel).getPwd();
-			String rightPwd=((FileLister)rightPanel).getPwd();
-			((FileLister)leftPanel).visit(rightPwd);
-			((FileLister)rightPanel).visit(leftPwd);
+
+		if (leftPanel instanceof FileLister && rightPanel instanceof FileLister) {
+			String leftPwd = ((FileLister) leftPanel).getPwd();
+			String rightPwd = ((FileLister) rightPanel).getPwd();
+			((FileLister) leftPanel).visit(rightPwd);
+			((FileLister) rightPanel).visit(leftPwd);
 		}
 	}
 
@@ -880,64 +964,67 @@ public class FileManager implements FileListerListener{
 	}
 
 	public void quit() {
-		
-		if (tabFolder.getItemCount()>1) {
-		 TabItem currentItem = (tabFolder.getSelection())[0];
-		 currentItem.dispose();
+
+		if (tabFolder.getItemCount() > 1) {
+			TabItem currentItem = (tabFolder.getSelection())[0];
+			currentItem.dispose();
 		} else {
 			Main.exit();
 		}
 
 	}
-	
+
 	public void nopreview() {
 		rightPanel.dispose();
 		rightPanel = new FileLister(sashForm, SWT.BORDER, "", "right"); //$NON-NLS-1$
-		((FileLister)rightPanel).visit(FileLister.FS_ROOT);
+		((FileLister) rightPanel).visit(FileLister.FS_ROOT);
 		sashForm.layout();
 	}
+
 	public void preview(String file) {
-		
-		String ext=FilenameUtils.getExtension(file);
-		
-		if (ext.endsWith("jpg") || ext.endsWith("png") ||
-				ext.endsWith("bmp") || ext.endsWith("gif")) {
+
+		String ext = FilenameUtils.getExtension(file);
+
+		if (ext.endsWith("jpg") || ext.endsWith("png") || ext.endsWith("bmp")
+				|| ext.endsWith("gif")) {
 			if (rightPanel instanceof PicViewer) {
-				((PicViewer)rightPanel).loadFile(file);
+				((PicViewer) rightPanel).loadFile(file);
 			} else {
 				rightPanel.dispose();
-				rightPanel=new PicViewer(sashForm,file);
+				rightPanel = new PicViewer(sashForm, file);
 			}
-			
+
 		} else {
 			if (rightPanel instanceof TextViewer) {
-				((TextViewer)rightPanel).loadFile(file);
-			}else {
+				((TextViewer) rightPanel).loadFile(file);
+			} else {
 				rightPanel.dispose();
-				rightPanel=new TextViewer(sashForm,file);
+				rightPanel = new TextViewer(sashForm, file);
 			}
 		}
-		
-		sashForm.setData("rightPanel",rightPanel);//$NON-NLS-1$
+
+		sashForm.setData("rightPanel", rightPanel);//$NON-NLS-1$
 		sashForm.layout(true);
-		
+
 	}
+
 	public void pack() {
-		Point size=getActivePanel().getSize();
-		int width1=(size.x+10)*100 / sashForm.getSize().x ;
-		if (width1>90) width1=80;
-		int width2=100-width1;
-		
-		String activePanel = (String) sashForm.getData("activePanel"); 
-		if (activePanel.equals("left")) { 
-			sashForm.setWeights(new int[] {width1,width2});
+		Point size = getActivePanel().getSize();
+		int width1 = (size.x + 10) * 100 / sashForm.getSize().x;
+		if (width1 > 90)
+			width1 = 80;
+		int width2 = 100 - width1;
+
+		String activePanel = (String) sashForm.getData("activePanel");
+		if (activePanel.equals("left")) {
+			sashForm.setWeights(new int[] { width1, width2 });
 		} else {
-			sashForm.setWeights(new int[] {width2,width1});
+			sashForm.setWeights(new int[] { width2, width1 });
 		}
-		
-		
+
 	}
-	public void tabnew(String leftPath,String rightPath) {
+
+	public void tabnew(String leftPath, String rightPath) {
 
 		TabItem one = new TabItem(tabFolder, SWT.NONE);
 		one.setData("tabtype", "fileLister"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -953,7 +1040,6 @@ public class FileManager implements FileListerListener{
 		sashForm.setData("rightPanel", rightPanel); //$NON-NLS-1$
 		sashForm.setData("activePanel", "left"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		
 		one.setControl(sashForm);
 		tabFolder.setSelection(new TabItem[] { one });
 		activeTab();
@@ -963,11 +1049,11 @@ public class FileManager implements FileListerListener{
 	public void zipTabNew(String zipfilePath) {
 		TabItem one = new TabItem(tabFolder, SWT.NONE);
 		one.setText(new File(zipfilePath).getName());
-		ZipLister list = new ZipLister(tabFolder, SWT.NONE, zipfilePath );
+		ZipLister list = new ZipLister(tabFolder, SWT.NONE, zipfilePath);
 		one.setControl(list);
 		one.setData("tabtype", "zipLister"); //$NON-NLS-1$ //$NON-NLS-2$
 		tabFolder.setSelection(new TabItem[] { one });
-		
+
 		list.setFocus();
 	}
 
@@ -980,22 +1066,23 @@ public class FileManager implements FileListerListener{
 		}
 
 	}
-	
 
 	public void split() {
 		sashForm.setMaximizedControl(null);
 	}
-	
-    public void hideSideBar() {
-    	mainSashForm.setMaximizedControl(tabFolder);
+
+	public void hideSideBar() {
+		mainSashForm.setMaximizedControl(tabFolder);
 	}
-    public void showSideBar() {
-    	mainSashForm.setMaximizedControl(null);
-    }
-    
+
+	public void showSideBar() {
+		mainSashForm.setMaximizedControl(null);
+	}
+
 	public void changePanel() {
-		if (sashForm.getMaximizedControl()!=null)  return;
-		
+		if (sashForm.getMaximizedControl() != null)
+			return;
+
 		String activePanel = (String) sashForm.getData("activePanel"); //$NON-NLS-1$
 		if (activePanel.equals("left")) { //$NON-NLS-1$
 			rightPanel.active();
@@ -1005,31 +1092,34 @@ public class FileManager implements FileListerListener{
 			sashForm.setData("activePanel", "left"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if (sideViLister instanceof HistoryLister) {
-			((HistoryLister)sideViLister).loadHistoryRecord();
+			((HistoryLister) sideViLister).loadHistoryRecord();
 		}
-		//leftPanel.redraw();
-		//rightPanel.redraw();
+		// leftPanel.redraw();
+		// rightPanel.redraw();
 	}
 
 	public FileLister getActivePanel() {
 		String activePanel = (String) sashForm.getData("activePanel"); //$NON-NLS-1$
 		if (activePanel.equals("left")) { //$NON-NLS-1$
-			return leftPanel instanceof FileLister ? (FileLister)leftPanel:null ;
+			return leftPanel instanceof FileLister ? (FileLister) leftPanel
+					: null;
 		}
-		return rightPanel instanceof FileLister ? (FileLister)rightPanel:null ;
+		return rightPanel instanceof FileLister ? (FileLister) rightPanel
+				: null;
 	}
 
 	public FileLister getInActivePanel() {
 		String activePanel = (String) sashForm.getData("activePanel"); //$NON-NLS-1$
 		if (activePanel.equals("left")) { //$NON-NLS-1$
-			return rightPanel instanceof FileLister ? (FileLister)rightPanel:null ;
+			return rightPanel instanceof FileLister ? (FileLister) rightPanel
+					: null;
 		}
-		return leftPanel instanceof FileLister ? (FileLister)leftPanel:null ;
+		return leftPanel instanceof FileLister ? (FileLister) leftPanel : null;
 	}
 
 	public void refresh() {
-		//leftPanel.refresh();
-		//rightPanel.refresh();
+		// leftPanel.refresh();
+		// rightPanel.refresh();
 	}
 
 	public void activePanel() {
@@ -1042,7 +1132,8 @@ public class FileManager implements FileListerListener{
 	}
 
 	public void activePanel(String pos) {
-		//String activePanel = (String) sashForm.getData("activePanel"); //$NON-NLS-1$
+		// String activePanel = (String) sashForm.getData("activePanel");
+		// //$NON-NLS-1$
 		if (pos.equals("left")) { //$NON-NLS-1$
 			sashForm.setData("activePanel", "left"); //$NON-NLS-1$ //$NON-NLS-2$
 			leftPanel.active();
@@ -1052,7 +1143,6 @@ public class FileManager implements FileListerListener{
 		}
 	}
 
-
 	public void hide() {
 		shell.setVisible(false);
 	}
@@ -1061,6 +1151,7 @@ public class FileManager implements FileListerListener{
 		miniShell.activeWith(":"); //$NON-NLS-1$
 		miniShell.setFocus();
 	}
+
 	public void activeSideView() {
 		sideViLister.activeWidget();
 	}
@@ -1076,7 +1167,7 @@ public class FileManager implements FileListerListener{
 		miniShell.activeWith(":"); //$NON-NLS-1$
 		miniShell.setFocus();
 	}
-	
+
 	public void activeSearchMode(ViLister lister) {
 		miniShell.setViLister(lister);
 		miniShell.activeWith("/"); //$NON-NLS-1$
@@ -1087,54 +1178,52 @@ public class FileManager implements FileListerListener{
 		statusBar.setTip(tip);
 	}
 
-
 	public Shell getShell() {
 		return shell;
 	}
 
 	public void showStatusAnimation() {
-		 statusBar.show();
+		statusBar.show();
 	}
 
 	public void setStatusInfo(String status) {
-		 statusBar.updateStatus(status);
+		statusBar.updateStatus(status);
 	}
 
 	public void hideStatusAnimation() {
-		 statusBar.hide();
+		statusBar.hide();
 	}
-
-	
 
 	public void onHotKey(final int arg0) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-				if (arg0==88) {
-					activeGUI(); 
+				if (arg0 == 88) {
+					activeGUI();
 				} else {
-					QuickRunShell qrs=new QuickRunShell();
+					QuickRunShell qrs = new QuickRunShell();
 					qrs.open();
-					
+
 				}
 			}
 		});
 	}
-	
+
 	public void activeGUI() {
 		shell.setVisible(true);
-		shell.setActive();	
+		shell.setActive();
 		shell.setFocus();
 		activePanel();
 	}
 
-
 	class ShowSideViewListener extends SelectionAdapter {
 		int sideType;
+
 		public ShowSideViewListener(int sideType) {
-			this.sideType=sideType;
+			this.sideType = sideType;
 		}
+
 		public void widgetSelected(SelectionEvent e) {
-			if (sideType== FileManager.SIDE_BOOKMARK) {
+			if (sideType == FileManager.SIDE_BOOKMARK) {
 				Main.fileManager.showBookmarkSidevew();
 			} else if (sideType == FileManager.SIDE_HISTORY) {
 				Main.fileManager.showHistorySideview();
@@ -1148,46 +1237,50 @@ public class FileManager implements FileListerListener{
 
 	class NavigateListener extends SelectionAdapter {
 		int actionName;
+
 		public NavigateListener(int actionName) {
-			this.actionName=actionName;
+			this.actionName = actionName;
 		}
+
 		public void widgetSelected(SelectionEvent e) {
-			FileLister fileLister=Main.fileManager.getActivePanel();
-			
-			if (actionName==FileManager.NV_FORWARD) {
-				 if (e.detail == SWT.ARROW) {
-					    Menu menu=createForwardMenu();
-					    if (menu==null) return;
-					    
-			          Rectangle rect = goBackToolItem.getBounds();
-			          Point pt = new Point(rect.x, rect.y + rect.height);
-			          pt=goForwardToolItem.getParent().toDisplay(pt);
-			  	    menu.setLocation(pt);
-			  	    menu.setVisible(true);
-				 } else {
-    				fileLister.forward();
-				 }
-			
-			} else if (actionName==FileManager.NV_BACK) {
+			FileLister fileLister = Main.fileManager.getActivePanel();
+
+			if (actionName == FileManager.NV_FORWARD) {
 				if (e.detail == SWT.ARROW) {
-				    Menu menu=createBackwardMenu();
-				    if (menu==null) return;
-				    
-		          Rectangle rect = goBackToolItem.getBounds();
-		          Point pt = new Point(rect.x, rect.y + rect.height);
-		          pt=goBackToolItem.getParent().toDisplay(pt);
-		  	    menu.setLocation(pt);
-		  	    menu.setVisible(true);
-			 } else {
-				fileLister.back();
-			 }
-				
-			} else if (actionName==FileManager.NV_UP) {
+					Menu menu = createForwardMenu();
+					if (menu == null)
+						return;
+
+					Rectangle rect = goBackToolItem.getBounds();
+					Point pt = new Point(rect.x, rect.y + rect.height);
+					pt = goForwardToolItem.getParent().toDisplay(pt);
+					menu.setLocation(pt);
+					menu.setVisible(true);
+				} else {
+					fileLister.forward();
+				}
+
+			} else if (actionName == FileManager.NV_BACK) {
+				if (e.detail == SWT.ARROW) {
+					Menu menu = createBackwardMenu();
+					if (menu == null)
+						return;
+
+					Rectangle rect = goBackToolItem.getBounds();
+					Point pt = new Point(rect.x, rect.y + rect.height);
+					pt = goBackToolItem.getParent().toDisplay(pt);
+					menu.setLocation(pt);
+					menu.setVisible(true);
+				} else {
+					fileLister.back();
+				}
+
+			} else if (actionName == FileManager.NV_UP) {
 				fileLister.upOneDir();
-			} else if (actionName==FileManager.NV_HOME) {
+			} else if (actionName == FileManager.NV_HOME) {
 				fileLister.visit(HomeLocator.getUserHome());
 				fileLister.refreshHistoryInfo();
-			} else if (actionName==FileManager.NV_ROOT) {
+			} else if (actionName == FileManager.NV_ROOT) {
 				fileLister.visit(FileLister.FS_ROOT);
 				fileLister.refreshHistoryInfo();
 			}
@@ -1196,30 +1289,32 @@ public class FileManager implements FileListerListener{
 
 	class FileOperateListener extends SelectionAdapter {
 		int actionName;
+
 		public FileOperateListener(int actionName) {
-			this.actionName=actionName;
-	    }
+			this.actionName = actionName;
+		}
+
 		public void widgetSelected(SelectionEvent e) {
-			FileLister fileLister=Main.fileManager.getActivePanel();
-			if (actionName==FileManager.ACTION_COPY) {
+			FileLister fileLister = Main.fileManager.getActivePanel();
+			if (actionName == FileManager.ACTION_COPY) {
 				fileLister.doYank();
-			} else if (actionName==FileManager.ACTION_CUT) {
+			} else if (actionName == FileManager.ACTION_CUT) {
 				fileLister.doCut();
-			} else if (actionName==FileManager.ACTION_PASTE) {
+			} else if (actionName == FileManager.ACTION_PASTE) {
 				fileLister.doPaste();
-			} else if (actionName==FileManager.ACTION_DEL) {
+			} else if (actionName == FileManager.ACTION_DEL) {
 				fileLister.doDelete();
-			} else if (actionName==FileManager.ACTION_RENAME) {
+			} else if (actionName == FileManager.ACTION_RENAME) {
 				fileLister.doChange();
-			} else if (actionName==FileManager.ACTION_SELECTALL) {
+			} else if (actionName == FileManager.ACTION_SELECTALL) {
 				fileLister.selectAll();
-			} else if (actionName==FileManager.ACTION_NEWFILE	) {
+			} else if (actionName == FileManager.ACTION_NEWFILE) {
 				fileLister.doAddItem("file");
-			} else if (actionName==FileManager.ACTION_NEWFOLDER	) {
+			} else if (actionName == FileManager.ACTION_NEWFOLDER) {
 				fileLister.doAddItem("folder");
-			} else if (actionName==FileManager.ACTION_OPENINTAB) {
-				tabnew(fileLister.getPwd(),FileLister.FS_ROOT);
-			} else if (actionName==FileManager.ACTION_OPENINTERMINAL) {
+			} else if (actionName == FileManager.ACTION_OPENINTAB) {
+				tabnew(fileLister.getPwd(), FileLister.FS_ROOT);
+			} else if (actionName == FileManager.ACTION_OPENINTERMINAL) {
 				Util.openTerminal(fileLister.getPwd());
 			}
 		}
@@ -1227,42 +1322,41 @@ public class FileManager implements FileListerListener{
 
 	class FileSelectListener extends SelectionAdapter {
 		String actionName;
+
 		public FileSelectListener(String actionName) {
-			this.actionName=actionName;
+			this.actionName = actionName;
 		}
-		
+
 	}
+
 	class MiscListener extends SelectionAdapter {
 		int actionName;
+
 		public MiscListener(int actionName) {
-			this.actionName=actionName;
+			this.actionName = actionName;
 		}
+
 		public void widgetSelected(SelectionEvent e) {
-			if (actionName==FileManager.MISC_PREFERENCE) {
+			if (actionName == FileManager.MISC_PREFERENCE) {
 				Util.openPreferenceShell(shell);
-			} else if (actionName==FileManager.MISC_ABOUT) {
-				AboutShell aboutShell=new AboutShell();
+			} else if (actionName == FileManager.MISC_ABOUT) {
+				AboutShell aboutShell = new AboutShell();
 				aboutShell.showGUI();
-			} else if (actionName==FileManager.MISC_CONTENT) {
-				//System.out.println(System.getProperty("user.dir"));
-				String EDITOR =Preference.getInstance().getEditorApp();
-				String cmd[]={EDITOR ,"../doc/help.txt"};
+			} else if (actionName == FileManager.MISC_CONTENT) {
+				// System.out.println(System.getProperty("user.dir"));
+				String EDITOR = Preference.getInstance().getEditorApp();
+				String cmd[] = { EDITOR, "../doc/help.txt" };
 				try {
-    			    Runtime.getRuntime().exec(cmd);
-				} catch (Exception ex ) {
+					Runtime.getRuntime().exec(cmd);
+				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
-				//HelpContentShell helpContentsShell=new HelpContentShell();
-				//helpContentsShell.showGUI();
-			} else if (actionName==FileManager.MISC_QUIT) {
+				// HelpContentShell helpContentsShell=new HelpContentShell();
+				// helpContentsShell.showGUI();
+			} else if (actionName == FileManager.MISC_QUIT) {
 				Main.exit();
 			}
 		}
 	}
-			
+
 }
-
-
-		
-	
-

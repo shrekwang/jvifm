@@ -28,20 +28,17 @@ import net.sf.jvifm.model.Preference;
 import net.sf.jvifm.ui.FileManager;
 import net.sf.jvifm.ui.Util;
 import net.sf.jvifm.ui.shell.AboutShell;
-import net.sf.jvifm.ui.shell.QuickRunShell;
 
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.swt.program.Program;
 
 public class MetaCommand extends Command {
-	
-	private static String[] cmdNames=new String[]{
-		"quit","quitall","hide","only","split","help",
-		"sync","conf","locate","sh",
-		"bookmarks","history","folder","shortcuts",
-		"hidesidebar","kill","about","preview","nopreview",
-		"brief","detail"};
-	
+
+	private static String[] cmdNames = new String[] { "quit", "quitall",
+			"hide", "only", "split", "help", "sync", "conf", "locate", "sh",
+			"bookmarks", "history", "folder", "shortcuts", "hidesidebar",
+			"kill", "about", "preview", "nopreview", "brief", "detail" };
+
 	private String cmd;
 	private FileManager fileManager = Main.fileManager;
 
@@ -52,29 +49,28 @@ public class MetaCommand extends Command {
 	public MetaCommand(String cmdText) {
 		this.cmd = cmdText;
 	}
-	
-	
+
 	public void execute() {
-		
+
 		if (cmd.equals("kill")) {
-			if (Main.currentJob!=null)  Main.currentJob.abort();
+			if (Main.currentJob != null)
+				Main.currentJob.abort();
 			return;
 		}
 		if (cmd.equals("about")) {
-			AboutShell aboutShell=new AboutShell();
+			AboutShell aboutShell = new AboutShell();
 			aboutShell.showGUI();
 		}
-		
-		
+
 		if (cmd.equals("quit")) {
 			fileManager.quit();
 			return;
 		}
 		if (cmd.equals("quitall")) {
 			Main.exit();
-			return ;
+			return;
 		}
-		
+
 		if (cmd.equals("hide")) {
 			fileManager.hide();
 			return;
@@ -87,15 +83,13 @@ public class MetaCommand extends Command {
 			fileManager.split();
 		}
 		/*
-		if (cmd.equals("preview")) {
-			fileManager.getActivePanel().addListener(fileManager);
-			fileManager.getActivePanel().notifyChangeSelection();
-		}
-		if (cmd.equals("nopreview")) {
-			fileManager.getActivePanel().removeListener(fileManager);
-			fileManager.nopreview();
-		}
-		*/
+		 * if (cmd.equals("preview")) {
+		 * fileManager.getActivePanel().addListener(fileManager);
+		 * fileManager.getActivePanel().notifyChangeSelection(); } if
+		 * (cmd.equals("nopreview")) {
+		 * fileManager.getActivePanel().removeListener(fileManager);
+		 * fileManager.nopreview(); }
+		 */
 
 		if (cmd.equals("detail")) {
 			fileManager.getActivePanel().detail();
@@ -103,32 +97,35 @@ public class MetaCommand extends Command {
 		if (cmd.equals("brief")) {
 			fileManager.getActivePanel().brief();
 		}
-		
+
 		if (cmd.equals("help")) {
-			String EDITOR =Preference.getInstance().getEditorApp();
-			String workdir=System.getProperty("user.dir");
-			String path=new File(workdir).getParent()+"/doc/help.txt";
-			String cmd[]={EDITOR ,path};
+			String EDITOR = Preference.getInstance().getEditorApp();
+			String workdir = System.getProperty("user.dir");
+			String path = new File(workdir).getParent() + "/doc/help.txt";
+			String cmd[] = { EDITOR, path };
 			try {
-			    Runtime.getRuntime().exec(cmd);
-			} catch (Exception ex ) {
-				//ex.printStackTrace(); //if can't open help file with default editor,
-				//open it with default application in system
-				String ext=FilenameUtils.getExtension(path);
-				Program program=Program.findProgram(ext);
-				if (program!=null) program.execute(path);
+				Runtime.getRuntime().exec(cmd);
+			} catch (Exception ex) {
+				// ex.printStackTrace(); //if can't open help file with default
+				// editor,
+				// open it with default application in system
+				String ext = FilenameUtils.getExtension(path);
+				Program program = Program.findProgram(ext);
+				if (program != null)
+					program.execute(path);
 			}
 			return;
 		}
 		if (cmd.equals("sync")) {
-			if (inActiveFileLister!=null) inActiveFileLister.visit(pwd);
+			if (inActiveFileLister != null)
+				inActiveFileLister.visit(pwd);
 			return;
 		}
 		if (cmd.equals("conf")) {
 			Util.openPreferenceShell(fileManager.getShell());
 			return;
 		}
-		
+
 		if (cmd.equals("sh")) {
 			Util.openTerminal(pwd);
 		}
@@ -152,13 +149,14 @@ public class MetaCommand extends Command {
 			Main.fileManager.hideSideBar();
 		}
 	}
-	
+
 	public static boolean isMetaCommand(String cmd) {
-		for (int i=0; i<cmdNames.length; i++) {
-			if (cmdNames[i].equals(cmd)) return true;
+		for (int i = 0; i < cmdNames.length; i++) {
+			if (cmdNames[i].equals(cmd))
+				return true;
 		}
 		return false;
-	
+
 	}
 
 }

@@ -27,11 +27,11 @@ import net.sf.jvifm.util.*;
 
 public class Preference {
 
-	public static String EDITOR = "editor";
+	public static final String EDITOR = "editor";
 
-	public static String TERMINAL = "terminal";
+	public static final String TERMINAL = "terminal";
 
-	public static String ISSHOWHIDE = "isShowHide";
+	public static final String ISSHOWHIDE = "isShowHide";
 
 	private static Preference preference = null;
 

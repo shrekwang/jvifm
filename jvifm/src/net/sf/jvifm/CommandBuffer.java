@@ -22,47 +22,54 @@
 package net.sf.jvifm;
 
 public class CommandBuffer {
-	
-	private static CommandBuffer instance=new CommandBuffer();
-	
-	private String impendingCommand=null;
-	private String commandCount=null;
-	private String commandBuffer=null;
-	private String[] commandSourceFiles=null;
-	private String commandSourcePath=null;
-	
+
+	private static CommandBuffer instance = new CommandBuffer();
+
+	private String impendingCommand = null;
+	private String commandCount = null;
+	private String commandBuffer = null;
+	private String[] commandSourceFiles = null;
+	private String commandSourcePath = null;
+
 	private CommandBuffer() {
 	}
-	
+
 	public static CommandBuffer getInstance() {
 		return instance;
 	}
-	
+
 	public void setImpendingCommand(String command) {
-	    this.impendingCommand=command;
+		this.impendingCommand = command;
 	}
+
 	public String getImpendingCommand() {
-	    return this.impendingCommand;
+		return this.impendingCommand;
 	}
+
 	public void setCommandCount(String countString) {
-	    this.commandCount=countString;
+		this.commandCount = countString;
 	}
+
 	public String getCommandCount() {
-	    return this.commandCount;
+		return this.commandCount;
 	}
+
 	public void setCommandBuffer(String commandBuffer) {
-	    this.commandBuffer=commandBuffer;
+		this.commandBuffer = commandBuffer;
 	}
+
 	public String getCommandBuffer() {
-	    return this.commandBuffer;
+		return this.commandBuffer;
 	}
+
 	public void setCommandSourceFiles(String[] commandSource) {
-	    this.commandSourceFiles=commandSource;
+		this.commandSourceFiles = commandSource;
 	}
+
 	public String[] getCommandSourceFiles() {
-	    return this.commandSourceFiles;
+		return this.commandSourceFiles;
 	}
-	
+
 	public String getCommandSourcePath() {
 		return commandSourcePath;
 	}

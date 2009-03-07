@@ -61,7 +61,7 @@ public abstract class AbstractViLister extends Canvas implements ViLister {
 		addViKeyListener();
 
 	}
-	
+
 	protected void initViLister() {
 		this.setLayout(new FillLayout());
 		table = new Table(this, SWT.MULTI);

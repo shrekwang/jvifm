@@ -35,62 +35,63 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 public class TextViewer implements Previewer {
-	
-	
+
 	private StyledText text;
-	
+
 	public TextViewer(Composite composite, String filepath) {
-		text=new StyledText(composite,SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.READ_ONLY);
+		text = new StyledText(composite, SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.BORDER | SWT.READ_ONLY);
 		text.addVerifyKeyListener(new VerifyKeyListener() {
 			public void verifyKey(VerifyEvent event) {
-				if (event.character==' ') {
+				if (event.character == ' ') {
 					Main.fileManager.changePanel();
 				}
-				if (event.character=='j') {
-					//text.scroll(destX, destY, x, y, width, height, all)
+				if (event.character == 'j') {
+					// text.scroll(destX, destY, x, y, width, height, all)
 				}
-				
+
 			}
 		});
 		loadFile(filepath);
 	}
-	
+
 	public void loadFile(String filepath) {
-		
-		StringBuffer sb=new StringBuffer("");
+
+		StringBuffer sb = new StringBuffer("");
 		try {
-			File file=new File(filepath);
-			BufferedReader br=new BufferedReader(new FileReader(file));
+			File file = new File(filepath);
+			BufferedReader br = new BufferedReader(new FileReader(file));
 			String tmp;
-			while ((tmp=br.readLine())!=null) {
+			while ((tmp = br.readLine()) != null) {
 				sb.append(tmp).append("\n");
 			}
 			br.close();
-		}catch (Exception e) {
-			
+		} catch (Exception e) {
+
 		}
-		
+
 		text.setText(sb.toString());
 	}
-	
+
 	public Control getControl() {
 		return this.text;
 	}
-	public void dispose () {
+
+	public void dispose() {
 		text.dispose();
 	}
+
 	public void active() {
 		text.setFocus();
 		text.setCaretOffset(0);
 	}
+
 	public void refresh() {
 		text.redraw();
 	}
+
 	public void switchPanel() {
 		Main.fileManager.changePanel();
 	}
-	
-	
-	
 
 }

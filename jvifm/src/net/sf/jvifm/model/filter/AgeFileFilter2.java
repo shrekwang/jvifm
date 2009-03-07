@@ -24,18 +24,19 @@ package net.sf.jvifm.model.filter;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.Date;
 
 import org.apache.commons.io.filefilter.AbstractFileFilter;
 
 public class AgeFileFilter2 extends AbstractFileFilter implements Serializable {
 
-    private final long cutoff;
+	private static final long serialVersionUID = -3929906512173891655L;
+	
+	private final long cutoff;
 	private final int flag;
     
-    public static int EQ=1;
-    public static int GT=2;
-    public static int LT=3;
+    public static final int EQ=1;
+    public static final int GT=2;
+    public static final int LT=3;
 
   
     public AgeFileFilter2(long cutoff, int flag) {

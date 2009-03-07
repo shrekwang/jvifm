@@ -37,54 +37,51 @@ import org.eclipse.swt.program.Program;
 
 public class CommandParser {
 
-	
 	public Command parseCommand(String cmd, String[] args) throws Exception {
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmdLine;
-		FileLister activeLister=Main.fileManager.getActivePanel();
-		ShortcutsManager scm=ShortcutsManager.getInstance();
-		String[] selectedFiles=activeLister.getSelectionFiles();
-		Command command=null;
-	 	
+		FileLister activeLister = Main.fileManager.getActivePanel();
+		ShortcutsManager scm = ShortcutsManager.getInstance();
+		String[] selectedFiles = activeLister.getSelectionFiles();
+		Command command = null;
+
 		if (cmd.equals("ls")) {
-    		cmdLine = parser.parse(ListFileCommand.options, args);
-			command= new ListFileCommand(cmdLine);
+			cmdLine = parser.parse(ListFileCommand.options, args);
+			command = new ListFileCommand(cmdLine);
 		} else if (cmd.equals("compress")) {
-			String dstFile=FilenameUtils.concat(activeLister.getPwd(),args[0] );
-			command= new CompressCommand(dstFile,selectedFiles);
+			String dstFile = FilenameUtils.concat(activeLister.getPwd(),
+					args[0]);
+			command = new CompressCommand(dstFile, selectedFiles);
 		} else if (cmd.equals("find")) {
-			cmdLine=parser.parse(FindCommand.options, args);
-			command= new FindCommand(cmdLine);
+			cmdLine = parser.parse(FindCommand.options, args);
+			command = new FindCommand(cmdLine);
 		} else if (cmd.equals("rename")) {
-			cmdLine=parser.parse(RenameCommand.options, args);
-			command= new RenameCommand(cmdLine);
+			cmdLine = parser.parse(RenameCommand.options, args);
+			command = new RenameCommand(cmdLine);
 		} else if (cmd.equals("touch")) {
-			cmdLine=parser.parse(TouchCommand.options, args);
-			command= new TouchCommand(cmdLine,selectedFiles);
+			cmdLine = parser.parse(TouchCommand.options, args);
+			command = new TouchCommand(cmdLine, selectedFiles);
 		} else if (cmd.equals("mkdir")) {
-			cmdLine=parser.parse(new Options(), args);
-			command= new MkdirCommand(cmdLine);
-		} else 	if (MetaCommand.isMetaCommand(cmd))  {
-			command= new MetaCommand(cmd) ;
-		}else if (scm.isShortCut(cmd)) {
+			cmdLine = parser.parse(new Options(), args);
+			command = new MkdirCommand(cmdLine);
+		} else if (MetaCommand.isMetaCommand(cmd)) {
+			command = new MetaCommand(cmd);
+		} else if (scm.isShortCut(cmd)) {
 			Shortcut cc = scm.findByName(cmd);
-			command= new SystemCommand(cc.getText(),args,true);
+			command = new SystemCommand(cc.getText(), args, true);
 		} else if (cmd.startsWith("!")) {
-			command= new SystemCommand(cmd.substring(1),args,false);
-		}  else {
-			cmdLine=parser.parse(new Options(), args);
-    		command=  new MiscFileCommand(activeLister.getPwd(),cmd, cmdLine.getArgs(),selectedFiles);
+			command = new SystemCommand(cmd.substring(1), args, false);
+		} else {
+			cmdLine = parser.parse(new Options(), args);
+			command = new MiscFileCommand(activeLister.getPwd(), cmd, cmdLine
+					.getArgs(), selectedFiles);
 		}
-		
+
 		command.setFileLister(activeLister);
 		command.setInActiveFileLister(Main.fileManager.getInActivePanel());
 		command.setPwd(activeLister.getPwd());
-		
+
 		return command;
 	}
-	
-	
-	
 
-	
 }

@@ -28,22 +28,19 @@ import net.sf.jvifm.ui.FileLister;
 
 import org.eclipse.swt.widgets.Display;
 
-public abstract class Command  {
-	
+public abstract class Command {
+
 	protected String pwd;
 	protected String srcDir;
 	protected String dstDir;
 	protected String[] files;
 	protected FileLister fileLister;
 	protected FileLister inActiveFileLister;
-	
-	
+
 	private String action;
-	
-	
+
 	public abstract void execute() throws Exception;
 
-	
 	public void refreshActivePanel() {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
@@ -51,7 +48,7 @@ public abstract class Command  {
 			}
 		});
 	}
-	
+
 	public void switchToNormal() {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
@@ -59,17 +56,18 @@ public abstract class Command  {
 			}
 		});
 	}
-	
+
 	public void listSubFileInPanel(final File[] files) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
 				fileLister.listSubFiles(files);
 				fileLister.switchToNormalMode();
-				if (files.length>0) fileLister.setCursorPosition(0);
+				if (files.length > 0)
+					fileLister.setCursorPosition(0);
 			}
 		});
 	}
-	
+
 	public void addSubFileInPanel(final File file) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
@@ -77,7 +75,7 @@ public abstract class Command  {
 			}
 		});
 	}
-	
+
 	public void removeAllItemInPanel() {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
@@ -85,29 +83,32 @@ public abstract class Command  {
 			}
 		});
 	}
+
 	public void addToPanel(final String dir, final String[] files) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-				fileLister.addToView(dir, files );
+				fileLister.addToView(dir, files);
 			}
 		});
 	}
+
 	public void removeFromActivePanel(final String dir, final String[] files) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-				fileLister.removeFromView(dir, files );
+				fileLister.removeFromView(dir, files);
 			}
 		});
 	}
+
 	public void removeFromInActivePanel(final String dir, final String[] files) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-				if (inActiveFileLister!=null) inActiveFileLister.removeFromView(dir, files );
+				if (inActiveFileLister != null)
+					inActiveFileLister.removeFromView(dir, files);
 			}
 		});
 	}
-	
-	
+
 	public void showStatusAnimation() {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
@@ -115,21 +116,22 @@ public abstract class Command  {
 			}
 		});
 	}
+
 	public void hideStatusAnimation() {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-    		    Main.fileManager.hideStatusAnimation();
+				Main.fileManager.hideStatusAnimation();
 			}
 		});
 	}
-	
+
 	public void updateStatusInfo(final String status) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-    		    Main.fileManager.setStatusInfo(status);
+				Main.fileManager.setStatusInfo(status);
 			}
 		});
-	
+
 	}
 
 	public String getAction() {
@@ -172,31 +174,20 @@ public abstract class Command  {
 		this.pwd = pwd;
 	}
 
-
 	public FileLister getFileLister() {
 		return fileLister;
 	}
-
 
 	public FileLister getInActiveFileLister() {
 		return inActiveFileLister;
 	}
 
-
 	public void setFileLister(FileLister fileLister) {
 		this.fileLister = fileLister;
 	}
 
-
 	public void setInActiveFileLister(FileLister inActiveFileLister) {
 		this.inActiveFileLister = inActiveFileLister;
 	}
-	
-	
-	
-	
-	
-	
-	
 
 }

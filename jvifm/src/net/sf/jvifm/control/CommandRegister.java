@@ -27,36 +27,40 @@ import java.util.Iterator;
 import org.apache.commons.cli.Options;
 
 public class CommandRegister {
-	
+
 	@SuppressWarnings("unchecked")
-	private HashMap commands=new HashMap();
-	
-	private static CommandRegister instance=new CommandRegister();
-	
+	private HashMap commands = new HashMap();
+
+	private static CommandRegister instance = new CommandRegister();
+
 	public static CommandRegister getInstance() {
 		return instance;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public void register(String name,Options options) {
+	public void register(String name, Options options) {
 		commands.put(name, options);
 	}
+
 	public void unRegister(String name) {
 		commands.remove(name);
 	}
+
 	public Options getCommandOptions(String name) {
-		Object result=commands.get(name);
-		if (result==null) return null;
+		Object result = commands.get(name);
+		if (result == null)
+			return null;
 		return (Options) result;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public String[] getCmdNames() {
-		if (commands==null) return null;
-		String[] result=new String[commands.keySet().size()];
-		int i=0;
-		for (Iterator it=commands.keySet().iterator(); it.hasNext();) {
-			result[i++]=(String)it.next();
+		if (commands == null)
+			return null;
+		String[] result = new String[commands.keySet().size()];
+		int i = 0;
+		for (Iterator it = commands.keySet().iterator(); it.hasNext();) {
+			result[i++] = (String) it.next();
 		}
 		return result;
 	}

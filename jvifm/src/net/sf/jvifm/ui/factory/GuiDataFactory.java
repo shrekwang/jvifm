@@ -26,31 +26,31 @@ import org.eclipse.swt.layout.GridLayout;
 
 public class GuiDataFactory {
 
-	
-	public static GridData createGridData(
-			int verticalAlignment,int horizontalAlignment, 
-			boolean grabExcessHorizontalSpace,boolean grabExcessVerticalSpace) {
-		
+	public static GridData createGridData(int verticalAlignment,
+			int horizontalAlignment, boolean grabExcessHorizontalSpace,
+			boolean grabExcessVerticalSpace) {
+
 		GridData gridData = new GridData();
 		gridData.verticalAlignment = verticalAlignment;
 		gridData.horizontalAlignment = horizontalAlignment;
 		gridData.grabExcessHorizontalSpace = grabExcessHorizontalSpace;
 		gridData.grabExcessVerticalSpace = grabExcessVerticalSpace;
-		
+
 		return gridData;
 	}
-	
-	public static GridLayout createkGridLayout(int numColumns, int verticalSpacing,
-			int horizontalSpacing, int marginWidth,int marginHeight,boolean makeColumnsEqualWidth) {
-		
+
+	public static GridLayout createkGridLayout(int numColumns,
+			int verticalSpacing, int horizontalSpacing, int marginWidth,
+			int marginHeight, boolean makeColumnsEqualWidth) {
+
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = numColumns;
 		gridLayout.verticalSpacing = verticalSpacing;
 		gridLayout.marginWidth = marginWidth;
-		gridLayout.marginHeight =marginHeight;
+		gridLayout.marginHeight = marginHeight;
 		gridLayout.horizontalSpacing = horizontalSpacing;
-		gridLayout.makeColumnsEqualWidth=makeColumnsEqualWidth;
-		
+		gridLayout.makeColumnsEqualWidth = makeColumnsEqualWidth;
+
 		return gridLayout;
 	}
 }

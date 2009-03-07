@@ -21,10 +21,10 @@ package net.sf.jvifm.ui.hotkeys;
 
 public abstract class HotkeyHandler {
 
-    public abstract void registerHotkey(int id, int mask, int key);
-    
-    public abstract void unregisterHotkey(int id);
-    
-    public abstract void cleanUp();
-    
+	public abstract void registerHotkey(int id, int mask, int key);
+
+	public abstract void unregisterHotkey(int id);
+
+	public abstract void cleanUp();
+
 }

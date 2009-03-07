@@ -26,45 +26,48 @@ import net.sf.jvifm.Main;
 
 public class Hotkeys {
 
-    private static int ACTION_SHOWMAIN =88; 
-    private static int ACTION_QUICKRUN = 89;
-    private static HotkeyHandler handler;
-    
-    static{
-        switch (Main.operatingSystem) {
-            case 2:
-                System.loadLibrary("JIntellitype");
-                handler = new JIntellitypeHandler();
-                break;
-            case 1:
-                System.loadLibrary("JXGrabKey");
-                handler = new JXGrabKeyHandler();
-                break;
-        }
-    }
+	private static int ACTION_SHOWMAIN = 88;
+	private static int ACTION_QUICKRUN = 89;
+	private static HotkeyHandler handler;
 
-    private Hotkeys() {}
+	static {
+		switch (Main.operatingSystem) {
+		case 2:
+			System.loadLibrary("JIntellitype");
+			handler = new JIntellitypeHandler();
+			break;
+		case 1:
+			System.loadLibrary("JXGrabKey");
+			handler = new JXGrabKeyHandler();
+			break;
+		}
+	}
 
-    public static void bindKeys() {
-        handler.registerHotkey(ACTION_SHOWMAIN, KeyEvent.CTRL_MASK | KeyEvent.ALT_MASK, KeyEvent.VK_J);
-        handler.registerHotkey(ACTION_QUICKRUN, KeyEvent.CTRL_MASK | KeyEvent.ALT_MASK, KeyEvent.VK_H);
-    }
+	private Hotkeys() {
+	}
 
-    public static void unbindKeys() {
-        handler.unregisterHotkey(ACTION_SHOWMAIN);
-        handler.unregisterHotkey(ACTION_QUICKRUN);
-    }
+	public static void bindKeys() {
+		handler.registerHotkey(ACTION_SHOWMAIN, KeyEvent.CTRL_MASK
+				| KeyEvent.ALT_MASK, KeyEvent.VK_J);
+		handler.registerHotkey(ACTION_QUICKRUN, KeyEvent.CTRL_MASK
+				| KeyEvent.ALT_MASK, KeyEvent.VK_H);
+	}
 
-    public static void reBind() {
-        unbindKeys();
-        bindKeys();
-    }
+	public static void unbindKeys() {
+		handler.unregisterHotkey(ACTION_SHOWMAIN);
+		handler.unregisterHotkey(ACTION_QUICKRUN);
+	}
 
-    public static void cleanUp() {
-        handler.cleanUp();
-    }
+	public static void reBind() {
+		unbindKeys();
+		bindKeys();
+	}
 
-    protected static void onHotkey(int id) {
-    	Main.fileManager.onHotKey(id);
-    }
+	public static void cleanUp() {
+		handler.cleanUp();
+	}
+
+	protected static void onHotkey(int id) {
+		Main.fileManager.onHotKey(id);
+	}
 }

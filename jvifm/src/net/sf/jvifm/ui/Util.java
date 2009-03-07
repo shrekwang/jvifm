@@ -37,14 +37,15 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 public class Util {
-	
+
 	private String result;
-	
+
 	public static void openMessageWindow(final String message) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-				MessageBox box=new MessageBox(Main.fileManager.getShell(),SWT.NONE);
-				if (message==null) {
+				MessageBox box = new MessageBox(Main.fileManager.getShell(),
+						SWT.NONE);
+				if (message == null) {
 					box.setMessage("unknow error");
 				} else {
 					box.setMessage(message);
@@ -53,63 +54,68 @@ public class Util {
 			}
 		});
 	}
+
 	public static void openPreferenceShell(final Shell shell) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-			    new PreferenceShell().open(shell);
+				new PreferenceShell().open(shell);
 			}
 		});
 	}
-	
-	
-	
-	public  String openConfirmWindow(final String[] option, final String title,final String message,final int shellType) {
+
+	public String openConfirmWindow(final String[] option, final String title,
+			final String message, final int shellType) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-				Shell shell=Main.fileManager.getShell();
-				OptionShell optionShell=new OptionShell(shell,title,message,option,shellType);
-				Point optionSize=optionShell.getSize();
-				Point location=shell.getLocation();
-				Point size=shell.getSize();
-				int offsetX=location.x+(shell.getSize().x/2)-(optionSize.x/2);
-				int offsetY=location.y+(shell.getSize().y/2)-(optionSize.y/2);
-				result=optionShell.open(offsetX,offsetY);
+				Shell shell = Main.fileManager.getShell();
+				OptionShell optionShell = new OptionShell(shell, title,
+						message, option, shellType);
+				Point optionSize = optionShell.getSize();
+				Point location = shell.getLocation();
+				Point size = shell.getSize();
+				int offsetX = location.x + (shell.getSize().x / 2)
+						- (optionSize.x / 2);
+				int offsetY = location.y + (shell.getSize().y / 2)
+						- (optionSize.y / 2);
+				result = optionShell.open(offsetX, offsetY);
 			}
 		});
 		return result;
-				
+
 	}
-	
+
 	public static void openTerminal(String path) {
-		String ENV_OS=System.getProperty("os.name");
-		String terminal_exe="";
-		if (ENV_OS.substring(0,3).equalsIgnoreCase("win")) {
-			terminal_exe="cmd /c start";
-		}else {
-			terminal_exe="gnome-terminal";
+		String ENV_OS = System.getProperty("os.name");
+		String terminal_exe = "";
+		if (ENV_OS.substring(0, 3).equalsIgnoreCase("win")) {
+			terminal_exe = "cmd /c start";
+		} else {
+			terminal_exe = "gnome-terminal";
 		}
-		
+
 		try {
-			Runtime.getRuntime().exec(terminal_exe,null,new File(path));
+			Runtime.getRuntime().exec(terminal_exe, null, new File(path));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void openFileWithDefaultApp(String path) {
-		if (path == null ) return;
-		String ext=FilenameUtils.getExtension(path);
-		File file=new File(path);
-		if (ext.equals("bat") || ext.equals("sh")) { 
+		if (path == null)
+			return;
+		String ext = FilenameUtils.getExtension(path);
+		File file = new File(path);
+		if (ext.equals("bat") || ext.equals("sh")) {
 			try {
-				Runtime.getRuntime().exec(new String[]{path},null,file.getParentFile());
-			} catch ( Exception e ) {
+				Runtime.getRuntime().exec(new String[] { path }, null,
+						file.getParentFile());
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else {
 			Program.launch(path);
 		}
-		
+
 	}
 
 }

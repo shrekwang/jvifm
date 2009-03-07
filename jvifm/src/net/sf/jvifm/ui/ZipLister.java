@@ -101,13 +101,10 @@ public class ZipLister extends AbstractViLister implements Panel {
 		changeCurrentNode();
 
 	}
-	
-	
 
 	public Control getControl() {
 		return this.mainArea;
 	}
-	
 
 	public void active() {
 		table.setFocus();
@@ -185,8 +182,10 @@ public class ZipLister extends AbstractViLister implements Panel {
 	}
 
 	public void openWithDefault() {
-		FileObject fileObject=(FileObject)table.getItem(currentRow).getData("fileObject");
-		if (fileObject==null) return;
+		FileObject fileObject = (FileObject) table.getItem(currentRow).getData(
+				"fileObject");
+		if (fileObject == null)
+			return;
 		File file = extractToTemp(fileObject);
 		if (file == null)
 			return;
@@ -220,13 +219,14 @@ public class ZipLister extends AbstractViLister implements Panel {
 		String basename = fileObject.getName().getBaseName();
 		File tempFile = null;
 		try {
-			String tmpPath=System.getProperty("java.io.tmpdir"); 
-			tempFile=new File(FilenameUtils.concat(tmpPath, basename));
-			
-			
+			String tmpPath = System.getProperty("java.io.tmpdir");
+			tempFile = new File(FilenameUtils.concat(tmpPath, basename));
+
 			byte[] buf = new byte[4096];
-			BufferedInputStream bin = new BufferedInputStream(fileObject.getContent().getInputStream());
-			BufferedOutputStream bout = new BufferedOutputStream( new FileOutputStream(tempFile));
+			BufferedInputStream bin = new BufferedInputStream(fileObject
+					.getContent().getInputStream());
+			BufferedOutputStream bout = new BufferedOutputStream(
+					new FileOutputStream(tempFile));
 			while (bin.read(buf, 0, 1) != -1) {
 				bout.write(buf, 0, 1);
 			}
@@ -250,16 +250,20 @@ public class ZipLister extends AbstractViLister implements Panel {
 
 	public void upOneDir() {
 		try {
-			//if the currentFileObject is the root of the archive file, do nothing.
-			if (currentFileObject.getName().getPath().equals("/")) return;
+			// if the currentFileObject is the root of the archive file, do
+			// nothing.
+			if (currentFileObject.getName().getPath().equals("/"))
+				return;
 			FileObject parentFO = currentFileObject.getParent();
 			if (parentFO != null) {
-				if (table.getItemCount()>0) {
-    				TableItem item=table.getItem(currentRow);
-        			FileObject selectFO = (FileObject)item.getData("fileObject");
-    				historyManager.setSelectedItem(currentFileObject.getName().getPath(), selectFO.getName().getBaseName());
+				if (table.getItemCount() > 0) {
+					TableItem item = table.getItem(currentRow);
+					FileObject selectFO = (FileObject) item
+							.getData("fileObject");
+					historyManager.setSelectedItem(currentFileObject.getName()
+							.getPath(), selectFO.getName().getBaseName());
 				}
-				
+
 				currentFileObject = parentFO;
 				changeCurrentNode();
 				textLocation.setText(currentFileObject.getName().getPath());
@@ -268,85 +272,93 @@ public class ZipLister extends AbstractViLister implements Panel {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void sortFiles(FileObject[] children) {
-		Arrays.sort(children,new Comparator() {
+		Arrays.sort(children, new Comparator() {
 			public int compare(Object o1, Object o2) {
-				
+
 				try {
-					FileType fileType1 = ((FileObject)o1).getType();
-					FileType fileType2 = ((FileObject)o2).getType();
-					String filename1=((FileObject)o1).getName().getBaseName();
-					String filename2=((FileObject)o2).getName().getBaseName();
-			           if (fileType1.equals(FileType.FILE)
-			        		   && fileType2.equals(FileType.FOLDER)) {
-			        	   return 1;
-			           }
-			           if (fileType2.equals(FileType.FILE)
-			        		   && fileType1.equals(FileType.FOLDER)) {
-			        	   return -1;
-			           }
-			    	   return filename1.compareTo(filename2);
-				}catch (Exception e) {
+					FileType fileType1 = ((FileObject) o1).getType();
+					FileType fileType2 = ((FileObject) o2).getType();
+					String filename1 = ((FileObject) o1).getName()
+							.getBaseName();
+					String filename2 = ((FileObject) o2).getName()
+							.getBaseName();
+					if (fileType1.equals(FileType.FILE)
+							&& fileType2.equals(FileType.FOLDER)) {
+						return 1;
+					}
+					if (fileType2.equals(FileType.FILE)
+							&& fileType1.equals(FileType.FOLDER)) {
+						return -1;
+					}
+					return filename1.compareTo(filename2);
+				} catch (Exception e) {
 					return 1;
 				}
 			}
-			
+
 		});
-		
+
 	}
 
 	private void changeCurrentNode() {
 
-			boolean hasMatchSelectedName = false;
-			FileObject[] children =null;
+		boolean hasMatchSelectedName = false;
+		FileObject[] children = null;
+		try {
+			children = currentFileObject.getChildren();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (children == null)
+			return;
+
+		sortFiles(children);
+
+		String selectedName = historyManager.getSelectedItem(currentFileObject
+				.getName().getPath());
+		table.removeAll();
+		TableItem item;
+
+		for (int i = 0; i < children.length; i++) {
+			FileName fileName = children[i].getName();
+
+			if (fileName.getBaseName().equals(selectedName)) {
+				currentRow = i;
+				hasMatchSelectedName = true;
+			}
+
+			item = new TableItem(table, SWT.NONE);
+			item.setData("fileObject", children[i]);
+			item.setText(fileName.getBaseName());
+
 			try {
-    			children = currentFileObject.getChildren();
-			}catch (Exception e) {
+				FileType fileType = children[i].getType();
+				FileContent fileContent = children[i].getContent();
+
+				if (fileType.equals(FileType.FOLDER)) {
+					item.setImage(folderImage);
+					item.setText(1, "--");
+					item.setText(2, StringUtil.formatDate(fileContent
+							.getLastModifiedTime()));
+				} else {
+					item.setImage(fileImage);
+					item.setText(1, StringUtil
+							.formatSize(fileContent.getSize()));
+					item.setText(2, StringUtil.formatDate(fileContent
+							.getLastModifiedTime()));
+				}
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			if (children==null) return;
-			
-			sortFiles(children);
-			
-			String selectedName=historyManager.getSelectedItem(currentFileObject.getName().getPath());
-			table.removeAll();
-			TableItem item;
 
-			for (int i = 0; i < children.length; i++) {
-				FileName fileName = children[i].getName();
-				
-				if (fileName.getBaseName().equals(selectedName)) {
-					currentRow=i;
-					hasMatchSelectedName=true;
-				}
+		}
 
-				item = new TableItem(table, SWT.NONE);
-				item.setData("fileObject", children[i]);
-				item.setText(fileName.getBaseName());
-
-				try {
-    				FileType fileType = children[i].getType();
-    				FileContent fileContent = children[i].getContent();
-    				
-    				if (fileType.equals(FileType.FOLDER)) {
-    					item.setImage(folderImage);
-    					item.setText(1,"--");
-        				item.setText(2, StringUtil.formatDate(fileContent.getLastModifiedTime()));
-    				} else {
-    					item.setImage(fileImage);
-        				item.setText(1, StringUtil.formatSize(fileContent.getSize()));
-        				item.setText(2, StringUtil.formatDate(fileContent.getLastModifiedTime()));
-    				}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-			}
-			
-			 if (!hasMatchSelectedName) currentRow=0;
-			 table.setSelection(currentRow);
-			 table.setFocus();
+		if (!hasMatchSelectedName)
+			currentRow = 0;
+		table.setSelection(currentRow);
+		table.setFocus();
 
 	}
 

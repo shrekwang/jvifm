@@ -31,53 +31,60 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 public class ResourceManager {
-	private static ResourceManager instance=new ResourceManager();
+	private static ResourceManager instance = new ResourceManager();
 	@SuppressWarnings("unchecked")
 	private static HashMap resources = new HashMap();
 
 	@SuppressWarnings("unchecked")
 	public static Image getImage(String url) {
-		url="icons/"+url;
+		url = "icons/" + url;
 		try {
 			url = url.replace('\\', '/');
 			if (url.startsWith("/"))
 				url = url.substring(1);
 			if (resources.containsKey(url))
 				return (Image) resources.get(url);
-			Image img = new Image(Display.getDefault(), instance.getClass().getClassLoader().getResourceAsStream(url));
+			Image img = new Image(Display.getDefault(), instance.getClass()
+					.getClassLoader().getResourceAsStream(url));
 			if (img != null)
 				resources.put(url, img);
 			return img;
 		} catch (Exception e) {
-			System.err.println("SWTResourceManager.getImage: Error getting image "+url+", "+e);
+			System.err
+					.println("SWTResourceManager.getImage: Error getting image "
+							+ url + ", " + e);
 			return null;
 		}
 	}
-	
-	
+
 	public static Font getFont(String name, int size, int style) {
 		return getFont(name, size, style, false, false);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Font getFont(String name, int size, int style, boolean strikeout, boolean underline) {
-		String fontName = name + "|" + size + "|" + style + "|" + strikeout + "|" + underline;
+	public static Font getFont(String name, int size, int style,
+			boolean strikeout, boolean underline) {
+		String fontName = name + "|" + size + "|" + style + "|" + strikeout
+				+ "|" + underline;
 		if (resources.containsKey(fontName))
 			return (Font) resources.get(fontName);
 		FontData fd = new FontData(name, size, style);
 		if (strikeout || underline) {
 			try {
-				Class lfCls = Class.forName("org.eclipse.swt.internal.win32.LOGFONT");
+				Class lfCls = Class
+						.forName("org.eclipse.swt.internal.win32.LOGFONT");
 				Object lf = FontData.class.getField("data").get(fd);
 				if (lf != null && lfCls != null) {
 					if (strikeout)
-						lfCls.getField("lfStrikeOut").set(lf, new Byte((byte) 1));
+						lfCls.getField("lfStrikeOut").set(lf,
+								new Byte((byte) 1));
 					if (underline)
-						lfCls.getField("lfUnderline").set(lf, new Byte((byte) 1));
+						lfCls.getField("lfUnderline").set(lf,
+								new Byte((byte) 1));
 				}
 			} catch (Throwable e) {
-				System.err.println(
-					"Unable to set underline or strikeout" + " (probably on a non-Windows platform). " + e);
+				System.err.println("Unable to set underline or strikeout"
+						+ " (probably on a non-Windows platform). " + e);
 			}
 		}
 		Font font = new Font(Display.getDefault(), fd);
@@ -91,15 +98,15 @@ public class ResourceManager {
 		while (it.hasNext()) {
 			Object resource = resources.get(it.next());
 			if (resource instanceof Font)
-				 ((Font) resource).dispose();
+				((Font) resource).dispose();
 			else if (resource instanceof Color)
-				 ((Color) resource).dispose();
+				((Color) resource).dispose();
 			else if (resource instanceof Image)
-				 ((Image) resource).dispose();
+				((Image) resource).dispose();
 			else if (resource instanceof Cursor)
-				 ((Cursor) resource).dispose();
+				((Cursor) resource).dispose();
 		}
-		resources.clear();	
+		resources.clear();
 
 	}
 

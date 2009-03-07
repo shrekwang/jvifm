@@ -25,17 +25,14 @@ import java.text.*;
 
 public class StringUtil {
 
-	public static DecimalFormat df = new DecimalFormat("#.##");
-
-	public static SimpleDateFormat simpleFormat = new SimpleDateFormat(
-			"yyyy-MM-dd HH:mm");
-
 	public static String formatDate(long dateValue) {
+		SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		return simpleFormat.format(new Date(dateValue));
 	}
 
 	public static String formatSize(long fileSize) {
 
+		DecimalFormat df = new DecimalFormat("#.##");
 		if (fileSize < 1024) {
 			return String.valueOf(fileSize);
 		} else if (fileSize >= 1024 && fileSize < 1048576) {
@@ -45,7 +42,7 @@ public class StringUtil {
 			float temp = (float) fileSize / 1048576;
 			return df.format(temp) + "Mb";
 		} else {
-			float temp = (float) fileSize / (1048576*1024);
+			float temp = (float) fileSize / (1048576 * 1024);
 			return df.format(temp) + "Gb";
 		}
 	}

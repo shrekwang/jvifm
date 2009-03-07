@@ -40,7 +40,7 @@ import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
 
 public class UnCompressCommand extends InterruptableCommand {
-	private byte[] buffer =new byte[1024*8];
+	private byte[] buffer = new byte[1024 * 8];
 	private String archiveFilePath;
 	private String dstPath;
 
@@ -72,57 +72,49 @@ public class UnCompressCommand extends InterruptableCommand {
 			Util.openMessageWindow(e.getMessage());
 			e.printStackTrace();
 		}
-		
+
 		File dstDir = new File(dstPath);
 		String parent = dstDir.getParent();
-		addToPanel(parent,new String[]{dstPath});
-		
-		/*
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				FileLister fileLister = Main.fileManager.getActivePanel();
-				File dstDir = new File(dstPath);
-				String parent = dstDir.getParent();
-				fileLister.addToView( parent, new String[] { dstPath });
-			}
-		});
-		*/
+		addToPanel(parent, new String[] { dstPath });
+
 	}
-	
-	public void unzip(String zipFilePath,String dstPath) throws Exception {
-		ZipFile zipFile=new ZipFile(new File(zipFilePath));
-		ZipEntry entry =null;
+
+	public void unzip(String zipFilePath, String dstPath) throws Exception {
+		ZipFile zipFile = new ZipFile(new File(zipFilePath));
+		ZipEntry entry = null;
 		Enumeration e = zipFile.getEntries();
 		while (e.hasMoreElements() && !aborted) {
 			entry = (org.apache.tools.zip.ZipEntry) e.nextElement();
-			String dstEntryPath=dstPath+File.separator+entry.getName();
-			
-			updateStatusInfo("uncompressing "+entry.getName());
-			
-			File dstEntryFile=new File(dstEntryPath);
+			String dstEntryPath = dstPath + File.separator + entry.getName();
+
+			updateStatusInfo("uncompressing " + entry.getName());
+
+			File dstEntryFile = new File(dstEntryPath);
 
 			if (!entry.isDirectory()) {
-				File dstParentDir=dstEntryFile.getParentFile();
-				if (!dstParentDir.exists()) dstParentDir.mkdirs();
-				extractEntry(zipFile.getInputStream(entry),dstEntryFile);
+				File dstParentDir = dstEntryFile.getParentFile();
+				if (!dstParentDir.exists())
+					dstParentDir.mkdirs();
+				extractEntry(zipFile.getInputStream(entry), dstEntryFile);
 			} else {
 				dstEntryFile.mkdirs();
 			}
 		}
 		zipFile.close();
 	}
-	
-	private void extractEntry(InputStream zi,File file) throws Exception {
-		BufferedOutputStream bf=new BufferedOutputStream(new FileOutputStream(file));
+
+	private void extractEntry(InputStream zi, File file) throws Exception {
+		BufferedOutputStream bf = new BufferedOutputStream(
+				new FileOutputStream(file));
 		while (!aborted) {
-			int n=zi.read(buffer);
-			if (n<0) break;
-			bf.write(buffer,0,n);
+			int n = zi.read(buffer);
+			if (n < 0)
+				break;
+			bf.write(buffer, 0, n);
 		}
 		bf.close();
 	}
 
-	
 	public void untar(String tarFilePath, String dstPath) throws IOException {
 
 		InputStream in = null;
@@ -130,18 +122,19 @@ public class UnCompressCommand extends InterruptableCommand {
 		if (ext.equals("gz") || ext.equals("tgz")) {
 			in = new GZIPInputStream(new FileInputStream(new File(tarFilePath)));
 		} else if (ext.equals("bz2")) {
-			
-              BufferedInputStream bis =new BufferedInputStream( new FileInputStream(new File(tarFilePath)));
-              int b = bis.read();
-              if (b != 'B') {
-                  throw new IOException("Invalid bz2 file.");
-              }
-              b = bis.read();
-              if (b != 'Z') {
-                  throw new IOException("Invalid bz2 file.");
-              }
-              in = new CBZip2InputStream(bis);
-              
+
+			BufferedInputStream bis = new BufferedInputStream(
+					new FileInputStream(new File(tarFilePath)));
+			int b = bis.read();
+			if (b != 'B') {
+				throw new IOException("Invalid bz2 file.");
+			}
+			b = bis.read();
+			if (b != 'Z') {
+				throw new IOException("Invalid bz2 file.");
+			}
+			in = new CBZip2InputStream(bis);
+
 		} else {
 			in = new FileInputStream(new File(tarFilePath));
 		}
@@ -152,9 +145,10 @@ public class UnCompressCommand extends InterruptableCommand {
 		if (!file.exists())
 			file.mkdirs();
 
-		while (tarEntry != null && !aborted ) {
-			File entryPath = new File(dstPath + File.separatorChar+ tarEntry.getName());
-			updateStatusInfo("uncompressing "+tarEntry.getName());
+		while (tarEntry != null && !aborted) {
+			File entryPath = new File(dstPath + File.separatorChar
+					+ tarEntry.getName());
+			updateStatusInfo("uncompressing " + tarEntry.getName());
 			File parent = entryPath.getParentFile();
 			if (!parent.exists())
 				parent.mkdirs();

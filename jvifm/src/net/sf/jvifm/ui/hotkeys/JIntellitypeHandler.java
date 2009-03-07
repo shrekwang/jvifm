@@ -22,26 +22,27 @@ package net.sf.jvifm.ui.hotkeys;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 
-public class JIntellitypeHandler extends HotkeyHandler implements HotkeyListener{
+public class JIntellitypeHandler extends HotkeyHandler implements
+		HotkeyListener {
 
-    public JIntellitypeHandler() {
-        JIntellitype.getInstance().addHotKeyListener(this);
-    }
-    
-    public void registerHotkey(int id, int mask, int key) {
-        JIntellitype.getInstance().registerSwingHotKey(id, mask, key);
-    }
+	public JIntellitypeHandler() {
+		JIntellitype.getInstance().addHotKeyListener(this);
+	}
 
-    public void unregisterHotkey(int id) {
-        JIntellitype.getInstance().unregisterHotKey(id);
-    }
+	public void registerHotkey(int id, int mask, int key) {
+		JIntellitype.getInstance().registerSwingHotKey(id, mask, key);
+	}
 
-    public void cleanUp() {
-        JIntellitype.getInstance().cleanUp();
-    }
+	public void unregisterHotkey(int id) {
+		JIntellitype.getInstance().unregisterHotKey(id);
+	}
 
-    public void onHotKey(int id) {
-        Hotkeys.onHotkey(id);
-    }
+	public void cleanUp() {
+		JIntellitype.getInstance().cleanUp();
+	}
+
+	public void onHotKey(int id) {
+		Hotkeys.onHotkey(id);
+	}
 
 }

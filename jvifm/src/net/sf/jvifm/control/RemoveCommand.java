@@ -29,7 +29,7 @@ import net.sf.jvifm.util.FileOperator;
 public class RemoveCommand extends Command {
 
 	private static FileOperator fileOperator = FileOperator.getInstance();
-	
+
 	private String dir = null;
 
 	public RemoveCommand(String[] files, String dir) {
@@ -41,16 +41,16 @@ public class RemoveCommand extends Command {
 
 		try {
 			for (int i = 0; i < files.length; i++) {
-				String baseName=FilenameUtils.getName(files[i]);
-				updateStatusInfo("deleting file "+baseName);
+				String baseName = FilenameUtils.getName(files[i]);
+				updateStatusInfo("deleting file " + baseName);
 				fileOperator.rm(files[i]);
 			}
 		} catch (Exception e) {
 			Util.openMessageWindow(e.getMessage());
-			return;	
+			return;
 		}
-		
-		removeFromActivePanel(dir,files);
+
+		removeFromActivePanel(dir, files);
 
 		return;
 

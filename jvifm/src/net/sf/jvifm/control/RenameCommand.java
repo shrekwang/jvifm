@@ -36,31 +36,32 @@ import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.eclipse.swt.widgets.Display;
 
-public class RenameCommand extends Command{
+public class RenameCommand extends Command {
 	private String fromStr;
 	private String toStr;
-	
+
 	private FileOperator fileOperator = FileOperator.getInstance();
-	
-    public static Options options=new Options();
-		
+
+	public static final Options options = new Options();
+
 	public void execute() throws Exception {
 		ArrayList destFileList = filterWildCard(dstDir);
 		for (int i = 0; i < destFileList.size(); i++) {
 			fileOperator.rename(fromStr, toStr, (String) destFileList.get(i));
 		}
 		refreshActivePanel();
-		
+
 		return;
 
 	}
+
 	public RenameCommand(CommandLine cmdLine) {
-		String[] args=cmdLine.getArgs();
-		this.fromStr=args[0];
-		this.toStr=args[1];
-		this.dstDir=args[2];
+		String[] args = cmdLine.getArgs();
+		this.fromStr = args[0];
+		this.toStr = args[1];
+		this.dstDir = args[2];
 	}
-	
+
 	private ArrayList filterWildCard(final String wildcardPath) {
 		final ArrayList result = new ArrayList();
 		if (wildcardPath == null || wildcardPath.trim().equals(""))
@@ -89,5 +90,3 @@ public class RenameCommand extends Command{
 	}
 
 }
-
-

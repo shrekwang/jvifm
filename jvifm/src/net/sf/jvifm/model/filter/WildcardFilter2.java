@@ -19,10 +19,12 @@
  *
  */
 package net.sf.jvifm.model.filter;
+
 import java.io.File;
 import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.AbstractFileFilter;
+
 public class WildcardFilter2 extends AbstractFileFilter {
 	private String[] wildcards = null;
 	public WildcardFilter2(String wildcard) {

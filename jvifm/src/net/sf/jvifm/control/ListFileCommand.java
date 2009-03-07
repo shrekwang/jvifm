@@ -19,7 +19,6 @@
  *
  */
 
-
 package net.sf.jvifm.control;
 
 import java.io.File;
@@ -37,11 +36,11 @@ import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 public class ListFileCommand extends Command {
-	
+
 	private CommandLine cmdLine = null;
-	private File[] subFiles=null;
-	
-	public static Options options;
+	private File[] subFiles = null;
+
+	public static final Options options;
 
 	static {
 		options = new Options();
@@ -60,59 +59,61 @@ public class ListFileCommand extends Command {
 	public ListFileCommand(CommandLine cmdLine) {
 		this.cmdLine = cmdLine;
 	}
-	
 
 	@SuppressWarnings("unchecked")
 	public void execute() throws Exception {
 
-	
-		File currentDir=new File(pwd);
-		
-		String[] filters=cmdLine.getArgs();
-		OrFileFilter orFileFilter=new OrFileFilter();
-		
-		if (filters==null || filters.length<1) {
+		File currentDir = new File(pwd);
+
+		String[] filters = cmdLine.getArgs();
+		OrFileFilter orFileFilter = new OrFileFilter();
+
+		if (filters == null || filters.length < 1) {
 			orFileFilter.addFileFilter(new WildcardFileFilter("*"));
 		} else {
-    		for (int i=0; i<filters.length; i++) {
-    			orFileFilter.addFileFilter( new WildcardFileFilter(filters[i]));
-    		}
-		}
-		
-		
-		if (cmdLine.hasOption("R")) {
-			//FileFinder finder = new FileFinder();
-			//subFiles = finder.find(currentDir, orFileFilter);
-		} else {
-			subFiles=currentDir.listFiles((FilenameFilter)orFileFilter);
-		}
-		
-		if (cmdLine.hasOption("r")) {
-			if (cmdLine.hasOption("t") ) {
-        		Arrays.sort(subFiles,LastModifiedFileComparator.LASTMODIFIED_REVERSE);
-			} else if (cmdLine.hasOption("S")) {
-        		Arrays.sort(subFiles,SizeFileComparator.SIZE_REVERSE);
-			} else if (cmdLine.hasOption("X") ) {
-        		Arrays.sort(subFiles,ExtensionFileComparator.EXTENSION_REVERSE);
-			} else {
-				Arrays.sort(subFiles,FileComprator.getFileComprator("name", true));
-			}
-		} else {
-			if (cmdLine.hasOption("t") ) {
-        		Arrays.sort(subFiles,LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
-			} else if (cmdLine.hasOption("S")) {
-        		Arrays.sort(subFiles,SizeFileComparator.SIZE_COMPARATOR);
-			} else if (cmdLine.hasOption("X") ) {
-        		Arrays.sort(subFiles,ExtensionFileComparator.EXTENSION_COMPARATOR);
-			} else {
-				Arrays.sort(subFiles,FileComprator.getFileComprator("name", false));
+			for (int i = 0; i < filters.length; i++) {
+				orFileFilter.addFileFilter(new WildcardFileFilter(filters[i]));
 			}
 		}
-		
-		listSubFileInPanel(subFiles);
-		
-	}
 
-	
+		if (cmdLine.hasOption("R")) {
+			// FileFinder finder = new FileFinder();
+			// subFiles = finder.find(currentDir, orFileFilter);
+		} else {
+			subFiles = currentDir.listFiles((FilenameFilter) orFileFilter);
+		}
+
+		if (cmdLine.hasOption("r")) {
+			if (cmdLine.hasOption("t")) {
+				Arrays.sort(subFiles,
+						LastModifiedFileComparator.LASTMODIFIED_REVERSE);
+			} else if (cmdLine.hasOption("S")) {
+				Arrays.sort(subFiles, SizeFileComparator.SIZE_REVERSE);
+			} else if (cmdLine.hasOption("X")) {
+				Arrays
+						.sort(subFiles,
+								ExtensionFileComparator.EXTENSION_REVERSE);
+			} else {
+				Arrays.sort(subFiles, FileComprator.getFileComprator("name",
+						true));
+			}
+		} else {
+			if (cmdLine.hasOption("t")) {
+				Arrays.sort(subFiles,
+						LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
+			} else if (cmdLine.hasOption("S")) {
+				Arrays.sort(subFiles, SizeFileComparator.SIZE_COMPARATOR);
+			} else if (cmdLine.hasOption("X")) {
+				Arrays.sort(subFiles,
+						ExtensionFileComparator.EXTENSION_COMPARATOR);
+			} else {
+				Arrays.sort(subFiles, FileComprator.getFileComprator("name",
+						false));
+			}
+		}
+
+		listSubFileInPanel(subFiles);
+
+	}
 
 }

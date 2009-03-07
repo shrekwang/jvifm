@@ -19,11 +19,13 @@
  *
  */
 package net.sf.jvifm.model.filter;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import org.apache.commons.io.filefilter.AbstractFileFilter;
+
 public class FileContentFilter extends AbstractFileFilter {
 	private String pattern = null;
 	public FileContentFilter(String pattern) {
@@ -34,8 +36,9 @@ public class FileContentFilter extends AbstractFileFilter {
 		return isContainsPattern(file, pattern);
 	}
 	private boolean isContainsPattern(File file, String pattern) {
+		BufferedReader br =null;
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
+			br = new BufferedReader(new FileReader(file));
 			String tmp = "";
 			while (true) {
 				tmp = br.readLine();
@@ -47,6 +50,8 @@ public class FileContentFilter extends AbstractFileFilter {
 			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			if (br!=null) try {br.close();} catch (IOException e){}
 		}
 		return false;
 	}

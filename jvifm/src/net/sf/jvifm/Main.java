@@ -52,8 +52,8 @@ public class Main {
 	public static InterruptableCommand currentJob;
 
 	public static int operatingSystem;
-	public static int LINUX=1;
-	public static int WINDOWS=2;
+	public static final int LINUX=1;
+	public static final int WINDOWS=2;
 	
 	static {
         if (System.getProperty("os.name").toUpperCase().indexOf("WINDOWS") != -1) {

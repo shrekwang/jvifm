@@ -21,8 +21,8 @@
 package net.sf.jvifm.model;
 
 public interface HistoryListener {
-	public void onChangePos() ;
-	public void onAddHistoryRecord(String path,boolean needRemove);
+	
+	public void onChangePos();
+
+	public void onAddHistoryRecord(String path, boolean needRemove);
 }
-
-

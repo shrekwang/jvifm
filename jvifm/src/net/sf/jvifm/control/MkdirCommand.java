@@ -19,7 +19,6 @@
  *
  */
 
-
 package net.sf.jvifm.control;
 
 import net.sf.jvifm.util.FileOperator;
@@ -27,26 +26,25 @@ import net.sf.jvifm.util.FileOperator;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.io.FilenameUtils;
 
-public class MkdirCommand extends Command{
+public class MkdirCommand extends Command {
 	private CommandLine cmdLine = null;
 	private FileOperator fileOperator = FileOperator.getInstance();
-	
-	public MkdirCommand(CommandLine cmdLine ) {
-		this.cmdLine=cmdLine;
+
+	public MkdirCommand(CommandLine cmdLine) {
+		this.cmdLine = cmdLine;
 	}
 
 	@Override
 	public void execute() throws Exception {
-		
-    	String[] filenames=cmdLine.getArgs();
-    	for (int i = 0; i < filenames.length; i++) {
-    		String dirName=FilenameUtils.concat(pwd,filenames[i]);
+
+		String[] filenames = cmdLine.getArgs();
+		for (int i = 0; i < filenames.length; i++) {
+			String dirName = FilenameUtils.concat(pwd, filenames[i]);
 			fileOperator.mkdir(dirName);
 		}
-		addToPanel(pwd,filenames);
+		addToPanel(pwd, filenames);
 		return;
-		
+
 	}
-	
 
 }

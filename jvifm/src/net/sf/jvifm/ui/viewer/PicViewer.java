@@ -30,29 +30,33 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
 public class PicViewer implements Previewer {
-	
+
 	private Label label;
 	private Image image;
-	
+
 	public PicViewer(Composite parent, String filepath) {
-		label=new Label(parent,SWT.NONE);
+		label = new Label(parent, SWT.NONE);
 		loadFile(filepath);
 	}
-	
+
 	public void loadFile(String filepath) {
-		image=new Image(label.getDisplay(),filepath);
+		image = new Image(label.getDisplay(), filepath);
 		label.setImage(image);
 	}
+
 	public Control getControl() {
 		return this.label;
 	}
+
 	public void dispose() {
 		label.dispose();
 		image.dispose();
 	}
+
 	public void active() {
 		label.setFocus();
 	}
+
 	public void refresh() {
 		label.redraw();
 	}
@@ -60,6 +64,5 @@ public class PicViewer implements Previewer {
 	public void switchPanel() {
 		Main.fileManager.changePanel();
 	}
-
 
 }

@@ -24,11 +24,15 @@ package net.sf.jvifm.ui;
 import org.eclipse.swt.widgets.Control;
 
 public interface Panel {
-	
-	public Control getControl() ;
-	public void dispose() ;
+
+	public Control getControl();
+
+	public void dispose();
+
 	public void active();
+
 	public void refresh();
+
 	public void switchPanel();
-	
+
 }

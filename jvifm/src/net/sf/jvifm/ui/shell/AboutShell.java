@@ -38,12 +38,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 
+public class AboutShell {
 
-
-public class AboutShell  {
-
-	
-	
 	private Composite container;
 	private Label lblCopyRight;
 	private Label lblName;
@@ -54,15 +50,15 @@ public class AboutShell  {
 
 	public void showGUI() {
 		Display display = Display.getDefault();
-		final Shell shell = new Shell(display,SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-	
-	
+		final Shell shell = new Shell(display, SWT.DIALOG_TRIM
+				| SWT.APPLICATION_MODAL);
+
 		shell.setLayout(new FillLayout());
 		{
 			container = new Composite(shell, SWT.NONE);
 			GridLayout composite1Layout = new GridLayout();
 			container.setLayout(composite1Layout);
-	
+
 			{
 				lblPic = new Label(container, SWT.WRAP);
 				GridData label3LData = new GridData();
@@ -80,11 +76,13 @@ public class AboutShell  {
 				label4LData.verticalAlignment = GridData.BEGINNING;
 				label4LData.horizontalAlignment = GridData.CENTER;
 				lblName.setLayoutData(label4LData);
-				lblName.setFont(ResourceManager.getFont("Sans", 12, 1, false, false));
+				lblName.setFont(ResourceManager.getFont("Sans", 12, 1, false,
+						false));
 			}
 			{
 				lblDescription = new Label(container, SWT.WRAP);
-				lblDescription.setText("Jvifm is a file manager with vi key bindings.");
+				lblDescription
+						.setText("Jvifm is a file manager with vi key bindings.");
 				GridData label2LData = new GridData();
 				lblDescription.setLayoutData(label2LData);
 			}
@@ -98,7 +96,8 @@ public class AboutShell  {
 			}
 			{
 				linkWebsite = new Link(container, SWT.NONE);
-				linkWebsite.setText("<a href=\"http://jvifm.sf.net\">http://jvifm.sf.net</a>");
+				linkWebsite
+						.setText("<a href=\"http://jvifm.sf.net\">http://jvifm.sf.net</a>");
 				GridData link1LData = new GridData();
 				link1LData.verticalAlignment = GridData.BEGINNING;
 				link1LData.horizontalAlignment = GridData.CENTER;
@@ -107,16 +106,16 @@ public class AboutShell  {
 			{
 				btnClose = new Button(container, SWT.PUSH | SWT.CENTER);
 				btnClose.setText(Messages.getString("Messagebox.close"));
-			
+
 				GridData button1LData = new GridData();
 				button1LData.horizontalAlignment = GridData.END;
 				btnClose.setLayoutData(button1LData);
-				btnClose.addSelectionListener(new SelectionAdapter(){
+				btnClose.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						shell.dispose();
 					}
 				});
-				
+
 			}
 		}
 		shell.layout();
@@ -132,9 +131,5 @@ public class AboutShell  {
 				display.sleep();
 		}
 	}
-
-	
-
-	
 
 }

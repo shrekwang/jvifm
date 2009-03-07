@@ -26,57 +26,51 @@ import net.sf.jvifm.ui.Util;
 
 import org.eclipse.swt.widgets.Display;
 
-public class CommandRunner  {
+public class CommandRunner {
 
-	private static CommandRunner instance=new CommandRunner();
-	
-	private CommandRunner() { 	}
-	
+	private static CommandRunner instance = new CommandRunner();
+
+	private CommandRunner() {
+	}
+
 	public static CommandRunner getInstance() {
 		return instance;
 	}
 
-	
 	public void run(final Command command) {
-		
-		Thread thread=new Thread() {
-			
+
+		Thread thread = new Thread() {
+
 			public void run() {
-				if (command instanceof MiscFileCommand ||
-						command instanceof MetaCommand ) {
+				if (command instanceof MiscFileCommand
+						|| command instanceof MetaCommand) {
 					Display.getDefault().syncExec(new Runnable() {
 						public void run() {
 							try {
-		    					command.execute();
-							} catch (Exception e ) {
+								command.execute();
+							} catch (Exception e) {
 								Util.openMessageWindow(e.getMessage());
 								e.printStackTrace();
 							}
 						}
 					});
-					
+
 				} else {
 
-					
 					command.showStatusAnimation();
 					try {
-		    			command.execute();
-					} catch (Exception e ) {
+						command.execute();
+					} catch (Exception e) {
 						Util.openMessageWindow(e.getMessage());
 					}
 					command.hideStatusAnimation();
 				}
 			}
-			
+
 		};
 		thread.start();
-		if (command instanceof InterruptableCommand) Main.currentJob=(InterruptableCommand)command;
+		if (command instanceof InterruptableCommand)
+			Main.currentJob = (InterruptableCommand) command;
 	}
-
-	
-
-
-	
-	
 
 }

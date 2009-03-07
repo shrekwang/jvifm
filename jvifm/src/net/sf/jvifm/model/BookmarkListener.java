@@ -22,6 +22,8 @@
 package net.sf.jvifm.model;
 
 public interface BookmarkListener {
+	
 	public void onAddBookmark(Bookmark bookmark);
+
 	public void onChangeBookmark(String key, Bookmark bookmark);
 }

@@ -22,7 +22,8 @@
 package net.sf.jvifm.model;
 
 public interface ShortcutsListener {
-	
+
 	public void onAddshortcut(Shortcut shortcut);
+
 	public void onChangeshortcut(Shortcut shortcut);
 }

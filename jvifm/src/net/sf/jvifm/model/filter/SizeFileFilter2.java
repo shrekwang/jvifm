@@ -30,12 +30,13 @@ import org.apache.commons.io.filefilter.AbstractFileFilter;
 
 public class SizeFileFilter2 extends AbstractFileFilter implements Serializable {
    
-    private final long size;
+	private static final long serialVersionUID = 1362718771311450950L;
+	private final long size;
     private final int flag;
     
-    public static int EQ=1;
-    public static int GT=2;
-    public static int LT=3;
+    public static final int EQ=1;
+    public static final int GT=2;
+    public static final int LT=3;
 
     public SizeFileFilter2(long size, int flag) {
     	
