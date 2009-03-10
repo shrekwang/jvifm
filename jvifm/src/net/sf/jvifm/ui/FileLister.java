@@ -742,7 +742,6 @@ public class FileLister implements ViLister, Panel {
 					TableItem item = table.getItem(currentRow);
 					File currentFile = new File(FilenameUtils.concat(pwd,
 							newEditor.getText()));
-					FileOperator fileOperator = FileOperator.getInstance();
 					boolean isSuccess = false;
 					if (action.equals("file")) {
 						if (!currentFile.exists()) {
@@ -756,7 +755,7 @@ public class FileLister implements ViLister, Panel {
 						}
 
 					} else if (action.equals("folder")) {
-						isSuccess = fileOperator.mkdir(currentFile.getPath());
+						isSuccess = FileOperator.mkdir(currentFile.getPath());
 
 					} else if (action.equals("rename")) {
 						isSuccess = currentFile.renameTo(new File(FilenameUtils

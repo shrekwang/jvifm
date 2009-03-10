@@ -28,7 +28,6 @@ import net.sf.jvifm.util.FileOperator;
 
 public class RemoveCommand extends Command {
 
-	private static FileOperator fileOperator = FileOperator.getInstance();
 
 	private String dir = null;
 
@@ -43,7 +42,7 @@ public class RemoveCommand extends Command {
 			for (int i = 0; i < files.length; i++) {
 				String baseName = FilenameUtils.getName(files[i]);
 				updateStatusInfo("deleting file " + baseName);
-				fileOperator.rm(files[i]);
+				FileOperator.rm(files[i]);
 			}
 		} catch (Exception e) {
 			Util.openMessageWindow(e.getMessage());

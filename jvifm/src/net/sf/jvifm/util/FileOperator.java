@@ -28,22 +28,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 public class FileOperator {
-	private static FileOperator fileOperator=new FileOperator();
-	
-	private FileOperator() { 	}
-	
-	public static FileOperator getInstance() {
-		return fileOperator;
-	}
 	
 	
 	
-	/**
-	 * infos[]=[size,dirCount,fileCount];
-	 * 
-	 * @param dir
-	 * @param infos
-	 */
 	public static void calcDirInfo(File file, long[] infos) {
 		
 		if (file.isDirectory()) {
@@ -61,7 +48,7 @@ public class FileOperator {
 		
 	}
 
-	public void rename(String srcName, String destName, String path) {
+	public static void rename(String srcName, String destName, String path) {
 		File file = new File(path);
 		String parent = file.getParent();
 
@@ -74,7 +61,7 @@ public class FileOperator {
 	}
 
 	
-	public void rm(String path) throws IOException {
+	public static void rm(String path) throws IOException {
 		
 		File dstFile = new File(path);
 		if (dstFile.isFile()) {
@@ -89,7 +76,7 @@ public class FileOperator {
 	}
 
 
-	public String getFileName(String fullPath) {
+	public static String getFileName(String fullPath) {
 		int index = fullPath.lastIndexOf(File.separator);
 		if (index >= 0 && index < fullPath.length() - 1)
 			return fullPath.substring(index + 1);
@@ -103,7 +90,7 @@ public class FileOperator {
 	 *            filename
 	 * 
 	 */
-	public boolean isWildCardFileName(String name) {
+	public static boolean isWildCardFileName(String name) {
 		if (name.indexOf("*") > -1 || name.indexOf("?") > -1)
 			return true;
 		return false;
@@ -114,7 +101,7 @@ public class FileOperator {
 	 */
 	
 
-	public boolean mkdir(String path) {
+	public static boolean mkdir(String path) {
 		File file = new File(path);
 		if (!file.exists()) {
 			return file.mkdirs();
@@ -122,7 +109,7 @@ public class FileOperator {
 		return true;
 	}
 	
-	public boolean isSameFile(String src,String dstDir) {
+	public static boolean isSameFile(String src,String dstDir) {
 
 		File srcFile = new File(src);
 		File dstFile = new File(dstDir);
@@ -134,7 +121,7 @@ public class FileOperator {
 		return false;
 	}
 
-	public boolean isDestFileExisted(String src, String dst) {
+	public static boolean isDestFileExisted(String src, String dst) {
 		File srcFile = new File(src);
 		File dstFile = new File(dst);
 

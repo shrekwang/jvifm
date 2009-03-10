@@ -35,8 +35,7 @@ import org.apache.commons.io.FilenameUtils;
 
 public class CopyCommand extends InterruptableCommand {
 
-	protected static final FileOperator fileOperator = FileOperator
-			.getInstance();
+	//protected static final FileOperator fileOperator = FileOperator.getInstance();
 
 	private String strValue = "";
 	private String[] options = new String[] {
@@ -63,7 +62,7 @@ public class CopyCommand extends InterruptableCommand {
 		updateStatusInfo("copying file " + baseName);
 
 		// if is same file, make a copy
-		if (fileOperator.isSameFile(src, dst)) {
+		if (FileOperator.isSameFile(src, dst)) {
 			dst = FilenameUtils.concat(dst, FilenameUtils.getBaseName(src)
 					+ "(1)." + FilenameUtils.getExtension(src));
 			new File(dst).createNewFile();
@@ -84,7 +83,7 @@ public class CopyCommand extends InterruptableCommand {
 
 			String src = FilenameUtils.concat(srcDir, files[i]);
 			strValue = "";
-			if (fileOperator.isDestFileExisted(src, dstDir)) {
+			if (FileOperator.isDestFileExisted(src, dstDir)) {
 				if (yesToAll) {
 					doFileOperator(src, dstDir, files[i]);
 				} else if (noToAll) {

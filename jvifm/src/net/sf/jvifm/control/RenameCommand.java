@@ -40,14 +40,13 @@ public class RenameCommand extends Command {
 	private String fromStr;
 	private String toStr;
 
-	private FileOperator fileOperator = FileOperator.getInstance();
 
 	public static final Options options = new Options();
 
 	public void execute() throws Exception {
 		ArrayList destFileList = filterWildCard(dstDir);
 		for (int i = 0; i < destFileList.size(); i++) {
-			fileOperator.rename(fromStr, toStr, (String) destFileList.get(i));
+			FileOperator.rename(fromStr, toStr, (String) destFileList.get(i));
 		}
 		refreshActivePanel();
 

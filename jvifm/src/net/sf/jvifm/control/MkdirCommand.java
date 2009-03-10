@@ -28,7 +28,6 @@ import org.apache.commons.io.FilenameUtils;
 
 public class MkdirCommand extends Command {
 	private CommandLine cmdLine = null;
-	private FileOperator fileOperator = FileOperator.getInstance();
 
 	public MkdirCommand(CommandLine cmdLine) {
 		this.cmdLine = cmdLine;
@@ -40,7 +39,7 @@ public class MkdirCommand extends Command {
 		String[] filenames = cmdLine.getArgs();
 		for (int i = 0; i < filenames.length; i++) {
 			String dirName = FilenameUtils.concat(pwd, filenames[i]);
-			fileOperator.mkdir(dirName);
+			FileOperator.mkdir(dirName);
 		}
 		addToPanel(pwd, filenames);
 		return;
