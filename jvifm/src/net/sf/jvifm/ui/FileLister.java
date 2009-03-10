@@ -44,6 +44,7 @@ import net.sf.jvifm.model.Preference;
 import net.sf.jvifm.model.Shortcut;
 import net.sf.jvifm.model.ShortcutsManager;
 import net.sf.jvifm.model.filter.WildcardFilter2;
+import net.sf.jvifm.ui.factory.GuiDataFactory;
 import net.sf.jvifm.ui.shell.OptionShell;
 import net.sf.jvifm.util.FileComprator;
 import net.sf.jvifm.util.FileOperator;
@@ -162,24 +163,19 @@ public class FileLister implements ViLister, Panel {
 		parent.setLayout(new FillLayout());
 
 		container = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		layout.verticalSpacing = 0;
-		layout.horizontalSpacing = 0;
-		layout.numColumns = 1;
+		GridLayout layout=GuiDataFactory.createkGridLayout(1, 0, 0, 0, 0, true);
 		container.setLayout(layout);
 
 		mainArea = new Composite(container, SWT.NONE);
-		mainArea.setLayout(createSimpleGridLayout());
-		GridData gridData = new GridData(GridData.FILL_BOTH);
-		mainArea.setLayoutData(gridData);
+		layout = GuiDataFactory.createkGridLayout(1, 0, 0, 0, 0, true);
+		mainArea.setLayout(layout);
+		
+		mainArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		initMainArea();
 		initListener();
 		lblStatus = new Label(container, SWT.BORDER);
-		gridData = new GridData(GridData.FILL_HORIZONTAL);
-		lblStatus.setLayoutData(gridData);
+		lblStatus.setLayoutData( new GridData(GridData.FILL_HORIZONTAL));
 
 		this.pwd = pwd;
 		visit(pwd);
@@ -188,38 +184,24 @@ public class FileLister implements ViLister, Panel {
 	private void initMainArea() {
 		GridData gridData;
 		Composite headGroup = new Composite(mainArea, SWT.NONE);
-		gridData = new GridData(GridData.FILL_HORIZONTAL);
-		headGroup.setLayoutData(gridData);
+		headGroup.setLayoutData( new GridData(GridData.FILL_HORIZONTAL));
 
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 3;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		layout.verticalSpacing = 0;
-		layout.horizontalSpacing = 0;
+		GridLayout layout = GuiDataFactory.createkGridLayout(3, 0, 0, 0, 0, false);
 		headGroup.setLayout(layout);
 
 		btnUpDir = new Button(headGroup, SWT.PUSH);
-		// btnUpDir.setImage(goupImage);
 		btnUpDir.setText(".."); //$NON-NLS-1$
-		gridData = new GridData();
-		// gridData.heightHint=22;
-		btnUpDir.setLayoutData(gridData);
+		btnUpDir.setLayoutData(new GridData());
 
 		btnTopDir = new Button(headGroup, SWT.PUSH);
-		// btnTopDir.setImage(homeImage);
 		btnTopDir.setText("/"); //$NON-NLS-1$
-		gridData = new GridData();
-		// gridData.heightHint=22;
-		btnTopDir.setLayoutData(gridData);
+		btnTopDir.setLayoutData(new GridData());
 
 		textLocation = new StyledText(headGroup, SWT.SINGLE | SWT.BORDER);
-		gridData = new GridData(GridData.FILL_HORIZONTAL);
-		textLocation.setLayoutData(gridData);
+		textLocation.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		table = new Table(mainArea, SWT.MULTI);
-		gridData = new GridData(GridData.FILL_BOTH);
-		table.setLayoutData(gridData);
+		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 		table.setHeaderVisible(true);
 		table.setLinesVisible(false);
 
@@ -305,14 +287,6 @@ public class FileLister implements ViLister, Panel {
 		}
 	}
 
-	private GridLayout createSimpleGridLayout() {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		layout.verticalSpacing = 0;
-		return layout;
-	}
 
 	private void initListener() {
 		btnUpDir.addSelectionListener(new SelectionAdapter() {

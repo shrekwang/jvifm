@@ -32,6 +32,7 @@ import net.sf.jvifm.Main;
 import net.sf.jvifm.ResourceManager;
 import net.sf.jvifm.model.HistoryManager;
 import net.sf.jvifm.model.Preference;
+import net.sf.jvifm.ui.factory.GuiDataFactory;
 import net.sf.jvifm.util.StringUtil;
 
 import org.apache.commons.io.FilenameUtils;
@@ -117,7 +118,8 @@ public class ZipLister extends AbstractViLister implements Panel {
 		folderImage = ResourceManager.getImage("folder.png");
 
 		mainArea = new Composite(this, SWT.NONE);
-		mainArea.setLayout(createSimpleGridLayout());
+		GridLayout layout = GuiDataFactory.createkGridLayout(1, 0, 0, 0, 0, true);
+		mainArea.setLayout(layout);
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		mainArea.setLayoutData(gridData);
 
@@ -125,12 +127,7 @@ public class ZipLister extends AbstractViLister implements Panel {
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
 		headGroup.setLayoutData(gridData);
 
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 3;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		layout.verticalSpacing = 0;
-		layout.horizontalSpacing = 0;
+		layout = GuiDataFactory.createkGridLayout(3, 0, 0, 0, 0, false);
 		headGroup.setLayout(layout);
 
 		btnUpDir = new Button(headGroup, SWT.PUSH);
@@ -414,14 +411,7 @@ public class ZipLister extends AbstractViLister implements Panel {
 	public void refresh() {
 	}
 
-	private GridLayout createSimpleGridLayout() {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		layout.verticalSpacing = 0;
-		return layout;
-	}
+	
 
 	public boolean setFocus() {
 		return table.setFocus();

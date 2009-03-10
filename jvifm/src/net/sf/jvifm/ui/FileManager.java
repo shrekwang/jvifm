@@ -166,11 +166,7 @@ public class FileManager implements FileListerListener {
 
 	public Shell open(Display display) {
 		shell = new Shell(display);
-		GridLayout thisLayout = new GridLayout();
-		thisLayout.makeColumnsEqualWidth = true;
-		thisLayout.marginHeight = 0;
-		thisLayout.verticalSpacing = 1;
-		thisLayout.marginWidth = 0;
+		GridLayout thisLayout = GuiDataFactory.createkGridLayout(1, 1, 0, 0, 0, true);
 		shell.setLayout(thisLayout);
 
 		initMenu();
@@ -178,7 +174,6 @@ public class FileManager implements FileListerListener {
 		initContent();
 		initSysTray();
 
-		// shell.setMaximized(true);
 		shell.setSize(700, 500);
 		shell.setText("jvifm"); //$NON-NLS-1$
 		shell.setImage(ResourceManager.getImage("filemanager.png")); //$NON-NLS-1$
