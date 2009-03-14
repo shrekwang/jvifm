@@ -9,13 +9,14 @@
             visible="true"
             id="jvifmPlugin.actionSet">
          <action
-               label="&amp;Open in Jvifm"
-               icon="icons/filemanager.png"
                class="jvifmplugin.actions.JvifmAction"
-               tooltip="Open in Jvifm"
-               menubarPath="sampleMenu/sampleGroup"
+               icon="icons/filemanager.png"
+               id="jvifmplugin.actions.JvifmAction"
+               label="&amp;Open in Jvifm"
+               menubarPath="sampleMenu"
+               retarget="true"
                toolbarPath="sampleGroup"
-               id="jvifmplugin.actions.JvifmAction">
+               tooltip="Open in Jvifm">
          </action>
       </actionSet>
    </extension>
@@ -31,6 +32,24 @@
                label="&amp;Open in Jvifm">
          </action>
       </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.ui.category.window"
+            defaultHandler="jvifmplugin.actions.JvifmAction"
+            description="open directory in jvifm application"
+            id="jvifmPlugin.openInJvifm"
+            name="Open in Jvifm">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="jvifmPlugin.openInJvifm"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="Ctrl+Shift+A">
+      </key>
    </extension>
 
 </plugin>
