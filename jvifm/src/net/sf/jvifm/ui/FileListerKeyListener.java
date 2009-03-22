@@ -56,7 +56,6 @@ public class FileListerKeyListener extends KeyAdapter {
 		this.fileLister = fileLister;
 		oneCharCmds = Pattern.compile("[bftvhjklosrxXiHML^@$GpP:/nNM ]");
 		twoCharCmds = Pattern.compile("[cgdDyYzm']");
-		// impendCharCmds = Pattern.compile("[cgdDyYhtT/]");
 
 	}
 
@@ -86,7 +85,7 @@ public class FileListerKeyListener extends KeyAdapter {
 			String file = fileLister.getSelectionFiles()[0];
 			fileManager.preview(file);
 		}
-		if (fileLister.getOperateMode() == FileLister.ORIG_MODE) {
+		if (fileLister.isOrigMode() ) {
 			event.doit = true;
 			return;
 		}

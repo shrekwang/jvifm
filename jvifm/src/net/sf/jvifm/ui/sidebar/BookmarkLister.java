@@ -29,7 +29,7 @@ import net.sf.jvifm.ResourceManager;
 import net.sf.jvifm.model.Bookmark;
 import net.sf.jvifm.model.BookmarkListener;
 import net.sf.jvifm.model.BookmarkManager;
-import net.sf.jvifm.ui.AbstractViLister;
+import net.sf.jvifm.ui.BasicViLister;
 import net.sf.jvifm.ui.FileLister;
 import net.sf.jvifm.ui.Messages;
 import net.sf.jvifm.ui.Util;
@@ -38,18 +38,12 @@ import net.sf.jvifm.ui.shell.OptionShell;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 
 
-public class BookmarkLister extends AbstractViLister implements BookmarkListener {
+public class BookmarkLister extends BasicViLister implements BookmarkListener {
 
     //private BookmarkAccessor bookmarkAccess=BookmarkAccessor.getInstance();
     //private java.util.List bookmarkList=null;
@@ -142,7 +136,7 @@ public class BookmarkLister extends AbstractViLister implements BookmarkListener
     }
 
     public void cancelOperate() {
-    	if (this.operateMode==NOMAL_MODE) {
+    	if (this.operateMode== Mode.NORMAL) {
         	FileLister fileLister=Main.fileManager.getActivePanel();
         	fileLister.active();
     	} else {

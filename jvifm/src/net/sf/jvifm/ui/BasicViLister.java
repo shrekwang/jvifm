@@ -20,8 +20,6 @@
  */
 package net.sf.jvifm.ui;
 
-import net.sf.jvifm.ResourceManager;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableCursor;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -32,13 +30,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
-public abstract class AbstractViLister extends Canvas implements ViLister {
-	public static final int NOMAL_MODE = 0;
-
-	public static final int TAG_MODE = 1;
-
-	public static final int VTAG_MODE = 2;
-
+public class BasicViLister extends Canvas implements ViLister {
+	
+	protected enum Mode { NORMAL, TAG, VTAG, ORIG };
+	
 	protected Table table;
 
 	private TableCursor cursor;
@@ -51,11 +46,11 @@ public abstract class AbstractViLister extends Canvas implements ViLister {
 
 	protected String countString = null;
 
-	protected int operateMode = 0;
+	protected Mode operateMode = Mode.NORMAL;
 
 	protected int origRow = 0;
 
-	public AbstractViLister(Composite parent, int style) {
+	public BasicViLister(Composite parent, int style) {
 		super(parent, style);
 		initViLister();
 		addViKeyListener();
@@ -82,12 +77,12 @@ public abstract class AbstractViLister extends Canvas implements ViLister {
 	}
 
 	public void switchToVTagMode() {
-		this.operateMode = VTAG_MODE;
+		this.operateMode = Mode.VTAG;
 		this.origRow = currentRow;
 	}
 
 	public void switchToTagMode() {
-		this.operateMode = TAG_MODE;
+		this.operateMode = Mode.TAG;
 		currentRow = table.getSelectionIndex();
 
 		if (cursor == null || cursor.isDisposed()) {
@@ -100,7 +95,7 @@ public abstract class AbstractViLister extends Canvas implements ViLister {
 	}
 
 	public void tagCurrentItem() {
-		if (this.operateMode != TAG_MODE) {
+		if (this.operateMode != Mode.TAG) {
 			switchToTagMode();
 		} else {
 			toggleSelection(currentRow);
@@ -167,14 +162,14 @@ public abstract class AbstractViLister extends Canvas implements ViLister {
 
 	protected void doSelect() {
 		switch (this.operateMode) {
-		case NOMAL_MODE:
+		case NORMAL:
 			table.setSelection(currentRow);
 			break;
-		case VTAG_MODE:
+		case VTAG:
 			select(origRow, currentRow);
 			table.showItem(table.getItem(currentRow));
 			break;
-		case TAG_MODE:
+		case TAG:
 			if (!cursor.isDisposed()) {
 				cursor.setSelection(currentRow, 0);
 			}
@@ -256,15 +251,17 @@ public abstract class AbstractViLister extends Canvas implements ViLister {
 	}
 
 	public void switchToNormalMode() {
-		if (this.operateMode == TAG_MODE) {
+		if (this.operateMode == Mode.TAG) {
 			if (!cursor.isDisposed())
 				cursor.dispose();
 			table.setFocus();
 		}
-		this.operateMode = NOMAL_MODE;
+		this.operateMode = Mode.NORMAL;
 	}
 
-	public abstract void enterPath();
+	public void enterPath() {
+		
+	}
 
 	public void incSearch(String pattern, boolean isForward, boolean isIncrease) {
 

@@ -96,11 +96,10 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
+
 public class FileLister implements ViLister, Panel {
-	public static final int NOMAL_MODE = 0;
-	public static final int TAG_MODE = 1;
-	public static final int VTAG_MODE = 2;
-	public static final int ORIG_MODE = 3;
+	
+	enum Mode { NORMAL, TAG, VTAG, ORIG };
 
 	public static final String FS_ROOT = "file system"; //$NON-NLS-1$
 	public static final String ADD_ITEM = "ADD_ITEM"; //$NON-NLS-1$
@@ -143,13 +142,13 @@ public class FileLister implements ViLister, Panel {
 	private String countString = null;
 	private String sortColumn = "name"; //$NON-NLS-1$
 
-	private int operateMode = 0;
+	private Mode operateMode = Mode.NORMAL;
 	private int currentRow = 0;
 	private int origRow = 0;
 
 	private File[] currentFiles = null;
 
-	private ArrayList listeners = new ArrayList();
+	private ArrayList<FileListerListener> listeners = new ArrayList<FileListerListener>();
 
 	public Control getControl() {
 		return container;
@@ -182,7 +181,6 @@ public class FileLister implements ViLister, Panel {
 	}
 
 	private void initMainArea() {
-		GridData gridData;
 		Composite headGroup = new Composite(mainArea, SWT.NONE);
 		headGroup.setLayoutData( new GridData(GridData.FILL_HORIZONTAL));
 
@@ -281,8 +279,7 @@ public class FileLister implements ViLister, Panel {
 	}
 
 	public void notifyChangeSelection() {
-		for (Iterator it = listeners.iterator(); it.hasNext();) {
-			FileListerListener listener = (FileListerListener) it.next();
+		for (FileListerListener listener: listeners) {
 			listener.onChangeSelection(getItemFullPath(currentRow));
 		}
 	}
@@ -418,7 +415,7 @@ public class FileLister implements ViLister, Panel {
 	}
 
 	public void tagCurrentItem() {
-		if (this.operateMode != TAG_MODE) {
+		if (this.operateMode != Mode.TAG) {
 			switchToTagMode();
 		} else {
 			toggleSelection(currentRow);
@@ -427,7 +424,7 @@ public class FileLister implements ViLister, Panel {
 	}
 
 	public void switchToTagMode() {
-		this.operateMode = TAG_MODE;
+		operateMode = Mode.TAG;
 		currentRow = table.getSelectionIndex();
 
 		if (cursor == null || cursor.isDisposed()) {
@@ -515,12 +512,12 @@ public class FileLister implements ViLister, Panel {
 	}
 
 	public void switchToVTagMode() {
-		this.operateMode = VTAG_MODE;
+		this.operateMode = Mode.VTAG;
 		this.origRow = currentRow;
 	}
 
 	public void switchToOrigMode() {
-		this.operateMode = ORIG_MODE;
+		this.operateMode = Mode.ORIG;
 	}
 
 	public void switchPanel() {
@@ -847,15 +844,15 @@ public class FileLister implements ViLister, Panel {
 		if (table.getItemCount() == 0)
 			return;
 
-		switch (this.operateMode) {
-		case NOMAL_MODE:
+		switch (operateMode) {
+		case NORMAL :
 			table.setSelection(currentRow);
 			break;
-		case VTAG_MODE:
+		case VTAG :
 			select(origRow, currentRow);
 			table.showItem(table.getItem(currentRow));
 			break;
-		case TAG_MODE:
+		case TAG :
 			if (!cursor.isDisposed()) {
 				cursor.setSelection(currentRow, 0);
 			}
@@ -979,9 +976,6 @@ public class FileLister implements ViLister, Panel {
 		return this.currentRow;
 	}
 
-	public int getOperateMode() {
-		return this.operateMode;
-	}
 
 	public void refreshHistoryInfo() {
 		String tmpPwd = pwd;
@@ -1014,7 +1008,7 @@ public class FileLister implements ViLister, Panel {
 
 	public void changePwd(String path) {
 
-		if (operateMode != ORIG_MODE)
+		if (operateMode != Mode.ORIG )
 			switchToNormalMode();
 		String nextEntry = getItemFullPath(currentRow);
 		if (nextEntry != null) {
@@ -1192,6 +1186,7 @@ public class FileLister implements ViLister, Panel {
 		lblStatus.setText("total " + table.getItemCount() + " items"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	}
+	
 
 	public void listSubFiles(File[] subFileList) {
 		this.currentFiles = subFileList;
@@ -1207,8 +1202,7 @@ public class FileLister implements ViLister, Panel {
 				item.setText(1, "--"); //$NON-NLS-1$
 			} else {
 				item.setImage(0, fileImage);
-				item
-						.setText(1, StringUtil.formatSize(currentFiles[i]
+				item.setText(1, StringUtil.formatSize(currentFiles[i]
 								.length()));
 			}
 			item.setText(2, StringUtil.formatDate(currentFiles[i]
@@ -1338,12 +1332,12 @@ public class FileLister implements ViLister, Panel {
 	}
 
 	public void switchToNormalMode() {
-		if (this.operateMode == TAG_MODE) {
+		if (this.operateMode == Mode.TAG ) {
 			if (!cursor.isDisposed())
 				cursor.dispose();
 			table.setFocus();
 		}
-		this.operateMode = NOMAL_MODE;
+		this.operateMode = Mode.NORMAL;
 	}
 
 	public void cancelOperate() {
@@ -1386,7 +1380,7 @@ public class FileLister implements ViLister, Panel {
 		String[] selection = getSelectionFiles();
 		if (selection.length > 1) {
 			editFile(selection);
-			if (operateMode != ORIG_MODE)
+			if (operateMode != Mode.ORIG)
 				switchToNormalMode();
 			return;
 		}
@@ -1637,5 +1631,9 @@ public class FileLister implements ViLister, Panel {
 
 	public void dispose() {
 		container.dispose();
+	}
+	
+	public boolean isOrigMode() {
+		return this.operateMode==Mode.ORIG;
 	}
 }

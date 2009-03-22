@@ -29,7 +29,7 @@ import net.sf.jvifm.ResourceManager;
 import net.sf.jvifm.model.Shortcut;
 import net.sf.jvifm.model.ShortcutsListener;
 import net.sf.jvifm.model.ShortcutsManager;
-import net.sf.jvifm.ui.AbstractViLister;
+import net.sf.jvifm.ui.BasicViLister;
 import net.sf.jvifm.ui.FileLister;
 import net.sf.jvifm.ui.Messages;
 import net.sf.jvifm.ui.Util;
@@ -50,19 +50,15 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-public class ShortcutsLister extends AbstractViLister implements
+public class ShortcutsLister extends BasicViLister implements
 		ShortcutsListener {
 
-	// private shortcutsAccessor
-	// shortcutsAccess=shortcutsAccessor.getInstance();
-	// private java.util.List shortcutsList=null;
 
 	private Image runImage = ResourceManager.getImage("system-run.png");
 	private TableEditor editor;
 	private ShortcutsManager shortcutsManager = ShortcutsManager.getInstance();
 
 	public ShortcutsLister(Composite parent, int style) {
-
 		super(parent, style);
 		init();
 		shortcutsManager.addListener(this);
@@ -179,7 +175,7 @@ public class ShortcutsLister extends AbstractViLister implements
 	}
 
 	public void cancelOperate() {
-		if (this.operateMode == NOMAL_MODE) {
+		if (this.operateMode == Mode.NORMAL) {
 			FileLister fileLister = Main.fileManager.getActivePanel();
 			fileLister.active();
 		} else {

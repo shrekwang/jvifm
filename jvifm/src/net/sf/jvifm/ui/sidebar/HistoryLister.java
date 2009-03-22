@@ -27,7 +27,7 @@ import net.sf.jvifm.Main;
 import net.sf.jvifm.ResourceManager;
 import net.sf.jvifm.model.HistoryListener;
 import net.sf.jvifm.model.HistoryManager;
-import net.sf.jvifm.ui.AbstractViLister;
+import net.sf.jvifm.ui.BasicViLister;
 import net.sf.jvifm.ui.FileLister;
 
 import org.eclipse.swt.SWT;
@@ -36,7 +36,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
 
-public class HistoryLister extends AbstractViLister implements HistoryListener {
+public class HistoryLister extends BasicViLister implements HistoryListener {
 
 	private Image folderImage = ResourceManager.getImage("folder.png");
 	private FileLister fileLister;
@@ -106,7 +106,7 @@ public class HistoryLister extends AbstractViLister implements HistoryListener {
 	}
 
 	public void cancelOperate() {
-		if (this.operateMode == NOMAL_MODE) {
+		if (this.operateMode == Mode.NORMAL) {
 			FileLister fileLister = Main.fileManager.getActivePanel();
 			fileLister.active();
 		} else {

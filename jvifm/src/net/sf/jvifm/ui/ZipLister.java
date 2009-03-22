@@ -58,7 +58,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-public class ZipLister extends AbstractViLister implements Panel {
+public class ZipLister extends BasicViLister implements Panel {
 
 	private String filename;
 
@@ -386,12 +386,12 @@ public class ZipLister extends AbstractViLister implements Panel {
 	}
 
 	public void switchToVTagMode() {
-		this.operateMode = VTAG_MODE;
+		this.operateMode = Mode.VTAG;
 		this.origRow = currentRow;
 	}
 
 	public void tagCurrentItem() {
-		if (this.operateMode != TAG_MODE) {
+		if (this.operateMode != Mode.TAG ) {
 			switchToTagMode();
 		} else {
 			toggleSelection(currentRow);

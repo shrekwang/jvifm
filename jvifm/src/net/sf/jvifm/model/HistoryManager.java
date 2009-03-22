@@ -22,17 +22,14 @@
 package net.sf.jvifm.model;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 public class HistoryManager {
 
-	private LinkedList history = new LinkedList();
-	private HashMap selectedItemMap = new HashMap();
-
-	private LinkedList listeners = new LinkedList();
-	// position on current visiting path
+	private LinkedList<String> history = new LinkedList<String>();
+	private HashMap<String,String> selectedItemMap = new HashMap<String,String>();
+	private LinkedList<HistoryListener> listeners = new LinkedList<HistoryListener>();
 	private int position = -1;
 
 	public void addListener(HistoryListener listener) {
@@ -44,15 +41,13 @@ public class HistoryManager {
 	}
 
 	public void notifyAddHistoryRecord(String path, boolean needRemove) {
-		for (Iterator it = listeners.iterator(); it.hasNext();) {
-			HistoryListener listener = (HistoryListener) it.next();
+		for (HistoryListener listener : listeners ) {
 			listener.onAddHistoryRecord(path, needRemove);
 		}
 	}
 
 	public void notifyChangePos() {
-		for (Iterator it = listeners.iterator(); it.hasNext();) {
-			HistoryListener listener = (HistoryListener) it.next();
+		for (HistoryListener listener : listeners ) {
 			listener.onChangePos();
 		}
 	}
@@ -104,7 +99,7 @@ public class HistoryManager {
 		return (String) history.get(position);
 	}
 
-	public LinkedList getFullHistory() {
+	public LinkedList<String> getFullHistory() {
 		return this.history;
 	}
 
@@ -164,34 +159,34 @@ public class HistoryManager {
 
 	}
 
-	public List getBackList() {
+	public List<String> getBackList() {
 		if (history == null || history.size() < 2 || position < 1)
 			return null;
-		LinkedList result = new LinkedList();
+		LinkedList<String> result = new LinkedList<String>();
 		int i = 0;
-		for (Iterator it = history.iterator(); it.hasNext();) {
+		for (String item : history) {
 			if (i >= position)
 				break;
 			i++;
-			result.addFirst(it.next());
+			result.addFirst(item);
 
 		}
 		return result;
 	}
 
-	public List getForwardList() {
+	public List<String> getForwardList() {
 		if (history == null || history.size() < 2
 				|| position >= history.size() - 1)
 			return null;
-		LinkedList result = new LinkedList();
+		LinkedList<String> result = new LinkedList<String>();
 		int i = 0;
 		int count = history.size() - position - 1;
-		for (Iterator it = history.iterator(); it.hasNext();) {
+		for (String item : history ) {
 			if (i >= count)
 				break;
 
 			i++;
-			result.addFirst(it.next());
+			result.addFirst(item);
 		}
 		return result;
 	}
