@@ -332,13 +332,15 @@ public class FileTree extends Canvas implements ViLister {
 	}
 
 	public void cursorDown(int count) {
-		// TODO Auto-generated method stub
-
+        for (int i=1; i<=count; i++) {
+            cursorDown();
+        }
 	}
 
 	public void cursorUp(int count) {
-		// TODO Auto-generated method stub
-
+        for (int i=1; i<=count; i++) {
+            cursorUp();
+        }
 	}
 
 	public void doChange() {
