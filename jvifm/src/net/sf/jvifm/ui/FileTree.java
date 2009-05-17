@@ -43,36 +43,41 @@ import org.eclipse.swt.widgets.TreeItem;
 public class FileTree extends Canvas implements ViLister {
 
 	private Tree tree;
-
 	private TreeItem root;
-
 	private TreeItem currentItem;
-
 	private Image folderImage;
-	private Image computerImage;
 	private Image driveImage;
 
-	private FileLister fileLister;
+	private void initRootNode(File file) {
+		tree.removeAll();
 
-	private File rootDir;
+		if (file == null) {
+			File[] files = File.listRoots();
+			for (int i = 0; files != null && i < files.length; i++)
+				addFileToTree(tree, files[i], driveImage);
+		} else {
+
+			root = new TreeItem(tree, 0);
+			root.setText(file.getName());
+			root.setImage(folderImage);
+			root.setData(file);
+
+			File[] files = file.listFiles(new DirFilter());
+			for (int i = 0; files != null && i < files.length; i++)
+				addFileToTree(root, files[i], folderImage);
+		}
+		setSelection(tree.getTopItem());
+	}
 
 	public FileTree(Composite parent, int style) {
 		super(parent, style);
-		folderImage = ResourceManager.getImage("folder16.png");
-		driveImage = ResourceManager.getImage("drive16.png");
-		computerImage = ResourceManager.getImage("computer.png");
+		folderImage = ResourceManager.getImage("folder.png");
+		driveImage = ResourceManager.getImage("drive.png");
 
 		this.setLayout(new FillLayout());
 
 		tree = new Tree(this, SWT.NONE);
-		root = new TreeItem(tree, 0);
-		root.setText("file system");
-		root.setImage(computerImage);
-		root.setData(new File(""));
-
-		File[] files = File.listRoots();
-		for (int i = 0; files != null && i < files.length; i++)
-			addFileToTree(root, files[i], driveImage);
+		initRootNode(null);
 
 		tree.addTreeListener(new TreeAdapter() {
 			public void treeExpanded(TreeEvent e) {
@@ -110,6 +115,9 @@ public class FileTree extends Canvas implements ViLister {
 				case '>':
 					expandItem();
 					break;
+				case 'i':
+					File file = (File) currentItem.getData();
+					initRootNode(file);
 				}
 			}
 		});
@@ -157,29 +165,7 @@ public class FileTree extends Canvas implements ViLister {
 		new TreeItem(item, SWT.NULL);
 	}
 
-	public void activeCommandMode() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void activeSearchMode() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void cancelOperate() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void cursorBottom() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void changePwd() {
-
-	}
+	
 
 	public void cursorDown() {
 		if (currentItem.getItemCount() > 0 && currentItem.getExpanded() == true) {
@@ -260,10 +246,7 @@ public class FileTree extends Canvas implements ViLister {
 		setSelection(tree.getItem(tree.getItemCount() - 1));
 	}
 
-	public void cursorMiddle() {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 	public void cursorTop() {
 		setSelection(tree.getItem(0));
@@ -276,15 +259,7 @@ public class FileTree extends Canvas implements ViLister {
 		enterPath(file.getAbsolutePath());
 	}
 
-	public void doDelete() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void doPaste() {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 	public void expandItem() {
 		File file = (File) currentItem.getData();
@@ -298,7 +273,7 @@ public class FileTree extends Canvas implements ViLister {
 	}
 
 	public void collapseItem() {
-		currentItem.setExpanded(false);
+		currentItem.getParentItem().setExpanded(false);
 	}
 
 	public void enterPath() {
@@ -308,10 +283,7 @@ public class FileTree extends Canvas implements ViLister {
 			setSelection(item);
 	}
 
-	public void incSearch(String pattern, boolean isForward, boolean isIncrease) {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 	public boolean isDisposed() {
 		if (tree != null)
@@ -323,56 +295,21 @@ public class FileTree extends Canvas implements ViLister {
 		tree.redraw();
 	}
 
-	public void refresh() {
-	}
-
-	public void searchNext(boolean isForward) {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 	public void cursorDown(int count) {
-        for (int i=1; i<=count; i++) {
-            cursorDown();
-        }
+		for (int i = 1; i <= count; i++) {
+			cursorDown();
+		}
 	}
 
 	public void cursorUp(int count) {
-        for (int i=1; i<=count; i++) {
-            cursorUp();
-        }
+		for (int i = 1; i <= count; i++) {
+			cursorUp();
+		}
 	}
 
-	public void doChange() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void doCut() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void doYank() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void switchPanel() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void switchToVTagMode() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void tagCurrentItem() {
-		// TODO Auto-generated method stub
-
-	}
-
+	
 	public void activeWidget() {
 		tree.setFocus();
 	}
@@ -395,4 +332,90 @@ public class FileTree extends Canvas implements ViLister {
 			return false;
 		}
 	}
+
+	@Override
+	public void cancelOperate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void cursorBottom() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void cursorMiddle() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void doChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void doCut() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void doDelete() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void doPaste() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void doYank() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void incSearch(String pattern, boolean isForward, boolean isIncrease) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void searchNext(boolean isForward) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void switchPanel() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void switchToVTagMode() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void tagCurrentItem() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 }
