@@ -62,7 +62,7 @@ public class FileTree extends Canvas implements ViLister {
 			root.setImage(folderImage);
 			root.setData(file);
 
-			File[] files = file.listFiles(new DirFilter());
+			File[] files = file.listFiles(new TreeFolderFilter());
 			for (int i = 0; files != null && i < files.length; i++)
 				addFileToTree(root, files[i], folderImage);
 		}
@@ -91,14 +91,14 @@ public class FileTree extends Canvas implements ViLister {
 				TreeItem item = (TreeItem) e.item;
 				currentItem = item;
 				File file = (File) item.getData();
-				enterPath(file.getAbsolutePath());
+				showInFileLister(file.getAbsolutePath());
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
 				TreeItem item = (TreeItem) e.item;
 				currentItem = item;
 				File file = (File) item.getData();
-				enterPath(file.getAbsolutePath());
+				showInFileLister(file.getAbsolutePath());
 			}
 		});
 
@@ -106,13 +106,9 @@ public class FileTree extends Canvas implements ViLister {
 			public void keyPressed(KeyEvent event) {
 				super.keyPressed(event);
 				switch (event.character) {
-				case ' ':
-					Main.fileManager.getActivePanel().active();
-					break;
 				case 'h':
 					collapseItem();
 					break;
-				
 				case 'i':
 					File file = (File) currentItem.getData();
 					initRootNode(file);
@@ -126,7 +122,7 @@ public class FileTree extends Canvas implements ViLister {
 
 	}
 
-	private void enterPath(String path) {
+	private void showInFileLister(String path) {
 		Main.fileManager.getActivePanel().visit(path);
 	}
 
@@ -140,7 +136,7 @@ public class FileTree extends Canvas implements ViLister {
 				// Child files already added to the tree.
 				return;
 
-		File[] files = ((File) item.getData()).listFiles(new DirFilter());
+		File[] files = ((File) item.getData()).listFiles(new TreeFolderFilter());
 		for (int i = 0; files != null && i < files.length; i++)
 			addFileToTree(item, files[i], folderImage);
 	}
@@ -248,8 +244,6 @@ public class FileTree extends Canvas implements ViLister {
 		setSelection(tree.getItem(tree.getItemCount() - 1));
 	}
 
-	
-
 	public void cursorTop() {
 		setSelection(tree.getItem(0));
 	}
@@ -258,7 +252,7 @@ public class FileTree extends Canvas implements ViLister {
 		currentItem = item;
 		tree.setSelection(currentItem);
 		File file = (File) currentItem.getData();
-		enterPath(file.getAbsolutePath());
+		showInFileLister(file.getAbsolutePath());
 	}
 
 
@@ -270,10 +264,12 @@ public class FileTree extends Canvas implements ViLister {
 		File file = (File) currentItem.getData();
 		expandTree(currentItem);
 		currentItem.setExpanded(true);
-		enterPath(file.getAbsolutePath());
+		showInFileLister(file.getAbsolutePath());
 
 		if (currentItem.getItemCount() > 0) {
 			setSelection(currentItem.getItem(0));
+		} else {
+			switchPanel();
 		}
 	}
 
@@ -312,6 +308,10 @@ public class FileTree extends Canvas implements ViLister {
 		return tree.setFocus();
 	}
 
+	@Override
+	public void switchPanel() {
+		Main.fileManager.getActivePanel().active();
+	}
 	public void upOneDir() {
 		TreeItem parent = currentItem.getParentItem();
 		if (parent != null) {
@@ -319,97 +319,44 @@ public class FileTree extends Canvas implements ViLister {
 		}
 	}
 
-	class DirFilter implements FileFilter {
-		public boolean accept(File pathname) {
-			if (pathname.isDirectory())
+	class TreeFolderFilter implements FileFilter {
+		public boolean accept(File file) {
+			if (file.isDirectory() 
+					&& ! file.getName().startsWith(".")) 
 				return true;
 			return false;
 		}
 	}
 
-	@Override
-	public void cancelOperate() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void cancelOperate() { 	}
 
-	@Override
-	public void cursorBottom() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void cursorBottom() { 	}
 
-	@Override
-	public void cursorMiddle() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void cursorMiddle() { 	}
 
-	@Override
-	public void doChange() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void doChange() { 	}
 
-	@Override
-	public void doCut() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void doCut() { 	}
 
-	@Override
-	public void doDelete() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void doDelete() { 	}
 
-	@Override
-	public void doPaste() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void doPaste() { }
 
-	@Override
-	public void doYank() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void doYank() { }
 
 	@Override
 	public void incSearch(String pattern, boolean isForward, boolean isIncrease) {
-		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public void refresh() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void refresh() { }
 
-	@Override
-	public void searchNext(boolean isForward) {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void searchNext(boolean isForward) { 	}
 
-	@Override
-	public void switchPanel() {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void switchToVTagMode() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void switchToVTagMode() { 	}
 
-	@Override
-	public void tagCurrentItem() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void tagCurrentItem() { }
 	
 	
 }
