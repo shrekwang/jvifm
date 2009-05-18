@@ -109,15 +109,17 @@ public class FileTree extends Canvas implements ViLister {
 				case ' ':
 					Main.fileManager.getActivePanel().active();
 					break;
-				case '<':
+				case 'h':
 					collapseItem();
 					break;
-				case '>':
-					expandItem();
-					break;
+				
 				case 'i':
 					File file = (File) currentItem.getData();
 					initRootNode(file);
+					break;
+				case 'u':
+					initRootNode(null);
+					break;
 				}
 			}
 		});
@@ -259,9 +261,12 @@ public class FileTree extends Canvas implements ViLister {
 		enterPath(file.getAbsolutePath());
 	}
 
-	
 
-	public void expandItem() {
+	public void collapseItem() {
+		currentItem.getParentItem().setExpanded(false);
+	}
+
+	public void enterPath() {
 		File file = (File) currentItem.getData();
 		expandTree(currentItem);
 		currentItem.setExpanded(true);
@@ -270,17 +275,6 @@ public class FileTree extends Canvas implements ViLister {
 		if (currentItem.getItemCount() > 0) {
 			setSelection(currentItem.getItem(0));
 		}
-	}
-
-	public void collapseItem() {
-		currentItem.getParentItem().setExpanded(false);
-	}
-
-	public void enterPath() {
-		TreeItem parent = currentItem.getParentItem();
-		TreeItem item = getNextItem(parent);
-		if (item != null)
-			setSelection(item);
 	}
 
 	
