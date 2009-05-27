@@ -37,6 +37,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -164,98 +165,6 @@ public class FileTree extends Canvas implements ViLister {
 	}
 
 	
-
-	public void cursorDown() {
-		if (currentItem.getItemCount() > 0 && currentItem.getExpanded() == true) {
-			setSelection(currentItem.getItem(0));
-			return;
-		}
-		TreeItem parent = currentItem.getParentItem();
-		if (parent != null) {
-			int index = parent.indexOf(currentItem);
-			if (index < parent.getItemCount() - 1) {
-				setSelection(parent.getItem(index + 1));
-			} else if (index >= parent.getItemCount() - 1) {
-				setSelection(getNextItem(parent));
-			}
-		} else {
-			int index = tree.indexOf(currentItem);
-			if (index < tree.getItemCount() - 1)
-				setSelection(tree.getItem(index + 1));
-		}
-
-	}
-
-	private TreeItem getNextItem(TreeItem item) {
-
-		if (item == null)
-			return null;
-		TreeItem parent = null;
-		TreeItem sub = item;
-
-		while (true) {
-			parent = sub.getParentItem();
-			if (parent != null) {
-				if (parent.indexOf(sub) == parent.getItemCount() - 1) {
-					sub = parent;
-					parent = parent.getParentItem();
-				} else {
-					return parent.getItem(parent.indexOf(sub) + 1);
-				}
-			}
-
-		}
-
-	}
-
-	public void cursorUp() {
-		TreeItem parent = currentItem.getParentItem();
-		if (parent != null) {
-			int index = parent.indexOf(currentItem);
-			if (index > 0) {
-				setSelection(getBottemItem(parent.getItem(index - 1)));
-			} else if (index == 0) {
-				setSelection(parent);
-			}
-		} else {
-			int index = tree.indexOf(currentItem);
-			if (index > 0)
-				setSelection(tree.getItem(index - 1));
-		}
-
-	}
-
-	private TreeItem getBottemItem(TreeItem item) {
-		do {
-			if (item.getItemCount() <= 0)
-				return item;
-			if (item.getExpanded() == false)
-				return item;
-			item = item.getItem(item.getItemCount() - 1);
-		} while (true);
-	}
-
-	public void cursorHead() {
-		setSelection(tree.getItem(0));
-
-	}
-
-	public void cursorLast() {
-		setSelection(tree.getItem(tree.getItemCount() - 1));
-	}
-
-	public void cursorTop() {
-		setSelection(tree.getItem(0));
-	}
-
-	private void setSelection(TreeItem item) {
-		currentItem = item;
-		tree.setSelection(currentItem);
-		File file = (File) currentItem.getData();
-		showInFileLister(file.getAbsolutePath());
-	}
-
-
 	public void collapseItem() {
 		currentItem.getParentItem().setExpanded(false);
 	}
@@ -272,7 +181,6 @@ public class FileTree extends Canvas implements ViLister {
 			switchPanel();
 		}
 	}
-
 	
 
 	public boolean isDisposed() {
@@ -285,8 +193,6 @@ public class FileTree extends Canvas implements ViLister {
 		tree.redraw();
 	}
 
-	
-
 	public void cursorDown(int count) {
 		for (int i = 1; i <= count; i++) {
 			cursorDown();
@@ -298,7 +204,6 @@ public class FileTree extends Canvas implements ViLister {
 			cursorUp();
 		}
 	}
-
 	
 	public void activeWidget() {
 		tree.setFocus();
@@ -319,6 +224,110 @@ public class FileTree extends Canvas implements ViLister {
 		}
 	}
 
+	
+	public void cursorHead() {
+		setSelection(tree.getItem(0));
+	}
+
+	public void cursorLast() {
+		setSelection(tree.getItem(tree.getItemCount() - 1));
+	}
+
+	public void cursorTop() {
+		setSelection(tree.getItem(0));
+	}
+	
+	public void cursorDown() {
+		TreeItem tempItem=getNextItem(currentItem);
+		if (tempItem !=null) setSelection(tempItem);
+	}
+	
+	public void cursorUp() {
+		TreeItem tempItem=getPrevItem(currentItem);
+		if (tempItem !=null) setSelection(tempItem);
+	}
+	
+	public TreeItem getNextItem(TreeItem currentItem) {
+		if (currentItem.getItemCount() > 0 && currentItem.getExpanded() == true) {
+			return (currentItem.getItem(0));
+		}
+		TreeItem parent = currentItem.getParentItem();
+		if (parent != null) {
+			int index = parent.indexOf(currentItem);
+			if (index < parent.getItemCount() - 1) {
+				return (parent.getItem(index + 1));
+			} else if (index >= parent.getItemCount() - 1) {
+				return (getNextItemOfLastItem(parent));
+			}
+		} else {
+			int index = tree.indexOf(currentItem);
+			if (index < tree.getItemCount() - 1) {
+				return (tree.getItem(index + 1));
+			} 
+		}
+		return null;
+	}
+
+	private TreeItem getNextItemOfLastItem(TreeItem item) {
+
+		if (item == null)
+			return null;
+		TreeItem parent = null;
+		TreeItem sub = item;
+
+		while (true) {
+			parent = sub.getParentItem();
+			if (parent != null) {
+				if (parent.indexOf(sub) == parent.getItemCount() - 1) {
+					sub = parent;
+					parent = parent.getParentItem();
+				} else {
+					return parent.getItem(parent.indexOf(sub) + 1);
+				}
+			} else {
+				return null;
+			}
+
+		}
+
+	}
+
+	public TreeItem getPrevItem(TreeItem currentItem) {
+		TreeItem parent = currentItem.getParentItem();
+		if (parent != null) {
+			int index = parent.indexOf(currentItem);
+			if (index > 0) {
+				return (getBottemItem(parent.getItem(index - 1)));
+			} else if (index == 0) {
+				return (parent);
+			}
+		} else {
+			int index = tree.indexOf(currentItem);
+			if (index > 0)
+				return (tree.getItem(index - 1));
+		}
+		return null;
+	}
+
+	private TreeItem getBottemItem(TreeItem item) {
+		do {
+			if (item.getItemCount() <= 0)
+				return item;
+			if (item.getExpanded() == false)
+				return item;
+			item = item.getItem(item.getItemCount() - 1);
+		} while (true);
+	}
+
+	
+
+	private void setSelection(TreeItem item) {
+		currentItem = item;
+		tree.setSelection(currentItem);
+		File file = (File) currentItem.getData();
+		showInFileLister(file.getAbsolutePath());
+	}
+
 	class TreeFolderFilter implements FileFilter {
 		public boolean accept(File file) {
 			if (file.isDirectory() 
@@ -328,6 +337,41 @@ public class FileTree extends Canvas implements ViLister {
 		}
 	}
 
+	
+	@Override
+	public void incSearch(String pattern, boolean isForward, boolean isIncrease) {
+		
+		TreeItem item=currentItem;
+		boolean wrapped=false;
+		
+		while (true) {
+			
+			if (isForward) {
+				item=getNextItem(item);
+			}else {
+				item=getPrevItem(item);
+			}
+			
+			if (item==null && !wrapped) {
+				wrapped=true;
+				if (isForward) {
+					item=tree.getItem(0);
+				}else {
+					item=tree.getItem(tree.getItemCount() - 1);
+				}			}
+			if (item==null) break;
+			
+			if (item.getText().toLowerCase().indexOf(pattern) > -1 ) {
+				setSelection(item);
+				break;
+			}
+			
+		}
+		
+		
+	}
+
+	
 	@Override public void cancelOperate() { 	}
 
 	@Override public void cursorBottom() { 	}
@@ -344,11 +388,7 @@ public class FileTree extends Canvas implements ViLister {
 
 	@Override public void doYank() { }
 
-	@Override
-	public void incSearch(String pattern, boolean isForward, boolean isIncrease) {
-		
-	}
-
+	
 	@Override public void refresh() { }
 
 	@Override public void searchNext(boolean isForward) { 	}
