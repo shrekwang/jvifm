@@ -23,9 +23,12 @@ package net.sf.jvifm.ui;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Iterator;
 
 import net.sf.jvifm.Main;
 import net.sf.jvifm.ResourceManager;
+import net.sf.jvifm.model.Bookmark;
+import net.sf.jvifm.model.BookmarkManager;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -37,7 +40,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -48,6 +50,9 @@ public class FileTree extends Canvas implements ViLister {
 	private TreeItem currentItem;
 	private Image folderImage;
 	private Image driveImage;
+    private BookmarkManager bookmarkManager=BookmarkManager.getInstance();
+    
+    private String searchString;
 
 	private void initRootNode(File file) {
 		tree.removeAll();
@@ -67,6 +72,16 @@ public class FileTree extends Canvas implements ViLister {
 			for (int i = 0; files != null && i < files.length; i++)
 				addFileToTree(root, files[i], folderImage);
 		}
+		setSelection(tree.getTopItem());
+	}
+	
+	private void listBookMarks() {
+		tree.removeAll();
+	  	for (Iterator it=bookmarkManager.iterator(); it.hasNext(); ) {
+    		Bookmark mark=(Bookmark)it.next();	
+    		File file=new File(mark.getPath());
+			addFileToTree(tree, file, folderImage);
+	  	}
 		setSelection(tree.getTopItem());
 	}
 
@@ -117,6 +132,9 @@ public class FileTree extends Canvas implements ViLister {
 				case 'u':
 					initRootNode(null);
 					break;
+				case 'B':
+					listBookMarks();
+					break;
 				}
 			}
 		});
@@ -166,7 +184,8 @@ public class FileTree extends Canvas implements ViLister {
 
 	
 	public void collapseItem() {
-		currentItem.getParentItem().setExpanded(false);
+		TreeItem parent=currentItem.getParentItem();
+		if (parent!=null) parent.setExpanded(false);
 	}
 
 	public void enterPath() {
@@ -257,7 +276,7 @@ public class FileTree extends Canvas implements ViLister {
 			if (index < parent.getItemCount() - 1) {
 				return (parent.getItem(index + 1));
 			} else if (index >= parent.getItemCount() - 1) {
-				return (getNextItemOfLastItem(parent));
+				return (getNextItemOfLastItem(currentItem));
 			}
 		} else {
 			int index = tree.indexOf(currentItem);
@@ -285,7 +304,11 @@ public class FileTree extends Canvas implements ViLister {
 					return parent.getItem(parent.indexOf(sub) + 1);
 				}
 			} else {
-				return null;
+				if (tree.indexOf(sub) == tree.getItemCount() -1) {
+					return null;
+				} else {
+					return tree.getItem(tree.indexOf(sub) + 1);
+				}
 			}
 
 		}
@@ -340,8 +363,10 @@ public class FileTree extends Canvas implements ViLister {
 	
 	@Override
 	public void incSearch(String pattern, boolean isForward, boolean isIncrease) {
-		
+		this.searchString = pattern;
 		TreeItem item=currentItem;
+		if (item.getText().toLowerCase().indexOf(pattern) > -1 )  return;
+		
 		boolean wrapped=false;
 		
 		while (true) {
@@ -370,7 +395,15 @@ public class FileTree extends Canvas implements ViLister {
 		
 		
 	}
-
+	@Override public void searchNext(boolean isForward) { 	
+		if (searchString != null) {
+			if (isForward) {
+				incSearch(searchString, true, false);
+			} else {
+				incSearch(searchString, false, false);
+			}
+		}
+	}
 	
 	@Override public void cancelOperate() { 	}
 
@@ -391,7 +424,6 @@ public class FileTree extends Canvas implements ViLister {
 	
 	@Override public void refresh() { }
 
-	@Override public void searchNext(boolean isForward) { 	}
 
 
 	@Override public void switchToVTagMode() { 	}
