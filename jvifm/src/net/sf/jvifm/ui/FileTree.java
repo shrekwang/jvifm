@@ -327,7 +327,7 @@ public class FileTree extends Canvas implements ViLister {
 		} else {
 			int index = tree.indexOf(currentItem);
 			if (index > 0)
-				return (tree.getItem(index - 1));
+				return (getBottemItem(tree.getItem(index - 1)));
 		}
 		return null;
 	}
