@@ -45,9 +45,9 @@ public class BookmarkManager {
 
 	private static BookmarkManager instance = null;
 	private String storePath = null;
-	private ArrayList bookmarkList = new ArrayList();
-	private ArrayList listeners = new ArrayList();
-	private HashMap bookmarkMap = new HashMap();
+	private ArrayList<Bookmark> bookmarkList = new ArrayList<Bookmark>();
+	private ArrayList<BookmarkListener> listeners = new ArrayList<BookmarkListener>();
+	private HashMap<String, Bookmark> bookmarkMap = new HashMap<String,Bookmark>();
 
 	private BookmarkManager() {
 		init();
@@ -62,15 +62,13 @@ public class BookmarkManager {
 	}
 
 	public void notifyAddBookmark(Bookmark bookmark) {
-		for (Iterator it = listeners.iterator(); it.hasNext();) {
-			BookmarkListener listener = (BookmarkListener) it.next();
+		for (BookmarkListener listener : listeners) {
 			listener.onAddBookmark(bookmark);
 		}
 	}
 
 	public void notifyChangeBookmark(String key, Bookmark bookmark) {
-		for (Iterator it = listeners.iterator(); it.hasNext();) {
-			BookmarkListener listener = (BookmarkListener) it.next();
+		for (BookmarkListener listener : listeners) {
 			listener.onChangeBookmark(key, bookmark);
 		}
 	}
@@ -81,24 +79,20 @@ public class BookmarkManager {
 		return instance;
 	}
 
-	public Iterator iterator() {
+	public Iterator<Bookmark> iterator() {
 		return bookmarkList.iterator();
 	}
 
-	public List getAll() {
-		ArrayList result = new ArrayList();
-		for (Iterator it = bookmarkList.iterator(); it.hasNext();) {
-			Bookmark bm = (Bookmark) it.next();
+	public List<Bookmark> getAll() {
+		ArrayList<Bookmark> result = new ArrayList<Bookmark>();
+		for (Bookmark bm : bookmarkList) {
 			result.add(bm);
 		}
 		return result;
 	}
 
 	public Bookmark getBookmark(String key) {
-		Object bm = bookmarkMap.get(key);
-		if (bm == null)
-			return null;
-		return (Bookmark) bm;
+		return bookmarkMap.get(key);
 	}
 
 	public void add(Bookmark bm) {
@@ -123,9 +117,8 @@ public class BookmarkManager {
 	}
 
 	public void changeBookmarkKey(String oldKey, String newKey, Bookmark bm) {
-		if (oldKey == null)
-			return;
-		bookmarkMap.remove(oldKey);
+		if (oldKey != null) bookmarkMap.remove(oldKey);
+		
 		bookmarkMap.put(newKey, bm);
 
 	}
