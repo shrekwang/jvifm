@@ -105,8 +105,12 @@ public class ViKeyListener extends KeyAdapter {
             
 	}
 	
-	private void doAction() {
-		String cmd=commandBuffer.toString();
+	public String getCmd() {
+		return commandBuffer.toString();
+	}
+	
+	protected void doAction() {
+		String cmd=getCmd();
 		int count=1;
 		if (countBuffer.length()>0) {
 			count=Integer.parseInt(countBuffer.toString());
