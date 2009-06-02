@@ -357,6 +357,12 @@ public class FileTree extends Canvas implements ViLister {
 		}
 
 	}
+	
+	public void openWithDefault() {
+		File file = (File) currentItem.getData();
+		String path=file.getPath();
+		Util.openFileWithDefaultApp(path);
+	}
 
 	public TreeItem getPrevItem(TreeItem currentItem) {
 		TreeItem parent = currentItem.getParentItem();

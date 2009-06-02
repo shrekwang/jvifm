@@ -30,6 +30,8 @@ public class FileTreeListener extends ViKeyListener {
 		case 'B':
 			fileTree.listBookMarks();
 			break;
+		case 'o':
+			fileTree.openWithDefault();
 		}
 	}
 
