@@ -310,24 +310,24 @@ public class MiniShell {
 		if (activePanel != null) {
 			if (variable.indexOf("%f") >= 0) {
 				variable = variable.replaceAll("%f",
-						normPath(concatStringArray(activePanel
-								.getSelectionFiles())));
+						normPath(concatStringArray(wrapWithQuote(activePanel
+								.getSelectionFiles()))));
 			}
 			if (variable.indexOf("%d") >= 0) {
-				variable = variable.replaceAll("%d", normPath(activePanel
-						.getPwd()));
+				variable = variable.replaceAll("%d", wrapWithQuote(normPath(activePanel
+						.getPwd())));
 			}
 		}
 
 		if (inActivePanel != null) {
 			if (variable.indexOf("%F") >= 0) {
 				variable = variable.replaceAll("%F",
-						normPath(concatStringArray(inActivePanel
-								.getSelectionFiles())));
+						normPath(concatStringArray(wrapWithQuote(inActivePanel
+								.getSelectionFiles()))));
 			}
 			if (variable.indexOf("%D") >= 0) {
-				variable = variable.replaceAll("%D", normPath(inActivePanel
-						.getPwd()));
+				variable = variable.replaceAll("%D", wrapWithQuote(normPath(inActivePanel
+						.getPwd())));
 			}
 		}
 		return variable;
@@ -335,6 +335,17 @@ public class MiniShell {
 
 	private String normPath(String path) {
 		return path.replaceAll("\\\\", "\\\\\\\\");
+	}
+
+	private String[] wrapWithQuote(String[] vars) {
+		for (int i = 0; i < vars.length; i++) {
+			vars[i] = "\"" + vars[i] + "\"";
+		}
+		return vars;
+	}
+
+	private String wrapWithQuote(String var) {
+		return "\"" + var + "\"";
 	}
 
 	private String concatStringArray(String[] values) {

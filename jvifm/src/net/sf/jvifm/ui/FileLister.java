@@ -22,6 +22,7 @@
 package net.sf.jvifm.ui;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1213,20 +1214,14 @@ public class FileLister implements ViLister, Panel {
 
 	private File[] getFilteredFiles(File file, String filterString) {
 		File[] subFiles;
-		IOFileFilter filenameFilter;
-
-		if (preference.isShowHide()) {
-			filenameFilter = TrueFileFilter.INSTANCE;
-		} else {
-			filenameFilter = new NotFileFilter(new PrefixFileFilter(".")); //$NON-NLS-1$
-		}
-
+		IOFileFilter fileFilter=Util.getDefaultFileFilter();
+		
 		if (filterString == null) {
-			subFiles = file.listFiles((FilenameFilter) filenameFilter);
+			subFiles = file.listFiles((FileFilter) fileFilter);
 		} else {
-			filenameFilter = new AndFileFilter(filenameFilter,
+			fileFilter = new AndFileFilter(fileFilter,
 					new WildcardFilter2(filterString));
-			subFiles = file.listFiles((FilenameFilter) filenameFilter);
+			subFiles = file.listFiles((FileFilter) fileFilter);
 
 		}
 		return subFiles;

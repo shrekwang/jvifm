@@ -23,19 +23,22 @@ package net.sf.jvifm.ui;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import net.sf.jvifm.Main;
 import net.sf.jvifm.ResourceManager;
 import net.sf.jvifm.model.Bookmark;
 import net.sf.jvifm.model.BookmarkManager;
 
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TreeAdapter;
 import org.eclipse.swt.events.TreeEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
@@ -52,10 +55,19 @@ public class FileTree extends Canvas implements ViLister {
 	private Image driveImage;
     private BookmarkManager bookmarkManager=BookmarkManager.getInstance();
     
+    private List<TreeItem> selectedItems=new ArrayList<TreeItem>();
+    
     private String searchString;
+    
+    private Color selectedColor = Main.display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
+    private Color noSelectedColor = Main.display.getSystemColor(SWT.COLOR_WHITE);
 
+    public void buildRootList(List<File> fileList) {
+    	for (File file: fileList) {
+    		buildRootNode(file);
+    	}
+    }
 	public void buildRootNode(File file) {
-		tree.removeAll();
 
 		if (file == null) {
 			File[] files = File.listRoots();
@@ -64,11 +76,11 @@ public class FileTree extends Canvas implements ViLister {
 		} else {
 
 			root = new TreeItem(tree, 0);
-			root.setText(file.getName());
+			root.setText(file.getPath());
 			root.setImage(folderImage);
 			root.setData(file);
 
-			File[] files = file.listFiles(new TreeFolderFilter());
+			File[] files = file.listFiles((FileFilter)Util.getDefaultDirFilter());
 			for (int i = 0; files != null && i < files.length; i++)
 				addFileToTree(root, files[i], folderImage);
 		}
@@ -77,6 +89,7 @@ public class FileTree extends Canvas implements ViLister {
 	
 	public void listBookMarks() {
 		tree.removeAll();
+		selectedItems.clear();
 	  	for (Iterator<Bookmark> it=bookmarkManager.iterator(); it.hasNext(); ) {
     		Bookmark mark=(Bookmark)it.next();	
     		File file=new File(mark.getPath());
@@ -84,8 +97,9 @@ public class FileTree extends Canvas implements ViLister {
 	  	}
 		setSelection(tree.getTopItem());
 	}
-
-	public FileTree(Composite parent, int style) {
+	
+		
+	public FileTree(Composite parent, int style, String path) {
 		super(parent, style);
 		folderImage = ResourceManager.getImage("folder.png");
 		driveImage = ResourceManager.getImage("drive.png");
@@ -119,10 +133,34 @@ public class FileTree extends Canvas implements ViLister {
 		});
 
 		tree.addKeyListener(new FileTreeListener(this) );
+		
+		if (path != null) syncView(path);
 
 	}
 	
-	
+	public void syncView(String path) {
+		
+		TreeItem[] items=tree.getItems();
+		int i=-1;
+		while (true ) {
+			i++;
+			File file=(File)items[i].getData();
+			if (path.equalsIgnoreCase(file.getPath())) {
+				setSelection(items[i]);
+				break;
+			}
+			if (path.startsWith(file.getPath()) ) {
+				if (items[i].getExpanded()==false)  {
+					expandTree(items[i]);
+				}
+				items=items[i].getItems();
+				if (items==null || items.length==0) break;
+				i=-1;
+			}
+			if (i>items.length-1) break;
+		}
+			
+	}
 
 	private void showInFileLister(String path) {
 		Main.fileManager.getActivePanel().visit(path);
@@ -138,7 +176,7 @@ public class FileTree extends Canvas implements ViLister {
 				// Child files already added to the tree.
 				return;
 
-		File[] files = ((File) item.getData()).listFiles(new TreeFolderFilter());
+		File[] files = ((File) item.getData()).listFiles((FileFilter)Util.getDefaultDirFilter());
 		for (int i = 0; files != null && i < files.length; i++)
 			addFileToTree(item, files[i], folderImage);
 	}
@@ -166,6 +204,25 @@ public class FileTree extends Canvas implements ViLister {
 	}
 
 	
+	public void filterView() {
+		if (selectedItems.size()==0) {
+			File file = (File) currentItem.getData();
+			tree.removeAll();
+			buildRootNode(file);
+		} else {
+			List<File> fileList=new ArrayList();
+			for (TreeItem item: selectedItems) {
+				File file=(File)item.getData();
+				fileList.add(file);
+			}
+			tree.removeAll();
+			buildRootList(fileList);
+		}
+		selectedItems.clear();
+		
+	}
+	
+	
 	public void collapseItem() {
 		TreeItem parent=currentItem.getParentItem();
 		if (parent!=null) parent.setExpanded(false);
@@ -173,7 +230,7 @@ public class FileTree extends Canvas implements ViLister {
 	
 	public void selectParentDir() {
 		TreeItem parent=currentItem.getParentItem();
-		setSelection(parent);
+		if (parent!=null) setSelection(parent);
 	}
 
 	public void enterPath() {
@@ -400,15 +457,6 @@ public class FileTree extends Canvas implements ViLister {
 		showInFileLister(file.getAbsolutePath());
 	}
 
-	class TreeFolderFilter implements FileFilter {
-		public boolean accept(File file) {
-			if (file.isDirectory() 
-					&& ! file.getName().startsWith(".")) 
-				return true;
-			return false;
-		}
-	}
-
 	
 	@Override
 	public void incSearch(String pattern, boolean isForward, boolean isIncrease) {
@@ -457,7 +505,17 @@ public class FileTree extends Canvas implements ViLister {
 		}
 	}
 	
-	@Override public void cancelOperate() { 	}
+	@Override public void cancelOperate() {
+		if (selectedItems.size()==0) {
+			switchPanel();
+		} else {
+			for (TreeItem item : selectedItems) {
+				item.setData("selection","false");
+				if (!item.isDisposed()) item.setBackground(noSelectedColor);
+			}
+			selectedItems.clear();
+		}
+	}
 
 	@Override public void cursorLast() { 	}
 
@@ -479,7 +537,20 @@ public class FileTree extends Canvas implements ViLister {
 
 	@Override public void switchToVTagMode() { 	}
 
-	@Override public void tagCurrentItem() { }
+	@Override public void tagCurrentItem() {
+		
+		Object selection=currentItem.getData("selection");
+		
+		if (selection !=null && selection.equals("true")) {
+			currentItem.setBackground(noSelectedColor);
+			currentItem.setData("selection","false");
+			selectedItems.remove(currentItem);
+		} else {
+			currentItem.setBackground(selectedColor);
+			currentItem.setData("selection", "true");
+			selectedItems.add(currentItem);
+		}
+	}
 	
 	
 }

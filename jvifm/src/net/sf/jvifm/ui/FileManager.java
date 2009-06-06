@@ -910,7 +910,8 @@ public class FileManager implements FileListerListener {
 			if (!childrens[i].isDisposed())
 				childrens[i].dispose();
 		}
-		sideViLister = new FileTree(sideViewContentContainer, SWT.NONE);
+		String pwd=getActivePanel().getPwd();
+		sideViLister = new FileTree(sideViewContentContainer, SWT.NONE, pwd);
 		sideViewContentContainer.layout();
 
 		sideviewTypeToolItem.setText(Messages

@@ -20,9 +20,7 @@ public class FileTreeListener extends ViKeyListener {
 			fileTree.selectParentDir();
 			break;
 		case 'i':
-			TreeItem currentItem=fileTree.getCurrentItem();
-			File file = (File) currentItem.getData();
-			fileTree.buildRootNode(file);
+			fileTree.filterView();
 			break;
 		case 'u':
 			fileTree.buildRootNode(null);

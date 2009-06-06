@@ -21,6 +21,8 @@
 package net.sf.jvifm.util;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -31,6 +33,7 @@ import net.sf.jvifm.model.Bookmark;
 import net.sf.jvifm.model.BookmarkManager;
 import net.sf.jvifm.model.Shortcut;
 import net.sf.jvifm.model.ShortcutsManager;
+import net.sf.jvifm.ui.Util;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -65,7 +68,7 @@ public class AutoCompleteUtil {
 		}
 		if (!pwdFile.exists())
 			return null;
-		File[] files = pwdFile.listFiles();
+		File[] files = pwdFile.listFiles((FileFilter)Util.getDefaultDirFilter());
 
 		if (files == null || files.length <= 0)
 			return null;
@@ -118,16 +121,6 @@ public class AutoCompleteUtil {
 								IOCase.INSENSITIVE))
 					result.add(bookmark.getPath());
 
-				/*
-				 * File bookMarkDir=new File(bookmark.getPath());
-				 * 
-				 * File[] subFiles= bookMarkDir.listFiles(); if (subFiles==null)
-				 * continue; for (int i=0; i<subFiles.length; i++) { String
-				 * subFileName=subFiles[i].getName(); if
-				 * (subFileName.toLowerCase().startsWith(name) ||
-				 * FilenameUtils.wildcardMatch(subFileName,name,IOCase.INSENSITIVE))
-				 * result.add(subFiles[i].getPath()); }
-				 */
 			}
 		}
 
