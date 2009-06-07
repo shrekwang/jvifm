@@ -99,7 +99,7 @@ public class CopyCommand extends InterruptableCommand {
 				} else {
 					
 					File srcFile=new File(src) ;
-					File dstFile=new File(FilenameUtils.concat(dstDir, files[i]));
+					File dstFile=new File(FilenameUtils.concat(dstDir, srcFile.getName()));
 					String srcSize=StringUtil.formatSize(srcFile.length());
 					String srcDate=StringUtil.formatDate(srcFile.lastModified());
 					String dstSize=StringUtil.formatSize(dstFile.length());
