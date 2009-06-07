@@ -47,19 +47,17 @@ FileLister.menuitemCopy=复制(&C)
 FileLister.nameColumnTitle=名字
 FileLister.sizeColumnTitle=大小
 FileLister.dateColumnTitle=修改日期
-FileLister.warnDialogMessage=真的要删除选中的文件吗?
-FileLister.warnDialogTitle=小心\!
 FileLister.menuitemPaste=粘贴(&P)
 FileLister.menuitemRename=重命名(&R)
 FileLister.menuitemDelete=删除(&D)
 
 BookmarkLister.warnDialogTitle=小心\!
-BookmarkLister.warnDialogMessage=真的要删除选中的书签吗?
+BookmarkLister.warnDialogMessage=确定要删除选中的书签吗?
 BookmarkLister.name=名称:
 BookmarkLister.path=路径:
 
 CustomCommandLister.warnDialogTitle=
-CustomCommandLister.warnDialogMessage=真的想要删除选中的程序链接吗?
+CustomCommandLister.warnDialogMessage=确定想要删除选中的程序链接吗?
 CustomCommandLister.name=名称:
 CustomCommandLister.command=命令:
 
@@ -72,8 +70,12 @@ Messagebox.close=关闭(&C)
 Messagebox.optionOk=确定(&O)
 
 
-CopyCommand.warnDialogTitle=小心\!
-CopyCommand.warnDialogMessage=同名文件已经存在,是否覆盖？
+CopyCommand.confirmFileReplaceDlgMsg=此文件夹已经包含一个名为'$name'的文件. \n\n是否将现有文件\n    $srcSize, 修改时间 $srcDate \n替换为 \n    $dstSize, 修改时间 $dstDate \n
+CopyCommand.confirmFolderReplaceDlgMsg=此文件夹已经含一个名为'$name'的文件夹. \n\n是否将现有文件夹 \n    $srcSize, 修改时间 $srcDate \n 和下面文件夹合并 \n    $dstSize, 修改时间 $dstDate \n
+CopyCommand.confirmDlgTitle=确认文件替换
+
+RemoveCommand.confirmDlgTitle=确认文件删除
+RemoveCommand.confirmFileDelete=确定想要删除选中的文件吗?
 
 MiscFileCommand.name=名称
 MiscFileCommand.lastModified=修改时间
