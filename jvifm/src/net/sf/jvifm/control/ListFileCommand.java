@@ -63,6 +63,10 @@ public class ListFileCommand extends Command {
 	@SuppressWarnings("unchecked")
 	public void execute() throws Exception {
 
+		if (pwd==null) return;
+		if (pwd.length()==2 && pwd.endsWith(":")) {
+			pwd=pwd+File.separator;
+		}
 		File currentDir = new File(pwd);
 
 		String[] filters = cmdLine.getArgs();
@@ -90,25 +94,19 @@ public class ListFileCommand extends Command {
 			} else if (cmdLine.hasOption("S")) {
 				Arrays.sort(subFiles, SizeFileComparator.SIZE_REVERSE);
 			} else if (cmdLine.hasOption("X")) {
-				Arrays
-						.sort(subFiles,
-								ExtensionFileComparator.EXTENSION_REVERSE);
+				Arrays.sort(subFiles, ExtensionFileComparator.EXTENSION_REVERSE);
 			} else {
-				Arrays.sort(subFiles, FileComprator.getFileComprator("name",
-						true));
+				Arrays.sort(subFiles, FileComprator.getFileComprator("name", true));
 			}
 		} else {
 			if (cmdLine.hasOption("t")) {
-				Arrays.sort(subFiles,
-						LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
+				Arrays.sort(subFiles,LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
 			} else if (cmdLine.hasOption("S")) {
 				Arrays.sort(subFiles, SizeFileComparator.SIZE_COMPARATOR);
 			} else if (cmdLine.hasOption("X")) {
-				Arrays.sort(subFiles,
-						ExtensionFileComparator.EXTENSION_COMPARATOR);
+				Arrays.sort(subFiles, ExtensionFileComparator.EXTENSION_COMPARATOR);
 			} else {
-				Arrays.sort(subFiles, FileComprator.getFileComprator("name",
-						false));
+				Arrays.sort(subFiles, FileComprator.getFileComprator("name", false));
 			}
 		}
 

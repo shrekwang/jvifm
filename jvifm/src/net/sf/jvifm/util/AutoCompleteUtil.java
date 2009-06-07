@@ -22,7 +22,6 @@ package net.sf.jvifm.util;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -68,7 +67,7 @@ public class AutoCompleteUtil {
 		}
 		if (!pwdFile.exists())
 			return null;
-		File[] files = pwdFile.listFiles((FileFilter)Util.getDefaultDirFilter());
+		File[] files = pwdFile.listFiles((FileFilter)Util.getDefaultFileFilter());
 
 		if (files == null || files.length <= 0)
 			return null;

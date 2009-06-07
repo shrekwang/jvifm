@@ -21,10 +21,16 @@
 
 package net.sf.jvifm.control;
 
-import org.apache.commons.io.FilenameUtils;
-
+import static net.sf.jvifm.ui.Messages.msgFileDelete;
+import static net.sf.jvifm.ui.Messages.msgOptionCancel;
+import static net.sf.jvifm.ui.Messages.msgOptionNo;
+import static net.sf.jvifm.ui.Messages.msgOptionYes;
+import static net.sf.jvifm.ui.Messages.msgRmConfirmDlgTitle;
 import net.sf.jvifm.ui.Util;
+import net.sf.jvifm.ui.shell.OptionShell;
 import net.sf.jvifm.util.FileOperator;
+
+import org.apache.commons.io.FilenameUtils;
 
 public class RemoveCommand extends Command {
 
@@ -37,6 +43,14 @@ public class RemoveCommand extends Command {
 	}
 
 	public void execute() {
+		
+		String[] options = new String[] { msgOptionYes, msgOptionNo, msgOptionCancel };
+		
+		String result = new Util().openConfirmWindow(options, 
+				msgRmConfirmDlgTitle, msgFileDelete, OptionShell.WARN); 
+		
+		if (result == null) return;
+		if (! result.equals(msgOptionYes)) return;
 
 		try {
 			for (int i = 0; i < files.length; i++) {

@@ -19,4 +19,18 @@ public class Messages {
 			return '!' + key + '!';
 		}
 	}
+	
+	public static final String msgOptionYes=Messages.getString("Messagebox.optionYes");
+	public static final String msgOptionNo=Messages.getString("Messagebox.optionNo");
+	public static final String msgOptionYesToAll=Messages.getString("Messagebox.optionYesToAll");
+	public static final String msgOptionNoToAll=Messages.getString("Messagebox.optionNoToAll");
+	public static final String msgOptionCancel=Messages.getString("Messagebox.optionCancel") ;
+	
+	public static final String msgFileReplace =Messages.getString("CopyCommand.confirmFileReplaceDlgMsg");
+	public static final String msgFolderReplace =Messages.getString("CopyCommand.confirmFolderReplaceDlgMsg");
+	public static final String msgCpConfirmDlgTitle=Messages.getString("CopyCommand.confirmDlgTitle");
+	
+	public static final String msgRmConfirmDlgTitle=Messages.getString("RemoveCommand.confirmDlgTitle");
+	public static final String msgFileDelete=Messages.getString("RemoveCommand.confirmFileDelete");
+	
 }

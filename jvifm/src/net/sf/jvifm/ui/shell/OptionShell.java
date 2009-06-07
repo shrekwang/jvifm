@@ -120,16 +120,7 @@ public class OptionShell {
 		return shell.getSize();
 	}
 
-	/*
-	 * 
-	 * public static void main(String[] args) { Display display = new Display();
-	 * String[] options = { "overwrite it", "cancel", "ok", "not at all" };
-	 * OptionShell os = new OptionShell(); Shell shell = os.open(display, 10,
-	 * 10, "ok", options);
-	 * 
-	 * while (!shell.isDisposed()) { if (!display.readAndDispatch())
-	 * display.sleep(); } display.dispose(); }
-	 */
+	
 
 	public String open(int x, int y) {
 

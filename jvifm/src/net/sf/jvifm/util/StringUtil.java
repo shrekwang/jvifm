@@ -34,7 +34,7 @@ public class StringUtil {
 
 		DecimalFormat df = new DecimalFormat("#.##");
 		if (fileSize < 1024) {
-			return String.valueOf(fileSize);
+			return String.valueOf(fileSize)+"bytes";
 		} else if (fileSize >= 1024 && fileSize < 1048576) {
 			float temp = (float) fileSize / 1024;
 			return df.format(temp) + "Kb";

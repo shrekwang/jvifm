@@ -88,6 +88,7 @@ public class FileTree extends Canvas implements ViLister {
 	}
 	
 	public void listBookMarks() {
+		String pwd=Main.fileManager.getActivePanel().getPwd();
 		tree.removeAll();
 		selectedItems.clear();
 	  	for (Iterator<Bookmark> it=bookmarkManager.iterator(); it.hasNext(); ) {
@@ -96,6 +97,7 @@ public class FileTree extends Canvas implements ViLister {
 			addFileToTree(tree, file, folderImage);
 	  	}
 		setSelection(tree.getTopItem());
+		syncView(pwd);
 	}
 	
 		
@@ -144,6 +146,7 @@ public class FileTree extends Canvas implements ViLister {
 		int i=-1;
 		while (true ) {
 			i++;
+			if (i>items.length-1) break;
 			File file=(File)items[i].getData();
 			if (path.equalsIgnoreCase(file.getPath())) {
 				setSelection(items[i]);
@@ -157,7 +160,6 @@ public class FileTree extends Canvas implements ViLister {
 				if (items==null || items.length==0) break;
 				i=-1;
 			}
-			if (i>items.length-1) break;
 		}
 			
 	}
@@ -210,7 +212,7 @@ public class FileTree extends Canvas implements ViLister {
 			tree.removeAll();
 			buildRootNode(file);
 		} else {
-			List<File> fileList=new ArrayList();
+			List<File> fileList=new ArrayList<File>();
 			for (TreeItem item: selectedItems) {
 				File file=(File)item.getData();
 				fileList.add(file);

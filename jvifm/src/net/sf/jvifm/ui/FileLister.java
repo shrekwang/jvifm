@@ -567,23 +567,10 @@ public class FileLister implements ViLister, Panel {
 	}
 
 	public void doDelete() {
-		String[] options = new String[] {
-				Messages.getString("Messagebox.optionYes"),
-				Messages.getString("Messagebox.optionNo"),
-				Messages.getString("Messagebox.optionCancel") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		String result = new Util().openConfirmWindow(options, Messages
-				.getString("FileLister.warnDialogTitle"), Messages
-				.getString("FileLister.warnDialogMessage"), OptionShell.WARN); //$NON-NLS-1$ //$NON-NLS-2$
-		if (result == null)
-			return;
-		if (result.equals(Messages.getString("Messagebox.optionYes"))) { //$NON-NLS-1$
-			Command command = new RemoveCommand(getSelectionFiles(), this
-					.getPwd());
-			command.setFileLister(this);
-			commandRunner.run(command);
-			switchToNormalMode();
-		}
-
+		Command command = new RemoveCommand(getSelectionFiles(), this.getPwd());
+		command.setFileLister(this);
+		commandRunner.run(command);
+		switchToNormalMode();
 	}
 
 	public void doCut() {

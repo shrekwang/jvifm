@@ -21,29 +21,37 @@
 
 package net.sf.jvifm.control;
 
+import static net.sf.jvifm.ui.Messages.msgCpConfirmDlgTitle;
+import static net.sf.jvifm.ui.Messages.msgFileReplace;
+import static net.sf.jvifm.ui.Messages.msgFolderReplace;
+import static net.sf.jvifm.ui.Messages.msgOptionCancel;
+import static net.sf.jvifm.ui.Messages.msgOptionNo;
+import static net.sf.jvifm.ui.Messages.msgOptionNoToAll;
+import static net.sf.jvifm.ui.Messages.msgOptionYes;
+import static net.sf.jvifm.ui.Messages.msgOptionYesToAll;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import net.sf.jvifm.ui.Messages;
 import net.sf.jvifm.ui.Util;
 import net.sf.jvifm.ui.shell.OptionShell;
 import net.sf.jvifm.util.FileOperator;
+import net.sf.jvifm.util.StringUtil;
 
 import org.apache.commons.io.FilenameUtils;
 
 public class CopyCommand extends InterruptableCommand {
 
-	//protected static final FileOperator fileOperator = FileOperator.getInstance();
-
 	private String strValue = "";
+	
 	private String[] options = new String[] {
-			Messages.getString("Messagebox.optionYes"),
-			Messages.getString("Messagebox.optionNo"),
-			Messages.getString("Messagebox.optionYesToAll"),
-			Messages.getString("Messagebox.optionNoToAll"),
-			Messages.getString("Messagebox.optionCancel") };
+        msgOptionYes, 
+        msgOptionNo, 
+        msgOptionYesToAll, 
+        msgOptionNoToAll, 
+        msgOptionCancel } ;
 
 	private boolean yesToAll = false;
 	private boolean noToAll = false;
@@ -89,28 +97,40 @@ public class CopyCommand extends InterruptableCommand {
 				} else if (noToAll) {
 					continue;
 				} else {
-					strValue = new Util().openConfirmWindow(options, Messages
-							.getString("CopyCommand.warnDialogTitle"), Messages
-							.getString("CopyCommand.warnDialogMessage"),
-							OptionShell.WARN);
-					if (strValue == null
-							|| strValue.equals(Messages
-									.getString("Messagebox.optionCancel")))
-						return;
-					if (strValue.equals(Messages
-							.getString("Messagebox.optionYesToAll"))) {
+					
+					File srcFile=new File(src) ;
+					File dstFile=new File(FilenameUtils.concat(dstDir, files[i]));
+					String srcSize=StringUtil.formatSize(srcFile.length());
+					String srcDate=StringUtil.formatDate(srcFile.lastModified());
+					String dstSize=StringUtil.formatSize(dstFile.length());
+					String dstDate=StringUtil.formatDate(dstFile.lastModified());
+					
+					
+					String msg="";
+					if (srcFile.isDirectory()) {
+						msg=msgFolderReplace;
+					} else {
+						msg=msgFileReplace;
+					}
+					
+					msg=msg.replaceAll("\\$name", srcFile.getName());
+					msg=msg.replaceAll("\\$srcSize", srcSize);
+					msg=msg.replaceAll("\\$srcDate", srcDate);
+					msg=msg.replaceAll("\\$dstSize", dstSize);
+					msg=msg.replaceAll("\\$dstDate", dstDate);
+					strValue = new Util().openConfirmWindow(options, msgCpConfirmDlgTitle,  msg, OptionShell.WARN);
+					
+					
+					if (strValue == null || strValue.equals(msgOptionCancel)) return;
+					
+					if (strValue.equals(msgOptionYesToAll)) {
 						yesToAll = true;
 						doFileOperator(src, dstDir, files[i]);
 					}
-					if (strValue.equals(Messages
-							.getString("Messagebox.optionNoToAll")))
-						noToAll = true;
-					if (strValue.equals(Messages
-							.getString("Messagebox.optionNo")))
-						continue;
-					if (strValue.equals(Messages
-							.getString("Messagebox.optionYes")))
-						doFileOperator(src, dstDir, files[i]);
+					
+					if (strValue.equals(msgOptionNoToAll))  noToAll = true;
+					if (strValue.equals(msgOptionNo))  continue;
+					if (strValue.equals(msgOptionYes))  doFileOperator(src, dstDir, files[i]);
 				}
 			} else {
 				doFileOperator(src, dstDir, files[i]);
@@ -159,13 +179,11 @@ public class CopyCommand extends InterruptableCommand {
 			dstFile.setLastModified(srcFile.lastModified());
 		} finally {
 			try {
-				if (input != null)
-					input.close();
+				if (input != null) input.close();
 			} catch (Exception e) {
 			}
 			try {
-				if (output != null)
-					output.close();
+				if (output != null) output.close();
 			} catch (Exception e) {
 			}
 		}
