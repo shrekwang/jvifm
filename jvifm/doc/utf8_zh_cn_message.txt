@@ -70,8 +70,8 @@ Messagebox.close=关闭(&C)
 Messagebox.optionOk=确定(&O)
 
 
-CopyCommand.confirmFileReplaceDlgMsg=此文件夹已经包含一个名为'$name'的文件. \n\n是否将现有文件\n    $srcSize, 修改时间 $srcDate \n替换为 \n    $dstSize, 修改时间 $dstDate \n
-CopyCommand.confirmFolderReplaceDlgMsg=此文件夹已经含一个名为'$name'的文件夹. \n\n是否将现有文件夹 \n    $srcSize, 修改时间 $srcDate \n 和下面文件夹合并 \n    $dstSize, 修改时间 $dstDate \n
+CopyCommand.confirmFileReplaceDlgMsg=此文件夹已经包含一个名为'$name'的文件. \n\n是否将现有文件\n    $dstSize, 修改时间 $dstDate \n替换为 \n    $srcSize, 修改时间 $srcDate \n
+CopyCommand.confirmFolderReplaceDlgMsg=此文件夹已经含一个名为'$name'的文件夹. \n\n是否将现有文件夹 \n    $dstSize, 修改时间 $dstDate \n 和下面文件夹合并 \n    $srcSize, 修改时间 $srcDate \n
 CopyCommand.confirmDlgTitle=确认文件替换
 
 RemoveCommand.confirmDlgTitle=确认文件删除
