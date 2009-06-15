@@ -108,11 +108,14 @@ public class FileComprator {
        public int compare(Object o1, Object o2) {
            File file1 = (File)o1;
            File file2 = (File)o2;
-           if (file1.isFile() && file2.isDirectory())  {
+           boolean file1IsFile=file1.isDirectory() ? false : true;
+           boolean file2IsFile=file2.isDirectory() ? false : true;
+           
+           if (file1IsFile && ! file2IsFile)  {
         	   if (isReverse) return -1;
         	   return 1;
            }
-           if (file1.isDirectory() && file2.isFile())  {
+           if (!file1IsFile && file2IsFile)  {
         	   if (isReverse) return 1;
         	   return -1;
            }
