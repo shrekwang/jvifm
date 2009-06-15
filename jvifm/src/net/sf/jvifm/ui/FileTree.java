@@ -84,7 +84,7 @@ public class FileTree extends Canvas implements ViLister {
 			for (int i = 0; files != null && i < files.length; i++)
 				addFileToTree(root, files[i], folderImage);
 		}
-		setSelection(tree.getTopItem());
+		setSelection(tree.getItem(0));
 	}
 	
 	public void listBookMarks() {
@@ -109,7 +109,11 @@ public class FileTree extends Canvas implements ViLister {
 		this.setLayout(new FillLayout());
 
 		tree = new Tree(this, SWT.NONE);
-		buildRootNode(null);
+		if (Main.operatingSystem == Main.WINDOWS	) {
+			buildRootNode(null);
+		} else {
+			buildRootNode(new File("/"));
+		}
 
 		tree.addTreeListener(new TreeAdapter() {
 			public void treeExpanded(TreeEvent e) {
