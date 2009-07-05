@@ -338,14 +338,19 @@ public class MiniShell {
 	}
 
 	private String[] wrapWithQuote(String[] vars) {
-		for (int i = 0; i < vars.length; i++) {
-			vars[i] = "\"" + vars[i] + "\"";
-		}
-		return vars;
+		
+			for (int i = 0; i < vars.length; i++) {
+				vars[i] = wrapWithQuote(vars[i]);
+			}
+			return vars;
 	}
 
 	private String wrapWithQuote(String var) {
-		return "\"" + var + "\"";
+		if (Main.operatingSystem == Main.WINDOWS) {
+			return "\"" + var + "\"";
+		} else {
+			return var.replace(" ","\\ ");
+		}
 	}
 
 	private String concatStringArray(String[] values) {
