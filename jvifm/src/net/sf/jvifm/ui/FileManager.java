@@ -134,6 +134,7 @@ public class FileManager implements FileListerListener {
 	private ToolItem editPasteToolItem;
 	private ToolItem findFileToolItem;
 	private ToolItem sideviewTypeToolItem;
+	private ToolItem refreshToolItem;
 
 	// private String activePanel = "left";
 
@@ -153,6 +154,7 @@ public class FileManager implements FileListerListener {
 	public static final int NV_UP = 203;
 	public static final int NV_ROOT = 204;
 	public static final int NV_HOME = 205;
+	public static final int NV_REFRESH = 206;
 
 	public static final int SIDE_BOOKMARK = 301;
 	public static final int SIDE_HISTORY = 302;
@@ -390,7 +392,7 @@ public class FileManager implements FileListerListener {
 					openInNewTabMenuItem.setText(Messages
 							.getString("FileManager.menuitemOpenInNewTab")); //$NON-NLS-1$
 					openInNewTabMenuItem.setImage(ResourceManager
-							.getImage("folder-new.png")); //$NON-NLS-1$
+							.getImage("tab-new.png")); //$NON-NLS-1$
 					openInNewTabMenuItem
 							.addSelectionListener(new FileOperateListener(
 									ACTION_OPENINTAB));
@@ -663,6 +665,10 @@ public class FileManager implements FileListerListener {
 			goUpToolItem = new ToolItem(toolBar1, SWT.NONE);
 			goUpToolItem.setImage(ResourceManager.getImage("go-up.png")); //$NON-NLS-1$
 			goUpToolItem.addSelectionListener(new NavigateListener(NV_UP));
+			
+			refreshToolItem = new ToolItem(toolBar1, SWT.NONE);
+			refreshToolItem.setImage(ResourceManager.getImage("view-refresh.png")); //$NON-NLS-1$
+			refreshToolItem.addSelectionListener(new NavigateListener(NV_REFRESH));
 
 		}
 		{
@@ -1281,6 +1287,8 @@ public class FileManager implements FileListerListener {
 			} else if (actionName == FileManager.NV_ROOT) {
 				fileLister.visit(FileLister.FS_ROOT);
 				fileLister.refreshHistoryInfo();
+			} else if (actionName == FileManager.NV_REFRESH) {
+				fileLister.refresh();
 			}
 		}
 	}

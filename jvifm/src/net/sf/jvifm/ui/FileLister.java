@@ -441,7 +441,7 @@ public class FileLister implements ViLister, Panel {
 		Menu menu = new Menu(table.getShell(), SWT.POP_UP);
 		MenuItem editItem = new MenuItem(menu, SWT.PUSH);
 		editItem.setText(Messages.getString("FileLister.menuitemEdit")); //$NON-NLS-1$
-
+		editItem.setImage(ResourceManager.getImage("gtk-edit.png")); //$NON-NLS-1$
 		editItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent arg0) {
 				String nextEntry = getItemFullPath(currentRow);
