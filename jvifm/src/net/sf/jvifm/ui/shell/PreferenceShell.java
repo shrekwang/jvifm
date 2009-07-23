@@ -23,6 +23,7 @@ package net.sf.jvifm.ui.shell;
 
 import net.sf.jvifm.Main;
 import net.sf.jvifm.model.Preference;
+import net.sf.jvifm.ui.Messages;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -115,11 +116,11 @@ public class PreferenceShell {
 			}
 		});
 
-		appItem.setText("app setting");
+		appItem.setText(Messages.getString("PreferenceShell.AppSetting"));
 		appItem.setControl(appSettingGroup);
 
 		TabItem miscItem = new TabItem(tabFolder, SWT.NONE);
-		miscItem.setText("misc");
+		miscItem.setText(Messages.getString("PreferenceShell.Misc"));
 
 		Composite miscGroup = new Composite(tabFolder, SWT.NONE);
 		miscGroup.setLayout(new GridLayout());
@@ -143,7 +144,7 @@ public class PreferenceShell {
 		footGroup.setLayout(gridlayout);
 
 		Button btnOk = new Button(footGroup, SWT.PUSH);
-		btnOk.setText("Ok");
+		btnOk.setText(Messages.getString("Messagebox.optionOk"));
 		btnOk.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 
@@ -162,7 +163,7 @@ public class PreferenceShell {
 			}
 		});
 		final Button btnCancel = new Button(footGroup, SWT.PUSH);
-		btnCancel.setText("Cancel");
+		btnCancel.setText(Messages.getString("Messagebox.optionCancel"));
 		btnCancel.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent arg0) {
 				shell.close();
