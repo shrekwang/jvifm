@@ -23,11 +23,9 @@ package net.sf.jvifm.ui;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import net.sf.jvifm.CommandBuffer;
@@ -46,7 +44,6 @@ import net.sf.jvifm.model.Shortcut;
 import net.sf.jvifm.model.ShortcutsManager;
 import net.sf.jvifm.model.filter.WildcardFilter2;
 import net.sf.jvifm.ui.factory.GuiDataFactory;
-import net.sf.jvifm.ui.shell.OptionShell;
 import net.sf.jvifm.util.FileComprator;
 import net.sf.jvifm.util.FileOperator;
 import net.sf.jvifm.util.StringUtil;
@@ -55,9 +52,6 @@ import net.sf.jvifm.util.ZipUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.NotFileFilter;
-import org.apache.commons.io.filefilter.PrefixFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -464,6 +458,25 @@ public class FileLister implements ViLister, Panel {
 		});
 
 		new MenuItem(menu, SWT.SEPARATOR);
+		
+		MenuItem createFolderMenuItem = new MenuItem(menu, SWT.PUSH);
+		createFolderMenuItem.setText(Messages.getString("FileManager.menuitemCreateFolder")); //$NON-NLS-1$
+		createFolderMenuItem.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent arg0) {
+				doAddItem("folder");
+			}
+		});
+		
+		MenuItem createFileMenuItem = new MenuItem(menu, SWT.PUSH);
+		createFileMenuItem.setText(Messages.getString("FileManager.menuitemCreateFile")); //$NON-NLS-1$
+		createFileMenuItem.setImage(ResourceManager.getImage("file-new.png")); //$NON-NLS-1$
+		createFileMenuItem.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent arg0) {
+				doAddItem("file");
+			}
+		});
+		
+		new MenuItem(menu, SWT.SEPARATOR);
 
 		MenuItem cutItem = new MenuItem(menu, SWT.PUSH);
 		cutItem.setText(Messages.getString("FileLister.menuitemCut")); //$NON-NLS-1$
@@ -661,7 +674,7 @@ public class FileLister implements ViLister, Panel {
 		editFileName();
 	}
 
-	public void doAddItem(String type) {
+	public void doAddItem(final String type) {
 		TableItem item = new TableItem(table, SWT.BORDER);
 		if (type.equals("file")) {
 			item.setImage(fileImage);
@@ -672,74 +685,77 @@ public class FileLister implements ViLister, Panel {
 		doSelect();
 
 		editor = createTableEditor();
-		Text textWidget = (Text) editor.getEditor();
+		final Text textWidget = (Text) editor.getEditor();
 		textWidget.addKeyListener(new ItemTextKeyListener(type));
 		textWidget.addFocusListener(new FocusAdapter() {
 			public void focusLost(FocusEvent event) {
-				Text text = (Text) event.widget;
-				text.dispose();
-				editor.dispose();
+				updateEditItem(textWidget, type);
 			}
 		});
 		textWidget.addKeyListener(new ItemTextKeyListener(type));
 	}
+	
+	
+	
+	private void updateEditItem(Text textEditor,String itemType) {
+		if (!textEditor.getText().trim().equals("")) {
+			TableItem item = table.getItem(currentRow);
+			File currentFile = new File(FilenameUtils.concat(pwd, textEditor.getText()));
+			boolean isSuccess = false;
+			if (itemType.equals("file")) {
+				if (!currentFile.exists()) {
+					try {
+						currentFile.createNewFile();
+					} catch (IOException e) {
+					}
+				} else {
+					currentFile.setLastModified(System
+							.currentTimeMillis());
+				}
+
+			} else if (itemType.equals("folder")) {
+				isSuccess = FileOperator.mkdir(currentFile.getPath());
+
+			} else if (itemType.equals("rename")) {
+				isSuccess = currentFile.renameTo(
+						new File(FilenameUtils .concat(pwd, textEditor.getText().trim())));
+			}
+
+			if (isSuccess) {
+				fileManager.setTipInfo("command successed."); //$NON-NLS-1$
+			} else {
+				fileManager.setTipInfo("command failed."); //$NON-NLS-1$
+			}
+
+			item.setText(0, textEditor.getText().trim());
+			textEditor.dispose();
+			editor.dispose();
+		}
+	}
 
 	class ItemTextKeyListener extends KeyAdapter {
-		private String action;
+		private String itemType;
 
-		public ItemTextKeyListener(String action) {
-			this.action = action;
+		public ItemTextKeyListener(String itemType) {
+			this.itemType = itemType;
 		}
 
 		public void keyPressed(KeyEvent event) {
-			Text newEditor = (Text) event.widget;
+			Text textEditor = (Text) event.widget;
 
-			if (newEditor.isDisposed())
+			if (textEditor.isDisposed())
 				return;
 			if (event.keyCode == SWT.CR) { //$NON-NLS-1$
-				if (!newEditor.getText().trim().equals("")) {
-					TableItem item = table.getItem(currentRow);
-					File currentFile = new File(FilenameUtils.concat(pwd,
-							newEditor.getText()));
-					boolean isSuccess = false;
-					if (action.equals("file")) {
-						if (!currentFile.exists()) {
-							try {
-								currentFile.createNewFile();
-							} catch (IOException e) {
-							}
-						} else {
-							currentFile.setLastModified(System
-									.currentTimeMillis());
-						}
-
-					} else if (action.equals("folder")) {
-						isSuccess = FileOperator.mkdir(currentFile.getPath());
-
-					} else if (action.equals("rename")) {
-						isSuccess = currentFile.renameTo(new File(FilenameUtils
-								.concat(pwd, newEditor.getText().trim())));
-					}
-
-					if (isSuccess) {
-						fileManager.setTipInfo("command successed."); //$NON-NLS-1$
-					} else {
-						fileManager.setTipInfo("command failed."); //$NON-NLS-1$
-					}
-
-					item.setText(0, newEditor.getText().trim());
-					newEditor.dispose();
-					editor.dispose();
-					table.setFocus();
-				}
+				updateEditItem(textEditor,itemType);
+				table.setFocus();
 			}
 			if (event.character == SWT.ESC) {
-				if (action.equals("file") || action.equals("folder")) {
+				if (itemType.equals("file") || itemType.equals("folder")) {
 					table.remove(currentRow);
 					if (table.getItemCount() > 0)
 						table.setSelection(table.getItemCount() - 1);
 				}
-				newEditor.dispose();
+				textEditor.dispose();
 				table.setFocus();
 			}
 		}
@@ -756,10 +772,10 @@ public class FileLister implements ViLister, Panel {
 			oldEditor.dispose();
 
 		TableItem item = table.getItem(currentRow);
-		Text newEditor = new Text(table, SWT.NONE);
-		newEditor.setFocus();
+		Text text = new Text(table, SWT.NONE);
+		text.setFocus();
 
-		editor.setEditor(newEditor, item, 0);
+		editor.setEditor(text, item, 0);
 
 		return editor;
 	}

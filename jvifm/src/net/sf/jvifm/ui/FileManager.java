@@ -165,6 +165,9 @@ public class FileManager implements FileListerListener {
 	public static final int MISC_ABOUT = 402;
 	public static final int MISC_CONTENT = 403;
 	public static final int MISC_QUIT = 404;
+	public static final int MISC_SEARCHINFOLDER = 405;
+	public static final int MISC_FIND = 406;
+	
 
 	public Shell open(Display display) {
 		shell = new Shell(display);
@@ -200,20 +203,8 @@ public class FileManager implements FileListerListener {
 
 		shell.open();
 
-		// hot key
-		// JIntellitype.getInstance().
-		/*
-		 * try { JIntellitype hotkeyProxy = JIntellitype.getInstance();
-		 * hotkeyProxy.addHotKeyListener(this); hotkeyProxy.registerHotKey(88,
-		 * JIntellitype.MOD_CONTROL + JIntellitype.MOD_ALT, (int) 'J');
-		 * hotkeyProxy.registerHotKey(89, JIntellitype.MOD_CONTROL +
-		 * JIntellitype.MOD_ALT, (int) 'H'); } catch (Exception e ) {
-		 * e.printStackTrace(); }
-		 */
-
 		Hotkeys.bindKeys();
 
-		// leftPanel.setFocus();
 		return shell;
 	}
 
@@ -501,90 +492,64 @@ public class FileManager implements FileListerListener {
 		}
 		{
 			navigateMenuItem = new MenuItem(menuBar, SWT.CASCADE);
-			navigateMenuItem.setText(Messages
-					.getString("FileManager.menuitemNavigate"));
+			navigateMenuItem.setText(Messages.getString("FileManager.menuitemNavigate"));
 			{
 				navigateMenu = new Menu(navigateMenuItem);
 				navigateMenuItem.setMenu(navigateMenu);
 				{
 					backMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
-					backMenuItem.setText(Messages
-							.getString("FileManager.menuitemBack"));
-					backMenuItem.setImage(ResourceManager
-							.getImage("go-previous.png"));//$NON-NLS-1$
-					backMenuItem.addSelectionListener(new NavigateListener(
-							NV_BACK));
+					backMenuItem.setText(Messages.getString("FileManager.menuitemBack"));
+					backMenuItem.setImage(ResourceManager.getImage("go-previous.png"));//$NON-NLS-1$
+					backMenuItem.addSelectionListener(new NavigateListener(NV_BACK));
 				}
 				{
 					forwardMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
-					forwardMenuItem.setText(Messages
-							.getString("FileManager.menuitemForward"));
-					forwardMenuItem.setImage(ResourceManager
-							.getImage("go-next.png"));//$NON-NLS-1$
-					forwardMenuItem.addSelectionListener(new NavigateListener(
-							NV_FORWARD));
+					forwardMenuItem.setText(Messages.getString("FileManager.menuitemForward"));
+					forwardMenuItem.setImage(ResourceManager.getImage("go-next.png"));//$NON-NLS-1$
+					forwardMenuItem.addSelectionListener(new NavigateListener(NV_FORWARD));
 				}
 				{
 					uponeleveMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
-					uponeleveMenuItem.setText(Messages
-							.getString("FileManager.menuitemUponeLevel"));
-					uponeleveMenuItem.setImage(ResourceManager
-							.getImage("go-up.png")); //$NON-NLS-1$
-					uponeleveMenuItem
-							.addSelectionListener(new NavigateListener(NV_UP));
+					uponeleveMenuItem.setText(Messages.getString("FileManager.menuitemUponeLevel"));
+					uponeleveMenuItem.setImage(ResourceManager.getImage("go-up.png")); //$NON-NLS-1$
+					uponeleveMenuItem.addSelectionListener(new NavigateListener(NV_UP));
 				}
 				{
 					goHomeMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
-					goHomeMenuItem.setText(Messages
-							.getString("FileManager.menuitemGoHome"));
-					goHomeMenuItem.setImage(ResourceManager
-							.getImage("go-home.png")); //$NON-NLS-1$
-					goHomeMenuItem.addSelectionListener(new NavigateListener(
-							NV_HOME));
+					goHomeMenuItem.setText(Messages.getString("FileManager.menuitemGoHome"));
+					goHomeMenuItem.setImage(ResourceManager.getImage("go-home.png")); //$NON-NLS-1$
+					goHomeMenuItem.addSelectionListener(new NavigateListener(NV_HOME));
 				}
 				{
 					goRootMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
-					goRootMenuItem.setText(Messages
-							.getString("FileManager.menuitemGoRoot"));
-					goRootMenuItem.setImage(ResourceManager
-							.getImage("computer.png")); //$NON-NLS-1$
-					goRootMenuItem.addSelectionListener(new NavigateListener(
-							NV_ROOT));
+					goRootMenuItem.setText(Messages.getString("FileManager.menuitemGoRoot"));
+					goRootMenuItem.setImage(ResourceManager.getImage("computer.png")); //$NON-NLS-1$
+					goRootMenuItem.addSelectionListener(new NavigateListener( NV_ROOT));
 				}
 				{
 					new MenuItem(navigateMenu, SWT.SEPARATOR);
 				}
 				{
 					showBookMarkMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
-					showBookMarkMenuItem.setText(Messages
-							.getString("FileManager.menuitemBookmark")); //$NON-NLS-1$
-					showBookMarkMenuItem
-							.addSelectionListener(new ShowSideViewListener(
-									SIDE_BOOKMARK));
+					showBookMarkMenuItem.setText(Messages.getString("FileManager.menuitemBookmark")); //$NON-NLS-1$
+					showBookMarkMenuItem.addSelectionListener(new ShowSideViewListener(SIDE_BOOKMARK));
 				}
 				{
 					showHistoryMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
-					showHistoryMenuItem.setText(Messages
-							.getString("FileManager.menuitemHistory")); //$NON-NLS-1$
-					showHistoryMenuItem
-							.addSelectionListener(new ShowSideViewListener(
-									SIDE_HISTORY));
+					showHistoryMenuItem.setText(Messages.getString("FileManager.menuitemHistory")); //$NON-NLS-1$
+					showHistoryMenuItem.addSelectionListener(new ShowSideViewListener(SIDE_HISTORY));
 				}
 				{
 					showFileTreeMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
 					showFileTreeMenuItem.setText(Messages
 							.getString("FileManager.menuitemFolderTree")); //$NON-NLS-1$
-					showFileTreeMenuItem
-							.addSelectionListener(new ShowSideViewListener(
-									SIDE_FOLDER));
+					showFileTreeMenuItem.addSelectionListener(new ShowSideViewListener(SIDE_FOLDER));
 				}
 				{
 					showShortcutsMenuItem = new MenuItem(navigateMenu, SWT.PUSH);
 					showShortcutsMenuItem.setText(Messages
 							.getString("FileManager.menuitemShortcuts")); //$NON-NLS-1$
-					showShortcutsMenuItem
-							.addSelectionListener(new ShowSideViewListener(
-									SIDE_PROGRAM));
+					showShortcutsMenuItem.addSelectionListener(new ShowSideViewListener(SIDE_PROGRAM));
 				}
 			}
 		}
@@ -597,19 +562,16 @@ public class FileManager implements FileListerListener {
 				searchMenu = new Menu(searchMenuItem);
 				searchMenuItem.setMenu(searchMenu);
 				{
-					searchCurrentFolderMenuItem = new MenuItem(searchMenu,
-							SWT.PUSH);
+					searchCurrentFolderMenuItem = new MenuItem(searchMenu, SWT.PUSH);
 					searchCurrentFolderMenuItem
-							.setText(Messages
-									.getString("FileManager.menuitemSearchInCurrentFolder")); //$NON-NLS-1$
-					searchCurrentFolderMenuItem.setSelection(true);
+						.setText(Messages.getString("FileManager.menuitemSearchInCurrentFolder")); //$NON-NLS-1$
+					searchCurrentFolderMenuItem.addSelectionListener(new MiscListener(MISC_SEARCHINFOLDER));
 				}
 				{
 					findMenuItem = new MenuItem(searchMenu, SWT.PUSH);
-					findMenuItem.setText(Messages
-							.getString("FileManager.menuitemFind")); //$NON-NLS-1$
-					findMenuItem.setImage(ResourceManager
-							.getImage("edit-find.png")); //$NON-NLS-1$
+					findMenuItem.setText(Messages.getString("FileManager.menuitemFind")); //$NON-NLS-1$
+					findMenuItem.setImage(ResourceManager.getImage("edit-find.png")); //$NON-NLS-1$
+					findMenuItem.addSelectionListener(new MiscListener(MISC_FIND));
 				}
 			}
 		}
@@ -622,20 +584,15 @@ public class FileManager implements FileListerListener {
 				helpMenu = new Menu(helpMenuItem);
 				{
 					contentsMenuItem = new MenuItem(helpMenu, SWT.CASCADE);
-					contentsMenuItem.setText(Messages
-							.getString("FileManager.menuitemContents")); //$NON-NLS-1$
-					contentsMenuItem.setImage(ResourceManager
-							.getImage("help.png"));
-					contentsMenuItem.addSelectionListener(new MiscListener(
-							MISC_CONTENT));
+					contentsMenuItem.setText(Messages.getString("FileManager.menuitemContents")); //$NON-NLS-1$
+					contentsMenuItem.setImage(ResourceManager.getImage("help.png"));
+					contentsMenuItem.addSelectionListener(new MiscListener( MISC_CONTENT));
 
 				}
 				{
 					aboutMenuItem = new MenuItem(helpMenu, SWT.CASCADE);
-					aboutMenuItem.setText(Messages
-							.getString("FileManager.menuitemAbout")); //$NON-NLS-1$
-					aboutMenuItem.addSelectionListener(new MiscListener(
-							MISC_ABOUT));
+					aboutMenuItem.setText(Messages.getString("FileManager.menuitemAbout")); //$NON-NLS-1$
+					aboutMenuItem.addSelectionListener(new MiscListener(MISC_ABOUT));
 
 				}
 				helpMenuItem.setMenu(helpMenu);
@@ -710,8 +667,8 @@ public class FileManager implements FileListerListener {
 		}
 		{
 			findFileToolItem = new ToolItem(toolBar1, SWT.NONE);
-			findFileToolItem
-					.setImage(ResourceManager.getImage("edit-find.png")); //$NON-NLS-1$
+			findFileToolItem.setImage(ResourceManager.getImage("edit-find.png")); //$NON-NLS-1$
+			findFileToolItem.addSelectionListener(new MiscListener(MISC_FIND));
 		}
 
 	}
@@ -1136,8 +1093,6 @@ public class FileManager implements FileListerListener {
 	}
 
 	public void activePanel(String pos) {
-		// String activePanel = (String) sashForm.getData("activePanel");
-		// //$NON-NLS-1$
 		if (pos.equals("left")) { //$NON-NLS-1$
 			sashForm.setData("activePanel", "left"); //$NON-NLS-1$ //$NON-NLS-2$
 			leftPanel.active();
@@ -1151,32 +1106,20 @@ public class FileManager implements FileListerListener {
 		shell.setVisible(false);
 	}
 
-	public void activeCommandMode() {
-		miniShell.activeWith(":"); //$NON-NLS-1$
-		miniShell.setFocus();
-	}
 
 	public void activeSideView() {
 		sideViLister.activeWidget();
 	}
 
-	public void activeSearchMode() {
 
-		miniShell.activeWith("/"); //$NON-NLS-1$
+	public void activeMiniShell(ViLister lister,String leadStr) {
+		if (lister !=null)
+			miniShell.setViLister(lister);
+		miniShell.activeWith(leadStr); //$NON-NLS-1$
 		miniShell.setFocus();
 	}
 
-	public void activeCommandMode(ViLister lister) {
-		miniShell.setViLister(lister);
-		miniShell.activeWith(":"); //$NON-NLS-1$
-		miniShell.setFocus();
-	}
-
-	public void activeSearchMode(ViLister lister) {
-		miniShell.setViLister(lister);
-		miniShell.activeWith("/"); //$NON-NLS-1$
-		miniShell.setFocus();
-	}
+	
 
 	public void setTipInfo(String tip) {
 		statusBar.setTip(tip);
@@ -1198,15 +1141,14 @@ public class FileManager implements FileListerListener {
 		statusBar.hide();
 	}
 
-	public void onHotKey(final int arg0) {
+	public void onHotKey(final int id) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-				if (arg0 == 88) {
+				if (id == Hotkeys.ACTION_SHOWMAIN) {
 					activeGUI();
 				} else {
 					QuickRunShell qrs = new QuickRunShell();
 					qrs.open();
-
 				}
 			}
 		});
@@ -1349,7 +1291,6 @@ public class FileManager implements FileListerListener {
 				AboutShell aboutShell = new AboutShell();
 				aboutShell.showGUI();
 			} else if (actionName == FileManager.MISC_CONTENT) {
-				// System.out.println(System.getProperty("user.dir"));
 				String EDITOR = Preference.getInstance().getEditorApp();
 				String cmd[] = { EDITOR, "../doc/help.txt" };
 				try {
@@ -1357,8 +1298,10 @@ public class FileManager implements FileListerListener {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
-				// HelpContentShell helpContentsShell=new HelpContentShell();
-				// helpContentsShell.showGUI();
+			} else if (actionName == FileManager.MISC_SEARCHINFOLDER) {
+				activeMiniShell(null, "/");
+			} else if (actionName == FileManager.MISC_FIND) {
+				activeMiniShell(null, ":find");
 			} else if (actionName == FileManager.MISC_QUIT) {
 				Main.exit();
 			}

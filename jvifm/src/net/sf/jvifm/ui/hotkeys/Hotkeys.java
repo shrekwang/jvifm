@@ -20,14 +20,14 @@
 package net.sf.jvifm.ui.hotkeys;
 
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 import net.sf.jvifm.Main;
 
 public class Hotkeys {
 
-	private static int ACTION_SHOWMAIN = 88;
-	private static int ACTION_QUICKRUN = 89;
+	public static int ACTION_SHOWMAIN = 88;
+	public static int ACTION_QUICKRUN = 89;
+	
 	private static HotkeyHandler handler;
 
 	static {

@@ -197,10 +197,10 @@ public class FileListerKeyListener extends KeyAdapter {
 				fileLister.switchPanel();
 				break;
 			case ':':
-				fileManager.activeCommandMode();
+				fileManager.activeMiniShell(null, ":");
 				break;
 			case '/':
-				fileManager.activeSearchMode();
+				fileManager.activeMiniShell(null, "/");
 				break;
 
 			case 'f':

@@ -405,7 +405,7 @@ public class ZipLister extends BasicViLister implements Panel {
 	}
 
 	public void activeSearchMode() {
-		Main.fileManager.activeSearchMode(this);
+		Main.fileManager.activeMiniShell(this,"");
 	}
 
 	public void refresh() {

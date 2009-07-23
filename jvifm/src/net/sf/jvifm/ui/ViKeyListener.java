@@ -24,7 +24,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.sf.jvifm.Main;
-import net.sf.jvifm.util.HomeLocator;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -134,8 +133,8 @@ public class ViKeyListener extends KeyAdapter {
     		case 'p': viLister.doPaste(); break;
     		
     		case ' ': viLister.switchPanel(); break;
-    		case ':': fileManager.activeCommandMode(viLister); break;
-    		case '/': fileManager.activeSearchMode(viLister); break;
+    		case ':': fileManager.activeMiniShell(viLister, ":"); break;
+    		case '/': fileManager.activeMiniShell(viLister, "/"); break;
 			
     		case 'n': viLister.searchNext(true); break;
     		case 'N': viLister.searchNext(false); break;

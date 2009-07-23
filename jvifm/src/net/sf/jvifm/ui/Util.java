@@ -24,9 +24,7 @@ package net.sf.jvifm.ui;
 import java.io.File;
 
 import net.sf.jvifm.Main;
-
 import net.sf.jvifm.model.Preference;
-import net.sf.jvifm.model.filter.WildcardFilter2;
 import net.sf.jvifm.ui.shell.OptionShell;
 import net.sf.jvifm.ui.shell.PreferenceShell;
 
@@ -35,8 +33,6 @@ import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.NotFileFilter;
-import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;

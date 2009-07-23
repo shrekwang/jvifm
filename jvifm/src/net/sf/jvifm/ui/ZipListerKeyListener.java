@@ -183,14 +183,11 @@ public class ZipListerKeyListener extends KeyAdapter {
 				zipLister.switchPanel();
 				break;
 			case ':':
-				fileManager.activeCommandMode(zipLister);
+				fileManager.activeMiniShell(zipLister,":");
 				break;
 			case '/':
-				fileManager.activeSearchMode(zipLister);
+				fileManager.activeMiniShell(zipLister,"/");
 				break;
-
-			// case 'f': zipLister.forward(count); break;
-			// case 'b':zipLister.back(count); break;
 
 			case 'n':
 				zipLister.searchNext(true);
