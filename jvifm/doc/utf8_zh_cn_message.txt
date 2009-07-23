@@ -56,10 +56,10 @@ BookmarkLister.warnDialogMessage=确定要删除选中的书签吗?
 BookmarkLister.name=名称:
 BookmarkLister.path=路径:
 
-CustomCommandLister.warnDialogTitle=
-CustomCommandLister.warnDialogMessage=确定想要删除选中的程序链接吗?
-CustomCommandLister.name=名称:
-CustomCommandLister.command=命令:
+shortcutsLister.warnDialogTitle=
+shortcutsLister.warnDialogMessage=确定想要删除选中的程序链接吗?
+shortcutsLister.name=名称:
+shortcutsLister.command=命令:
 
 Messagebox.optionYesToAll=全是(&A)
 Messagebox.optionNoToAll=全否
@@ -82,3 +82,6 @@ MiscFileCommand.lastModified=修改时间
 MiscFileCommand.size=大小
 MiscFileCommand.tipInfo=排序文件按
 MiscFileCommand.title=排序
+
+PreferenceShell.AppSetting=应用程序
+PreferenceShell.Misc=其他
