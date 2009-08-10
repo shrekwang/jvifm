@@ -20,9 +20,11 @@
  */
 package net.sf.jvifm;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
@@ -32,8 +34,11 @@ import org.eclipse.swt.widgets.Display;
 
 public class ResourceManager {
 	private static ResourceManager instance = new ResourceManager();
+	private static MimeUtil mimeUtil=MimeUtil.getInstance();
 	@SuppressWarnings("unchecked")
 	private static HashMap resources = new HashMap();
+	private static Image fileImage = getImage("file.png");     //$NON-NLS-1$
+	private static Image folderImage = getImage("folder.png"); //$NON-NLS-1$
 
 	@SuppressWarnings("unchecked")
 	public static Image getImage(String url) {
@@ -56,6 +61,17 @@ public class ResourceManager {
 			return null;
 		}
 	}
+	
+	public static Image getMimeImage(File file) {
+		if (file.isDirectory()) return folderImage;
+		String extName=FilenameUtils.getExtension(file.getName());
+		String path=mimeUtil.getMimeIconPath(extName);
+		if (path==null) return fileImage;
+		Image mimeImage= getImage(path);
+		if (mimeImage ==null) return fileImage;
+		return mimeImage;
+	}
+	
 
 	public static Font getFont(String name, int size, int style) {
 		return getFont(name, size, style, false, false);

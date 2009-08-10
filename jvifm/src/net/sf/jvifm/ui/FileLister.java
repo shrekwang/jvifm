@@ -1177,11 +1177,10 @@ public class FileLister implements ViLister, Panel {
 		TableItem item = new TableItem(table, SWT.BORDER);
 		String subFilesPath = subFile.getPath().substring(pwd.length() + 1);
 		item.setText(0, subFilesPath);
+		item.setImage(0, ResourceManager.getMimeImage(subFile));
 		if (subFile.isDirectory()) {
-			item.setImage(0, folderImage);
 			item.setText(1, "--"); //$NON-NLS-1$
 		} else {
-			item.setImage(0, fileImage);
 			item.setText(1, StringUtil.formatSize(subFile.length()));
 		}
 		item.setText(2, StringUtil.formatDate(subFile.lastModified()));
@@ -1201,13 +1200,11 @@ public class FileLister implements ViLister, Panel {
 			String subFilesPath = currentFiles[i].getPath().substring(
 					pwd.length() + 1);
 			item.setText(0, subFilesPath);
+			item.setImage(0,ResourceManager.getMimeImage(currentFiles[i]));
 			if (currentFiles[i].isDirectory()) {
-				item.setImage(0, folderImage);
 				item.setText(1, "--"); //$NON-NLS-1$
 			} else {
-				item.setImage(0, fileImage);
-				item.setText(1, StringUtil.formatSize(currentFiles[i]
-								.length()));
+				item.setText(1, StringUtil.formatSize(currentFiles[i].length()));
 			}
 			item.setText(2, StringUtil.formatDate(currentFiles[i]
 					.lastModified()));
@@ -1238,6 +1235,8 @@ public class FileLister implements ViLister, Panel {
 		Arrays.sort(subFiles, FileComprator.getFileComprator(sortColumn,
 				isReverse));
 	}
+	
+	
 
 	private TableItem[] generateItems(File[] subFiles, String selectedName) {
 
@@ -1250,30 +1249,21 @@ public class FileLister implements ViLister, Panel {
 			items[i] = new TableItem(table, SWT.BORDER, index++);
 
 			items[i].setText(0, subFiles[i].getName());
+			items[i].setImage(0,ResourceManager.getMimeImage(subFiles[i]));
 			if (subFiles[i].getName().equals(selectedName)) {
 				currentRow = index - 1;
 				hasMatchSelectedName = true;
 			}
-			if (subFiles[i].isDirectory()) {
-				items[i].setImage(0, folderImage);
-			} else {
-				items[i].setImage(0, fileImage);
-			}
 			if (showDetail) {
 				if (subFiles[i].isDirectory()) {
-					items[i].setImage(0, folderImage);
 					items[i].setText(1, "--");
 				} else {
-					items[i].setImage(0, fileImage);
-					items[i].setText(1, StringUtil.formatSize(subFiles[i]
-							.length()));
+					items[i].setText(1, StringUtil.formatSize(subFiles[i].length()));
 				}
-				items[i].setText(2, StringUtil.formatDate(subFiles[i]
-						.lastModified()));
+				items[i].setText(2, StringUtil.formatDate(subFiles[i].lastModified()));
 			}
 		}
-		if (!hasMatchSelectedName)
-			currentRow = 0;
+		if (!hasMatchSelectedName) currentRow = 0;
 		table.setSelection(currentRow);
 		lblStatus.setText("total " + table.getItemCount() + " items"); //$NON-NLS-1$ //$NON-NLS-2$
 		return items;
