@@ -1,9 +1,3 @@
-/** 
- 
- * @author wangsn
- * @since 1.0
- * @version $Id: MimeUtil.java, v 1.0 2009-8-10 обнГ06:49:47 wangsn Exp $
- */
 package net.sf.jvifm;
 
 import java.io.BufferedReader;
