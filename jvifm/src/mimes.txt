@@ -41,6 +41,8 @@ hdf application/x-hdf
 js application/x-javascript
 java application/x-java
 py application/x-python
+bat application/x-shellscript
+sh application/x-shellscript
 skp application/x-koan
 skd application/x-koan
 skt application/x-koan
@@ -48,7 +50,6 @@ skm application/x-koan
 latex application/x-latex
 nc application/x-netcdf
 cdf application/x-netcdf
-sh application/x-sh
 shar application/x-shar
 swf application/x-shockwave-flash
 sit application/x-stuffit
@@ -70,6 +71,7 @@ src application/x-wais-source
 xhtml application/xhtml+xml
 xht application/xhtml+xml
 zip application/zip
+gz application/x-gzip
 au audio/basic
 snd audio/basic
 mid audio/midi
@@ -120,8 +122,13 @@ vrml model/vrml
 css text/css
 html text/html
 htm text/html
+jsp text/html
+ftl text/html
 asc text/plain
 txt text/plain
+properties text/plain
+conf text/plain
+sql text/plain
 rtx text/richtext
 rtf text/rtf
 sgml text/sgml
@@ -130,6 +137,7 @@ tsv text/tab-separated-values
 wml text/vnd.wap.wml
 wmls text/vnd.wap.wmlscript
 etx text/x-setext
+log text/x-log
 xsl text/xml
 csv text/csv
 xml text/xml
