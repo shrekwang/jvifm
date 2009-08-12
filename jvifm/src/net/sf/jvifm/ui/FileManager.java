@@ -22,7 +22,6 @@
 package net.sf.jvifm.ui;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 
 import net.sf.jvifm.Main;
@@ -81,7 +80,6 @@ public class FileManager implements FileListerListener {
 	private SashForm sashForm;
 	private SashForm mainSashForm;
 	private TabFolder tabFolder;
-	private ToolBar toolbar;
 	private Tray systemTray;
 	private Composite sideViewContentContainer;
 	private ViLister sideViLister;
@@ -212,12 +210,9 @@ public class FileManager implements FileListerListener {
 		Menu menu = new Menu(shell, SWT.POP_UP);
 		final FileLister fileLister = getActivePanel();
 		final HistoryManager historyManager = fileLister.getHistoryInfo();
-		List list = historyManager.getBackList();
-		int count = 1;
-		if (list == null || list.size() <= 0)
-			return null;
-		for (Iterator it = list.iterator(); it.hasNext();) {
-			String path = (String) it.next();
+		List<String> backwardPaths = historyManager.getBackList();
+		if (backwardPaths == null || backwardPaths.size() <= 0) return null;
+		for (String path : backwardPaths ) {
 			MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
 			menuItem.setText(path);
 			menuItem.addSelectionListener(new SelectionAdapter() {
@@ -235,12 +230,10 @@ public class FileManager implements FileListerListener {
 		Menu menu = new Menu(shell, SWT.POP_UP);
 		final FileLister fileLister = getActivePanel();
 		final HistoryManager historyManager = fileLister.getHistoryInfo();
-		List list = historyManager.getForwardList();
-		int count = 1;
-		if (list == null || list.size() <= 0)
+		List<String> forwardPaths = historyManager.getForwardList();
+		if (forwardPaths == null || forwardPaths.size() <= 0)
 			return null;
-		for (Iterator it = list.iterator(); it.hasNext();) {
-			String path = (String) it.next();
+		for (String path : forwardPaths ) {
 			MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
 			menuItem.setText(path);
 			menuItem.addSelectionListener(new SelectionAdapter() {

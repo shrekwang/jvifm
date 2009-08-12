@@ -58,7 +58,6 @@ public class FindCommand extends InterruptableCommand {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public void find(File directory, CommandLine cmdLine) {
 		IOFileFilter filter = findingFilter(cmdLine);
 		find(directory, filter);
@@ -67,7 +66,6 @@ public class FindCommand extends InterruptableCommand {
 		// }
 	}
 
-	@SuppressWarnings("unchecked")
 	private void find(File directory, IOFileFilter filter) {
 		if (this.aborted)
 			return;

@@ -77,11 +77,10 @@ public class Util {
 						message, option, shellType);
 				Point optionSize = optionShell.getSize();
 				Point location = shell.getLocation();
-				Point size = shell.getSize();
-				int offsetX = location.x + (shell.getSize().x / 2)
-						- (optionSize.x / 2);
-				int offsetY = location.y + (shell.getSize().y / 2)
-						- (optionSize.y / 2);
+				
+				int offsetX = location.x + (shell.getSize().x / 2) - (optionSize.x / 2);
+				int offsetY = location.y + (shell.getSize().y / 2) - (optionSize.y / 2);
+				
 				result = optionShell.open(offsetX, offsetY);
 			}
 		});

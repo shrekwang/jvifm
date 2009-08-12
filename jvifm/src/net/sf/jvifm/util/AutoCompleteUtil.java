@@ -41,16 +41,12 @@ import org.apache.commons.io.IOCase;
 
 public class AutoCompleteUtil {
 
-	@SuppressWarnings("unchecked")
-	public static List getFileCompleteList(String pwd, String path,
+	public static List<File> getFileCompleteList(String pwd, String path,
 			boolean onlyDir) {
-		ArrayList list = new ArrayList();
+		List<File> list = new ArrayList<File>();
 		String fileName = new File(path).getName();
-		// boolean isDriverDir=false;
 
-		if (path.endsWith(":"))
-			return null;
-		// if (pwd.endsWith(":")) isDriverDir=true;
+		if (path.endsWith(":")) return null;
 
 		File file = new File(FilenameUtils.concat(pwd, path));
 		if (file == null)

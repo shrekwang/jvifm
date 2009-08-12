@@ -22,7 +22,6 @@
 package net.sf.jvifm.util;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,30 +32,10 @@ import org.apache.tools.zip.ZipFile;
 import org.apache.tools.zip.ZipOutputStream;
 
 
-
-
 public class ZipUtil {
 	private byte[] buffer =new byte[10240];
 	private String prefix="";
 
-	public static void main(String[] args) throws Exception{
-		ZipUtil app=new ZipUtil();
-		/*
-		String[] paths=new String[args.length-1];
-		for (int i=0; i<args.length-1; i++) {
-			paths[i]=args[i+1];
-		}
-		*/
-		//String[] paths2=new String[] { "e:\\usb" };
-		String[] paths2=new String[] { "usb" };
-		app.removeFromZip("model.zip",paths2);
-
-		/*
-		String[] paths2=new String[] { "e:\\usb" };
-		app.zip("ddd.zip",paths2);
-		*/
-
-	}
 
 	@SuppressWarnings("unchecked")
 	public void addToZip(String zipFilePath, String files[] ) throws Exception {
@@ -144,9 +123,6 @@ public class ZipUtil {
 
 	}
 
-	@SuppressWarnings("unchecked")
-	
-	
 	public  void zip(String filename, String[] paths) throws Exception {
 		ZipOutputStream zo=new ZipOutputStream(new FileOutputStream(new File(filename)));
 		for (int i=0; i<paths.length; i++) {
@@ -158,10 +134,6 @@ public class ZipUtil {
 		zo.close();
 
 	}
-
-	
-	
-
 	
 	private void doZip(ZipOutputStream zo, File file) throws Exception {
 

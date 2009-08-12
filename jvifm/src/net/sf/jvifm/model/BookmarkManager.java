@@ -138,6 +138,7 @@ public class BookmarkManager {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void init() {
 
 		storePath = HomeLocator.getConfigHome() + File.separator
@@ -184,6 +185,7 @@ public class BookmarkManager {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void store() {
 
 		try {

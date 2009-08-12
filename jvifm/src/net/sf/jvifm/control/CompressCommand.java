@@ -143,7 +143,6 @@ public class CompressCommand extends Command {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public void zip(String filename, String[] paths) throws Exception {
 		ZipOutputStream zo = new ZipOutputStream(new FileOutputStream(new File(
 				filename)));

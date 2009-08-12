@@ -32,7 +32,6 @@ import net.sf.jvifm.ResourceManager;
 import net.sf.jvifm.model.Bookmark;
 import net.sf.jvifm.model.BookmarkManager;
 
-import org.apache.commons.io.FilenameUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

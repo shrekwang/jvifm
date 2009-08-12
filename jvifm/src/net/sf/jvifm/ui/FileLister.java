@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 import net.sf.jvifm.CommandBuffer;
 import net.sf.jvifm.Main;
@@ -1112,7 +1113,7 @@ public class FileLister implements ViLister, Panel {
 
 		if (path.indexOf(File.separator) < 0)
 			return path;
-		LinkedList list = historyManager.getFullHistory();
+		LinkedList<String> list = historyManager.getFullHistory();
 		if (list.size() < 0)
 			return path;
 
@@ -1227,13 +1228,11 @@ public class FileLister implements ViLister, Panel {
 		return subFiles;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void sortList(File[] subFiles, String sortString, boolean isReverse) {
-		if (sortString != null)
-			this.sortColumn = sortString;
-		if (sortColumn == null)
-			return;
-		Arrays.sort(subFiles, FileComprator.getFileComprator(sortColumn,
-				isReverse));
+		if (sortString != null) this.sortColumn = sortString;
+		if (sortColumn == null) return;
+		Arrays.sort(subFiles, FileComprator.getFileComprator(sortColumn, isReverse));
 	}
 	
 	
@@ -1525,12 +1524,11 @@ public class FileLister implements ViLister, Panel {
 		TableItem[] items = null;
 		TableItem[] geneItems = null;
 		if (pwd.equalsIgnoreCase(dstDir)) {
-			ArrayList fileList = new ArrayList();
-			ArrayList fileExistedList = new ArrayList();
+			List<File> fileList = new ArrayList<File>();
+			List<TableItem> fileExistedItems = new ArrayList<TableItem>();
 			for (int i = 0; i < datas.length; i++) {
 				File file = new File(FilenameUtils.concat(dstDir, FilenameUtils
 						.getName(datas[i])));
-				// File file=new File(datas[i]);
 				int result = searchAll(file.getName());
 				if (result == -1) {
 					fileList.add(file);
@@ -1538,13 +1536,13 @@ public class FileLister implements ViLister, Panel {
 					TableItem item = table.getItem(result);
 					item.setText(1, StringUtil.formatSize(file.length()));
 					item.setText(2, StringUtil.formatDate(file.lastModified()));
-					fileExistedList.add(item);
+					fileExistedItems.add(item);
 				}
 			}
 
-			items = new TableItem[fileList.size() + fileExistedList.size()];
-			for (int i = 0; i < fileExistedList.size(); i++) {
-				items[i] = (TableItem) fileExistedList.get(i);
+			items = new TableItem[fileList.size() + fileExistedItems.size()];
+			for (int i = 0; i < fileExistedItems.size(); i++) {
+				items[i] = (TableItem) fileExistedItems.get(i);
 			}
 
 			File[] files = new File[fileList.size()];
@@ -1554,14 +1552,13 @@ public class FileLister implements ViLister, Panel {
 			String dirPosInfo = (String) historyManager.getSelectedItem(pwd);
 			geneItems = generateItems(files, dirPosInfo);
 
-			int index = fileExistedList.size();
+			int index = fileExistedItems.size();
 			for (int i = 0; i < geneItems.length; i++) {
 				items[index++] = geneItems[i];
 
 			}
 
 			table.setSelection(items);
-			// currentRow=table.getItemCount()-geneItems.length-1;
 			currentRow = table.getSelectionIndex();
 		}
 

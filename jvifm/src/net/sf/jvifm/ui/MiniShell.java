@@ -45,14 +45,12 @@ public class MiniShell {
 	private FileManager fileManager;
 	private ViLister lister;
 	private StyledText styledText;
-	private String tip = null;
 	private CommandRunner commandRunner = CommandRunner.getInstance();
 	private String[] completeOptions = null;
-	private int completeIndex = 0;
-	private ArrayList commandhistory = new ArrayList();
+	private List<String> commandhistory = new ArrayList<String>();
 	private int currentCommand = -99;
 
-	private List completionFileList = null;
+	private List<File> completionFileList = null;
 	private int currentSelectionCompletion = 0;
 
 	public MiniShell(Composite parent, int style) {
@@ -226,8 +224,7 @@ public class MiniShell {
 
 			lastToken = lastToken.replaceAll("\\\\\\\\ ", " ");
 
-			completionFileList = AutoCompleteUtil.getFileCompleteList(pwd,
-					lastToken, true);
+			completionFileList = AutoCompleteUtil.getFileCompleteList(pwd, lastToken, true);
 
 			if (completionFileList != null && completionFileList.size() > 0) {
 				doCompletionFileList(lastToken, pwd, cmd, cmdText);
@@ -242,7 +239,7 @@ public class MiniShell {
 
 		if (currentSelectionCompletion == completionFileList.size())
 			currentSelectionCompletion = 0;
-		File file = (File) completionFileList.get(currentSelectionCompletion++);
+		File file =  completionFileList.get(currentSelectionCompletion++);
 		if (completionFileList.size() == 1)
 			completionFileList = null;
 		String filePath = file.getPath().replaceAll(" ", "\\\\\\\\ ");
@@ -268,7 +265,7 @@ public class MiniShell {
 		StringBuffer sb = new StringBuffer();
 		if (completionFileList != null) {
 			for (int i = 0; i < completionFileList.size(); i++) {
-				file = (File) completionFileList.get(i);
+				file = completionFileList.get(i);
 				sb.append("[").append(file.getName()).append("] ");
 			}
 		}

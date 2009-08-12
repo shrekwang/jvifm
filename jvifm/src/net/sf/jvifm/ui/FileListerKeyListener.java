@@ -54,8 +54,8 @@ public class FileListerKeyListener extends KeyAdapter {
 	public FileListerKeyListener(FileLister fileLister) {
 		super();
 		this.fileLister = fileLister;
-		oneCharCmds = Pattern.compile("[bftvhjklosrxXiHML^@$GpP:/nNM ]");
-		twoCharCmds = Pattern.compile("[cgdDyYzm']");
+		oneCharCmds = Pattern.compile("[bftvhjklorxXiHMLS^@$GpP:/nNM ]");
+		twoCharCmds = Pattern.compile("[cgdDyYzms']");
 
 	}
 
@@ -216,7 +216,7 @@ public class FileListerKeyListener extends KeyAdapter {
 			case 'N':
 				fileLister.searchNext(false);
 				break;
-			case 's':
+			case 'S':
 				fileLister.addshortcuts();
 				break;
 			case 'r':
@@ -275,7 +275,7 @@ public class FileListerKeyListener extends KeyAdapter {
 				fileLister.visit(FileLister.FS_ROOT);
 				fileLister.refreshHistoryInfo();
 			}
-			if (cmd.equals("ga")) {
+			if (cmd.equals("ss")) {
 				QuickRunShell qr = new QuickRunShell();
 				qr.open();
 			}

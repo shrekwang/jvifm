@@ -24,6 +24,7 @@ package net.sf.jvifm.control;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.jvifm.Main;
 import net.sf.jvifm.model.filter.WildcardFilter2;
@@ -44,9 +45,9 @@ public class RenameCommand extends Command {
 	public static final Options options = new Options();
 
 	public void execute() throws Exception {
-		ArrayList destFileList = filterWildCard(dstDir);
+		List<String> destFileList = filterWildCard(dstDir);
 		for (int i = 0; i < destFileList.size(); i++) {
-			FileOperator.rename(fromStr, toStr, (String) destFileList.get(i));
+			FileOperator.rename(fromStr, toStr, destFileList.get(i));
 		}
 		refreshActivePanel();
 
@@ -61,8 +62,8 @@ public class RenameCommand extends Command {
 		this.dstDir = args[2];
 	}
 
-	private ArrayList filterWildCard(final String wildcardPath) {
-		final ArrayList result = new ArrayList();
+	private List<String> filterWildCard(final String wildcardPath) {
+		final List<String> result = new ArrayList<String>();
 		if (wildcardPath == null || wildcardPath.trim().equals(""))
 			return null;
 

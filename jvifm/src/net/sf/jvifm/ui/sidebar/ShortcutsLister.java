@@ -68,8 +68,7 @@ public class ShortcutsLister extends BasicViLister implements
 	public void onChangeshortcut(Shortcut shortcuts) {
 
 		int rowCount = table.getItemCount();
-		for (int i = 0; i < rowCount; i++) {
-			String txt = table.getItem(i).getText();
+		for (int i = 0; i < rowCount; i++ ) {
 			table.getItem(i).setText(shortcuts.getName());
 			table.getItem(i).setData("shortcuts", shortcuts);
 			currentRow = i;
@@ -93,8 +92,8 @@ public class ShortcutsLister extends BasicViLister implements
 	private void init() {
 		TableItem item;
 
-		for (Iterator it = shortcutsManager.iterator(); it.hasNext();) {
-			Shortcut command = (Shortcut) it.next();
+		for (Iterator<Shortcut> it = shortcutsManager.iterator(); it.hasNext();) {
+			Shortcut command = it.next();
 			item = new TableItem(table, SWT.NONE);
 			item.setImage(runImage);
 			item.setData("shortcuts", command);

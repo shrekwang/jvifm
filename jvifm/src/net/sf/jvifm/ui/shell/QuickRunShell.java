@@ -36,7 +36,6 @@ import net.sf.jvifm.model.ShortcutsManager;
 import net.sf.jvifm.model.TipOption;
 import net.sf.jvifm.ui.FileLister;
 import net.sf.jvifm.ui.FileManager;
-import net.sf.jvifm.ui.Util;
 import net.sf.jvifm.util.AutoCompleteUtil;
 
 import org.apache.commons.io.FilenameUtils;
@@ -117,42 +116,15 @@ public class QuickRunShell {
 				}
 				if (e.keyCode == SWT.ESC) {
 					e.doit = false;
-
-					if (txtCommand.getSelectionText().equals(
-							txtCommand.getText())
-							|| txtCommand.getText().equals("")) {
-						if (completionShell != null) {
-							completionShell.dispose();
-							completionShell = null;
-						}
-						shell.close();
-					} else {
-						txtCommand.setSelection(0, txtCommand.getText()
-								.length());
-					}
-					return;
+					cancelOperate();
 				}
 				needRefreshOptions = true;
 			}
 		});
 		txtCommand.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				if (!needRefreshOptions)
-					return;
-				completeOptions = getCompletionOptions(txtCommand.getText());
-				currentOptionIndex = -1;
-				// if (completeOptions==null) return;
-				int x = shell.getLocation().x;
-				int y = shell.getLocation().y + shell.getSize().y;
-
-				if (completionShell == null) {
-					completionShell = new CompletionShell(completeOptions, x, y);
-					completionShell.open();
-					txtCommand.setFocus();
-				} else {
-					completionShell.setOptions(completeOptions);
-					txtCommand.setFocus();
-				}
+				if (!needRefreshOptions) return;
+				changeCompletion(txtCommand.getText());
 			}
 		});
 		shell.addDisposeListener(new DisposeListener() {
@@ -161,6 +133,39 @@ public class QuickRunShell {
 					color.dispose();
 			}
 		});
+	}
+	
+	private void cancelOperate() {
+		if (txtCommand.getSelectionText().equals(
+				txtCommand.getText())
+				|| txtCommand.getText().equals("")) {
+			if (completionShell != null) {
+				completionShell.dispose();
+				completionShell = null;
+			}
+			shell.close();
+		} else {
+			txtCommand.setSelection(0, txtCommand.getText()
+					.length());
+		}
+		return;
+	}
+	
+	private void changeCompletion(String txt) {
+		completeOptions = getCompletionOptions(txt);
+		currentOptionIndex = -1;
+		// if (completeOptions==null) return;
+		int x = shell.getLocation().x;
+		int y = shell.getLocation().y + shell.getSize().y;
+
+		if (completionShell == null) {
+			completionShell = new CompletionShell(completeOptions, x, y);
+			completionShell.open();
+			txtCommand.setFocus();
+		} else {
+			completionShell.setOptions(completeOptions);
+			txtCommand.setFocus();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -232,15 +237,24 @@ public class QuickRunShell {
 		currentOptionIndex++;
 		if (currentOptionIndex > completeOptions.length - 1)
 			currentOptionIndex = 0;
-
-		String tmpText = getCompletionText();
-		if (tmpText != null) {
+		
+		if (completeOptions.length == 1 && completeOptions[0].getTipType().equals("dir")) {
+			String tmpText = getCompletionText()+File.separator;
 			txtCommand.setText(tmpText);
 			txtCommand.setCaretOffset(tmpText.length());
-		}
+			changeCompletion(tmpText);
+			
+		} else {
+			String tmpText = getCompletionText();
+			if (tmpText != null) {
+				txtCommand.setText(tmpText);
+				txtCommand.setCaretOffset(tmpText.length());
+			}
 
-		if (completionShell != null) {
-			completionShell.setOptionIndex(currentOptionIndex);
+			if (completionShell != null) {
+				completionShell.setOptionIndex(currentOptionIndex);
+			}
+			
 		}
 
 	}
@@ -282,16 +296,18 @@ public class QuickRunShell {
 	public boolean doCommand() {
 		String cmd = null;
 		String[] args = new String[] {};
+		/*
 		if (completeOptions != null && completeOptions.length > 0) {
 			cmd = getCompletionText();
 		} else {
-			cmd = txtCommand.getText();
-			if (cmd.indexOf("\"") > 0) { // arg
-				String arg = cmd.substring(cmd.indexOf("\"") + 1, cmd
-						.lastIndexOf("\""));
-				cmd = cmd.substring(0, cmd.indexOf("\"")).trim();
-				args = new String[] { arg };
-			}
+		*/
+		
+		cmd = txtCommand.getText();
+		if (cmd.indexOf("\"") > 0) { // arg
+			String arg = cmd.substring(cmd.indexOf("\"") + 1, cmd
+					.lastIndexOf("\""));
+			cmd = cmd.substring(0, cmd.indexOf("\"")).trim();
+			args = new String[] { arg };
 		}
 
 		ShortcutsManager scm = ShortcutsManager.getInstance();
@@ -339,27 +355,15 @@ public class QuickRunShell {
 		shell.setLayout(thisLayout);
 		shell.setBackground(color);
 		GridData gridData = null;
-		{
-			/*
-			 * Label label=new Label(shell,SWT.NONE);
-			 * label.setBackground(color); File file=new File(pwd); if
-			 * (file!=null) { label.setText("["+file.getName()+"]"); } else {
-			 * label.setText("["+pwd+"]"); }
-			 * 
-			 * gridData = new GridData(); gridData.horizontalAlignment =
-			 * GridData.HORIZONTAL_ALIGN_BEGINNING;
-			 * label.setLayoutData(gridData);
-			 */
+		
+		txtCommand = new StyledText(shell, SWT.NONE);
+		txtCommand.setBackground(color);
+		gridData = new GridData();
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.widthHint = 300;
+		txtCommand.setLayoutData(gridData);
 
-			txtCommand = new StyledText(shell, SWT.NONE);
-			txtCommand.setBackground(color);
-			gridData = new GridData();
-			gridData.horizontalAlignment = GridData.FILL;
-			gridData.grabExcessHorizontalSpace = true;
-			gridData.widthHint = 300;
-			txtCommand.setLayoutData(gridData);
-
-		}
 
 		shell.pack();
 

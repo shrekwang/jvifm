@@ -28,7 +28,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -45,8 +44,8 @@ public class ShortcutsManager {
 
 	private static ShortcutsManager instance = null;
 	private String storePath = null;
-	private ArrayList shortcutsList = new ArrayList();
-	private ArrayList listeners = new ArrayList();
+	private List<Shortcut> shortcutsList = new ArrayList<Shortcut>();
+	private List<ShortcutsListener> listeners = new ArrayList<ShortcutsListener>();
 
 	private ShortcutsManager() {
 		init();
@@ -61,15 +60,13 @@ public class ShortcutsManager {
 	}
 
 	public void notifyAddshortcuts(Shortcut shortcut) {
-		for (Iterator it = listeners.iterator(); it.hasNext();) {
-			ShortcutsListener listener = (ShortcutsListener) it.next();
+		for (ShortcutsListener listener : listeners ) {
 			listener.onAddshortcut(shortcut);
 		}
 	}
 
 	public void notifyChangeshortcuts(Shortcut shortcut) {
-		for (Iterator it = listeners.iterator(); it.hasNext();) {
-			ShortcutsListener listener = (ShortcutsListener) it.next();
+		for (ShortcutsListener listener : listeners ) {
 			listener.onChangeshortcut(shortcut);
 		}
 	}
@@ -80,15 +77,14 @@ public class ShortcutsManager {
 		return instance;
 	}
 
-	public Iterator iterator() {
+	public Iterator<Shortcut> iterator() {
 		return shortcutsList.iterator();
 	}
 
 	public boolean isShortCut(String cmd) {
 
-		for (Iterator it = shortcutsList.iterator(); it.hasNext();) {
-			Shortcut command = (Shortcut) it.next();
-			if (command.getName().equals(cmd))
+		for (Shortcut shortcut : shortcutsList ) {
+			if (shortcut.getName().equals(cmd))
 				return true;
 		}
 		return false;
@@ -96,10 +92,9 @@ public class ShortcutsManager {
 
 	public Shortcut findByName(String cmd) {
 
-		for (Iterator it = shortcutsList.iterator(); it.hasNext();) {
-			Shortcut command = (Shortcut) it.next();
-			if (command.getName().equals(cmd))
-				return command;
+		for (Shortcut shortcut : shortcutsList ) {
+			if (shortcut.getName().equals(cmd))
+				return shortcut;
 		}
 		return null;
 	}
@@ -125,7 +120,6 @@ public class ShortcutsManager {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void add(Shortcut command) {
 		shortcutsList.add(command);
 		notifyAddshortcuts(command);
@@ -136,6 +130,7 @@ public class ShortcutsManager {
 		shortcutsList.remove(shortcut);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void init() {
 
 		storePath = HomeLocator.getConfigHome() + File.separator
@@ -182,15 +177,13 @@ public class ShortcutsManager {
 
 			Document document = DocumentHelper.createDocument();
 			Element root = document.addElement("commands");
-
-			for (Iterator it = shortcutsList.iterator(); it.hasNext();) {
-
-				Shortcut command = (Shortcut) it.next();
+			
+			for (Shortcut shortcut : shortcutsList ) {
 
 				Element shortcutElement = root.addElement("command");
 
-				shortcutElement.addElement("name").addText(command.getName());
-				shortcutElement.addElement("text").addText(command.getText());
+				shortcutElement.addElement("name").addText(shortcut.getName());
+				shortcutElement.addElement("text").addText(shortcut.getText());
 
 			}
 

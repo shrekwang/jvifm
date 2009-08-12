@@ -1,9 +1,6 @@
 package net.sf.jvifm.ui;
 
-import java.io.File;
-
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.widgets.TreeItem;
 
 public class FileTreeListener extends ViKeyListener {
 	private FileTree fileTree;

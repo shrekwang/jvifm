@@ -79,6 +79,7 @@ public class UnCompressCommand extends InterruptableCommand {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void unzip(String zipFilePath, String dstPath) throws Exception {
 		ZipFile zipFile = new ZipFile(new File(zipFilePath));
 		ZipEntry entry = null;

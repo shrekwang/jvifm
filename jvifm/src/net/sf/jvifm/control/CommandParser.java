@@ -21,8 +21,6 @@
 
 package net.sf.jvifm.control;
 
-import java.io.File;
-
 import net.sf.jvifm.Main;
 import net.sf.jvifm.model.Shortcut;
 import net.sf.jvifm.model.ShortcutsManager;
@@ -33,7 +31,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FilenameUtils;
-import org.eclipse.swt.program.Program;
 
 public class CommandParser {
 

@@ -41,9 +41,17 @@ public class MkdirCommand extends Command {
 			String dirName = FilenameUtils.concat(pwd, filenames[i]);
 			FileOperator.mkdir(dirName);
 		}
+		//only add first node
+		for (int i=0; i<filenames.length; i++) {
+			String[] pathNodes=filenames[i].split("[\\/|\\\\]");
+			filenames[i]=pathNodes[0];
+		}
 		addToPanel(pwd, filenames);
 		return;
 
+	}
+	public static void main(String[] args) {
+		System.out.println(FilenameUtils.getPath("aa/bb/cc"));
 	}
 
 }
