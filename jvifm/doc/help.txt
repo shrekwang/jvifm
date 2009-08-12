@@ -19,7 +19,7 @@ Basic Movement
 
       gh   change current dir to user home directory
       g/   change current dir to file system root
-      ga   pops a quick run shell
+      ss   pops a quick run shell
       zz   pack the file lister column
       gt   switch to next tab
       gT   switch to previous tab
@@ -42,10 +42,19 @@ Additional Normal Mode Keys
     P    paste file from system clipboard
     t    tag the current file.
     v    start visual mode.
+    S    add the current file to shortcut list.
     i    disable jvifm keys.
     o   open file  with default program associate to file in system
     x   uncompress the current archive file ( support tar, tar.gz,tar.bz2,zip,jar,war)
 
+Additional Normal Mode Keys in Folder tree:
+    i    enter the current node
+    u    back to file system root
+    B    open the folder with bookmarks as root nodes
+    zc   collapse the current node
+    gj   move cursor to the next sibling
+    gk   move cursor to the previous sibling
+    
 	
 Marks 
 	Marks are set the same way as they are in vi. 
@@ -78,7 +87,7 @@ Command: in file lister press ":" enter command mode,current implemented command
 	
 	 :bookmarks              ,show bookmarks in side panel
 	 :history                ,show history in side panel
-	 :shortcuts               ,show shortcuts in side panel
+	 :shortcuts              ,show shortcuts in side panel
 	 :folder                 ,show folder tree in side panel
 	 
 	 

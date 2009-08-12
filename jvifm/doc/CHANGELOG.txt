@@ -1,9 +1,18 @@
-Changes in Version 0.9a
+Changes in Version 0.9b
 ---------------------------------------------------
 Features:
-	--add eclipse plugin , open file in jvim
 	--add "swap" command, swap two panel
-
 Bugfixes:
     --"open with system default" now worked on directory.
     
+
+Changes in Version 0.10b
+---------------------------------------------------
+Features:
+-- add file mime icons
+-- file tree panel now support more vi key bindings
+-- prompt more info when overwrite files on copy/move 
+-- "ga" key binding is now changed to "ss"
+
+Bugfixes:
+-- a lot bug fixes
