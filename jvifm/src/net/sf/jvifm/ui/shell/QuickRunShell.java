@@ -320,6 +320,8 @@ public class QuickRunShell {
 		}
 
 		String newPath = FilenameUtils.concat(pwd, cmd);
+		newPath=FilenameUtils.normalizeNoEndSeparator(newPath);
+		
 		File file = new File(newPath);
 		if (file.exists()) {
 			if (file.isFile()) {
