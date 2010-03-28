@@ -55,71 +55,73 @@ Additional Normal Mode Keys in Folder tree:
     gj   move cursor to the next sibling
     gk   move cursor to the previous sibling
     
-	
+        
 Marks 
-	Marks are set the same way as they are in vi. 
-	m[a-z] to set a mark for the current file.
-	'[a-z] moves to the file set for the mark.
+        Marks are set the same way as they are in vi. 
+        m[a-z] to set a mark for the current file.
+        '[a-z] moves to the file set for the mark.
 
       
 
 Command: in file lister press ":" enter command mode,current implemented command list as follows:
 
-	 :hide                   ,hide the main window
-	 :quit                   ,close the tab or quit the application
-	 :only                   ,one panel mode
-	 :split                  ,two panel mode
-	 :sync                   ,sync between left and right file lister view
-	 :sort                   ,popup menu of different sorting methods
-	 :tabnew  name           ,open a new file lister tab with the name as title
-	 
-	 :cd path                ,cd the the path
-	 :sh                     ,open terminal window
-	 :mkdir file{ file..}    ,make dir  if not exists
-	 :rename from to files   ,rename the files by replacing the "from" to "to"
-	 :du  file               ,calc the file of directory info
-	 :md5sum file            ,calc the md5sum value of file
-	 :sha1sum file           ,calc the sha1sum value of file
-	 :kill                   ,stop the current job. like coping file etc.
-	 
-	 :help                   ,display this simple help text
-	 :conf                   ,configuration for the jvifm
-	
-	 :bookmarks              ,show bookmarks in side panel
-	 :history                ,show history in side panel
-	 :shortcuts              ,show shortcuts in side panel
-	 :folder                 ,show folder tree in side panel
-	 
-	 
-	 :compress filename      ,compress current selection files into filename
+         :hide                   ,hide the main window
+         :quit                   ,close the tab or quit the application
+         :only                   ,one panel mode
+         :split                  ,two panel mode
+         :sync                   ,sync between left and right file lister view
+         :sort                   ,popup menu of different sorting methods
+         :tabnew  name           ,open a new file lister tab with the name as title
+         
+         :cd path                ,cd the the path
+         :sh                     ,open terminal window
+         :mkdir file{ file..}    ,make dir  if not exists
+         :rename from to files   ,rename the files by replacing the "from" to "to"
+         :du  file               ,calc the file of directory info
+         :md5sum file            ,calc the md5sum value of file
+         :sha1sum file           ,calc the sha1sum value of file
+         :kill                   ,stop the current job. like coping file etc.
+         
+         :help                   ,display this simple help text
+         :conf                   ,configuration for the jvifm
+        
+         :bookmarks              ,show bookmarks in side panel
+         :history                ,show history in side panel
+         :shortcuts              ,show shortcuts in side panel
+         :folder                 ,show folder tree in side panel
+         
+         
+         :compress filename      ,compress current selection files into filename
              archive. the archive type depends on the extension 
              name of the filename. the archive type supported 
              now are "tar, tar.gz, tar.bz2, zip".
-	 
-	 
-	 
-	 :find [options]
+         
+         
+         
+         :find [options]
        
-             -name  filename  ,file name that can contains wildcard
+             -n --name  filename  ,file name that can contains wildcard
+
+             -p --wholename filename, file whole name (including path)
              
-             -size  [+-]n[kmg] or n[kmg]-n[kmg]
+             -s --size  [+-]n[kmg] or n[kmg]-n[kmg]
                +:bigger than, -:smaller than
                k:KiloByte,m:MegaByte,g:GigaByte 
                
-             -text text      ,file that contains text in content
+             -t --text text      ,file that contains text in content
              
-             -mtime [+-]n[mhd] or n[mhd]-n[mhd]
+             -m --mtime [+-]n[mhd] or n[mhd]-n[mhd]
                +:bigger than,-:smaller than
                m:minute,h:hour,d:day
 
-			 
+                         
          :touch [options] filename
            -d date,  date in yyyy-MM-dd format
            -r file,  reference file 
-			   
-	 
-	 :ls [options] name      ,list file
-	 
+                           
+         
+         :ls [options] name      ,list file
+         
            -a  do not ignore entries starting with .
            -r  reverse order while sorting
            -R  list subdirectories recursively
@@ -128,15 +130,15 @@ Command: in file lister press ":" enter command mode,current implemented command
            -U  do not sort, list entries in directory oder
            -X  sort alphabetically by entry extendsion
 
-			   
-	 
+                           
+         
   command macros
-	%f all of the selected files
-	%F all of the selected files in the other directory list.
-	%d current directory name
-	%D other file list directory name
+        %f all of the selected files
+        %F all of the selected files in the other directory list.
+        %d current directory name
+        %D other file list directory name
 
 
   system hotkeys
-  Ctrl+Alt+j:  show main window
-  Ctrl+Alt+h:   pops a quick run shell
+      Ctrl+Alt+j:  show main window
+      Ctrl+Alt+h:   pops a quick run shell

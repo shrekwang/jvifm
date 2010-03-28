@@ -16,3 +16,14 @@ Features:
 
 Bugfixes:
 -- a lot bug fixes
+
+
+Changes in Version 0.11b
+---------------------------------------------------
+Features:
+-- add "open with .." in context menu.
+-- "find" command add "wholename" option so we can 
+   search the whole file name (including path) now.
+
+Bugfixes:
+-- when delete files , the status bar not updated problem fixed
