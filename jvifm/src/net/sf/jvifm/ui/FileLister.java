@@ -83,6 +83,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -457,6 +458,15 @@ public class FileLister implements ViLister, Panel {
 				openWithDefault();
 			}
 		});
+		
+		MenuItem openMethodItem = new MenuItem(menu, SWT.PUSH);
+		openMethodItem.setText(Messages
+				.getString("FileLister.menuitemOpenMethod")); //$NON-NLS-1$
+		openMethodItem.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				openWith();
+			}
+		});
 
 		new MenuItem(menu, SWT.SEPARATOR);
 		
@@ -704,10 +714,12 @@ public class FileLister implements ViLister, Panel {
 			File currentFile = new File(FilenameUtils.concat(pwd, textEditor.getText()));
 			boolean isSuccess = false;
 			if (itemType.equals("file")) {
+                isSuccess = true;
 				if (!currentFile.exists()) {
 					try {
 						currentFile.createNewFile();
 					} catch (IOException e) {
+                        isSuccess = false;
 					}
 				} else {
 					currentFile.setLastModified(System
@@ -732,6 +744,7 @@ public class FileLister implements ViLister, Panel {
 			textEditor.dispose();
 			editor.dispose();
 		}
+        updateStatusText();
 	}
 
 	class ItemTextKeyListener extends KeyAdapter {
@@ -1173,6 +1186,10 @@ public class FileLister implements ViLister, Panel {
 		table.removeAll();
 	}
 
+    public void updateStatusText() {
+		lblStatus.setText("total " + table.getItemCount() + " items"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
 	public void addSubFiles(File subFile) {
 
 		TableItem item = new TableItem(table, SWT.BORDER);
@@ -1187,7 +1204,7 @@ public class FileLister implements ViLister, Panel {
 		item.setText(2, StringUtil.formatDate(subFile.lastModified()));
 		table.setSelection(item);
 		currentRow = table.getItemCount() - 1;
-		lblStatus.setText("total " + table.getItemCount() + " items"); //$NON-NLS-1$ //$NON-NLS-2$
+        updateStatusText();
 
 	}
 	
@@ -1210,7 +1227,7 @@ public class FileLister implements ViLister, Panel {
 			item.setText(2, StringUtil.formatDate(currentFiles[i]
 					.lastModified()));
 		}
-		lblStatus.setText("total " + table.getItemCount() + " items"); //$NON-NLS-1$ //$NON-NLS-2$
+        updateStatusText();
 	}
 
 	private File[] getFilteredFiles(File file, String filterString) {
@@ -1397,6 +1414,20 @@ public class FileLister implements ViLister, Panel {
 	public void openWithDefault() {
 		String path = getItemFullPath(currentRow);
 		Util.openFileWithDefaultApp(path);
+	}
+	
+	public void openWith() {
+		String operatedFile = getItemFullPath(currentRow);
+		FileDialog fd = new FileDialog(Main.shell, SWT.OPEN);
+		String appName = fd.open();
+		if (appName != null) {
+			try {
+				Runtime.getRuntime().exec(
+						new String[] { appName,operatedFile }, null, new File(getPwd()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void editFile(String[] paths) {
@@ -1585,6 +1616,7 @@ public class FileLister implements ViLister, Panel {
 			}
 			table.setSelection(currentRow);
 		}
+        updateStatusText();
 
 	}
 

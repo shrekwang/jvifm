@@ -24,6 +24,7 @@ import java.io.File;
 
 import net.sf.jvifm.model.filter.AgeFileFilter2;
 import net.sf.jvifm.model.filter.FileContentFilter;
+import net.sf.jvifm.model.filter.PathFilter;
 import net.sf.jvifm.model.filter.SizeFileFilter2;
 
 import org.apache.commons.cli.CommandLine;
@@ -41,10 +42,11 @@ public class FindCommand extends InterruptableCommand {
 
 	static {
 		options = new Options();
-		options.addOption("name", true, "file name");
-		options.addOption("size", true, "file size");
-		options.addOption("text", true, "file contains the text");
-		options.addOption("mtime", true, "last modified time of file");
+		options.addOption("n","name", true, "file name");
+		options.addOption("p","wholename", true, "file name,including path");
+		options.addOption("s","size", true, "file size");
+		options.addOption("t","text", true, "file contains the text");
+		options.addOption("m","mtime", true, "last modified time of file");
 	}
 
 	public FindCommand(CommandLine cmdLine) {
@@ -54,16 +56,12 @@ public class FindCommand extends InterruptableCommand {
 	public void execute() {
 		removeAllItemInPanel();
 		find(new File(pwd), cmdLine);
-		// listSubFileInPanel(files);
 
 	}
 
 	public void find(File directory, CommandLine cmdLine) {
 		IOFileFilter filter = findingFilter(cmdLine);
 		find(directory, filter);
-		// if (filter.accept(directory)) {
-		// foundFiles.add(directory);
-		// }
 	}
 
 	private void find(File directory, IOFileFilter filter) {
@@ -93,7 +91,7 @@ public class FindCommand extends InterruptableCommand {
 		AndFileFilter filters = new AndFileFilter();
 		Option[] options = cmdLine.getOptions();
 		for (int i = 0; i < options.length; i++) {
-			IOFileFilter filter = createFilter(options[i].getOpt(), options[i]
+			IOFileFilter filter = createFilter(options[i].getLongOpt(), options[i]
 					.getValue());
 			filters.addFileFilter(filter);
 		}
@@ -123,11 +121,15 @@ public class FindCommand extends InterruptableCommand {
 			}
 		}
 		if (option.equals("name")) {
-			IOFileFilter filter = new WildcardFileFilter(argument.toString());
+			IOFileFilter filter = new WildcardFileFilter(argument);
+			return (invert ? new NotFileFilter(filter) : filter);
+		}
+		if (option.equals("wholename")) {
+			IOFileFilter filter = new PathFilter(argument.toString());
 			return (invert ? new NotFileFilter(filter) : filter);
 		}
 		if (option.equals("text")) {
-			IOFileFilter filter = new FileContentFilter(argument.toString());
+			IOFileFilter filter = new FileContentFilter(argument);
 			return (invert ? new NotFileFilter(filter) : filter);
 		}
 
