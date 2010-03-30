@@ -9,21 +9,23 @@ Bugfixes:
 Changes in Version 0.10b
 ---------------------------------------------------
 Features:
--- add file mime icons
--- file tree panel now support more vi key bindings
--- prompt more info when overwrite files on copy/move 
--- "ga" key binding is now changed to "ss"
+  -- add file mime icons
+  -- file tree panel now support more vi key bindings
+  -- prompt more info when overwrite files on copy/move 
+  -- "ga" key binding is now changed to "ss"
 
 Bugfixes:
--- a lot bug fixes
+  -- a lot bug fixes
 
 
 Changes in Version 0.11b
 ---------------------------------------------------
 Features:
--- add "open with .." in context menu.
--- "find" command add "wholename" option so we can 
+  -- add "open with .." in context menu.
+  -- "find" command add "wholename" option so we can 
    search the whole file name (including path) now.
 
 Bugfixes:
--- when delete files , the status bar not updated problem fixed
+  -- when delete files , the status bar was not updated. 
+  -- file panel is empty when startuped if the app was existed not entering
+    any directory.
