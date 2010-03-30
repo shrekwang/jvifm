@@ -173,6 +173,9 @@ public class FileLister implements ViLister, Panel {
 		lblStatus = new Label(container, SWT.BORDER);
 		lblStatus.setLayoutData( new GridData(GridData.FILL_HORIZONTAL));
 
+		if (pwd == null || pwd.trim().equals("")) {
+			pwd=FS_ROOT;
+		}
 		this.pwd = pwd;
 		visit(pwd);
 	}
