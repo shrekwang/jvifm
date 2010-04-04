@@ -35,6 +35,7 @@ import net.sf.jvifm.control.TouchCommand;
 import net.sf.jvifm.model.AppStatus;
 import net.sf.jvifm.model.BookmarkManager;
 import net.sf.jvifm.model.ShortcutsManager;
+import net.sf.jvifm.model.MimeManager;
 import net.sf.jvifm.ui.FileLister;
 import net.sf.jvifm.ui.FileManager;
 import net.sf.jvifm.util.HomeLocator;
@@ -116,6 +117,7 @@ public class Main {
 	public static void exit() {
 		BookmarkManager.getInstance().store();
 		ShortcutsManager.getInstance().store();
+		MimeManager.getInstance().store();
 		AppStatus.writeAppStatus();
 		shell.dispose();
 		display.dispose();

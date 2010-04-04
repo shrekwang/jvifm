@@ -40,6 +40,7 @@ import net.sf.jvifm.control.RemoveCommand;
 import net.sf.jvifm.control.UnCompressCommand;
 import net.sf.jvifm.model.FileListerListener;
 import net.sf.jvifm.model.HistoryManager;
+import net.sf.jvifm.model.MimeManager;
 import net.sf.jvifm.model.Preference;
 import net.sf.jvifm.model.Shortcut;
 import net.sf.jvifm.model.ShortcutsManager;
@@ -331,6 +332,9 @@ public class FileLister implements ViLister, Panel {
 		});
 		table.addListener(SWT.MenuDetect, new Listener() {
 			public void handleEvent(Event arg0) {
+				int selectionIndex=table.getSelectionIndex();
+				System.out.println(selectionIndex);
+				
 				Menu menu = createPopMenu();
 				menu.setLocation(arg0.x, arg0.y);
 				menu.setVisible(true);
@@ -454,6 +458,7 @@ public class FileLister implements ViLister, Panel {
 		});
 
 		MenuItem openItem = new MenuItem(menu, SWT.PUSH);
+        menu.setDefaultItem(openItem);
 		openItem.setText(Messages
 				.getString("FileLister.menuitemOpenWithDefault")); //$NON-NLS-1$
 		openItem.addSelectionListener(new SelectionAdapter() {
@@ -462,12 +467,34 @@ public class FileLister implements ViLister, Panel {
 			}
 		});
 		
+		new MenuItem(menu, SWT.SEPARATOR);
+		
+		String operatedFile = getItemFullPath(currentRow);
+        String ext = FilenameUtils.getExtension(operatedFile);
+        MimeManager mimeManager=MimeManager.getInstance();
+        List<String> appPaths=mimeManager.get(ext);
+
+        if (appPaths != null) {
+            for (final String appPath: appPaths) {
+                String baseName = FilenameUtils.getBaseName(appPath);
+                MenuItem openWithItem = new MenuItem(menu, SWT.PUSH);
+                String msg=Messages.getString("FileLister.menuitemOpenWith");
+                msg=msg.replaceAll("\\$", baseName);
+                openWithItem.setText(msg);
+                openWithItem.addSelectionListener(new SelectionAdapter() {
+                    public void widgetSelected(SelectionEvent event) {
+                        openWith(appPath);
+                    }
+                });
+            }
+        }
+
 		MenuItem openMethodItem = new MenuItem(menu, SWT.PUSH);
 		openMethodItem.setText(Messages
 				.getString("FileLister.menuitemOpenMethod")); //$NON-NLS-1$
 		openMethodItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				openWith();
+				openWith(null);
 			}
 		});
 
@@ -535,6 +562,7 @@ public class FileLister implements ViLister, Panel {
 				doDelete();
 			}
 		});
+
 
 		return menu;
 	}
@@ -1419,14 +1447,18 @@ public class FileLister implements ViLister, Panel {
 		Util.openFileWithDefaultApp(path);
 	}
 	
-	public void openWith() {
+	public void openWith(String appName) {
 		String operatedFile = getItemFullPath(currentRow);
-		FileDialog fd = new FileDialog(Main.shell, SWT.OPEN);
-		String appName = fd.open();
+        String ext = FilenameUtils.getExtension(operatedFile);
+        if (appName == null ) {
+            FileDialog fd = new FileDialog(Main.shell, SWT.OPEN);
+            appName = fd.open();
+        }
 		if (appName != null) {
 			try {
-				Runtime.getRuntime().exec(
-						new String[] { appName,operatedFile }, null, new File(getPwd()));
+				Runtime.getRuntime().exec(new String[] { appName,operatedFile }, null, new File(getPwd()));
+                MimeManager mimeManager = MimeManager.getInstance();
+                mimeManager.add(ext,appName);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
