@@ -98,7 +98,7 @@ public class MimeManager {
 					Element filetypeEle = (Element) it.next();
 					String postfix = filetypeEle.attributeValue("postfix");
 
-                    List appPathEleList = filetypeEle.selectNodes("//appPath");
+                    List appPathEleList = filetypeEle.selectNodes("appPath");
 
                     List<String> appPaths = new ArrayList<String>();
                     for (Iterator it2 = appPathEleList.iterator(); it2.hasNext();) {
