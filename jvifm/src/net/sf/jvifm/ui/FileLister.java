@@ -1130,7 +1130,9 @@ public class FileLister implements ViLister, Panel {
 	}
 
     private void changeLocationText() {
+    	if (table.getItemCount() == 0) return;
 		File selectFile = new File(getItemFullPath(currentRow));
+        if (selectFile == null ) return;
         String currentPath = ""; 
         if (selectFile.isDirectory()) {
             currentPath=selectFile.getPath();
