@@ -323,6 +323,7 @@ public class FileLister implements ViLister, Panel {
 		table.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent arg0) {
 				currentRow = table.getSelectionIndex();
+                changeLocationText();
 				setTabTitle();
 			}
 
@@ -906,6 +907,7 @@ public class FileLister implements ViLister, Panel {
 				cursor.setSelection(currentRow, 0);
 			}
 		}
+        changeLocationText();
 	}
 
 	public void cursorDown() {
@@ -1119,39 +1121,50 @@ public class FileLister implements ViLister, Panel {
 			String dirPosInfo = (String) historyManager.getSelectedItem(path);
 			generateItems(currentFiles, dirPosInfo);
 
-			textLocation.setText(getLastLongestPath(pwd));
-			if (pwd.indexOf(File.separator) > -1) {
-				int length = pwd.substring(pwd.lastIndexOf(File.separator))
-						.length() - 1;
-				if (length > 1) {
-					StyleRange style1 = new StyleRange();
-					style1.start = pwd.length() - length;
-
-					style1.length = length;
-					style1.fontStyle = SWT.BOLD;
-					style1.background = new Color(textLocation.getDisplay(),
-							166, 166, 166);
-
-					textLocation.setStyleRange(style1);
-				}
-			}
-
-			// win root driver c:\ d:\ etc.
-			if (pwd.endsWith(":\\")) { //$NON-NLS-1$
-				StyleRange style1 = new StyleRange();
-				style1.start = 0;
-				style1.length = pwd.length() - 1;
-				style1.fontStyle = SWT.BOLD;
-				style1.background = new Color(textLocation.getDisplay(), 166,
-						166, 166);
-				textLocation.setStyleRange(style1);
-			}
+            changeLocationText();
 
 		}
 		filterString = null;
 		setTabTitle();
 
 	}
+
+    private void changeLocationText() {
+		File selectFile = new File(getItemFullPath(currentRow));
+        String currentPath = ""; 
+        if (selectFile.isDirectory()) {
+            currentPath=selectFile.getPath();
+        } else {
+            currentPath=selectFile.getParent();
+        }
+        textLocation.setText(getLastLongestPath(currentPath));
+        if (currentPath.indexOf(File.separator) > -1) {
+            int length = currentPath.substring(currentPath.lastIndexOf(File.separator))
+                    .length() - 1;
+            if (length > 1) {
+                StyleRange style1 = new StyleRange();
+                style1.start = currentPath.length() - length;
+
+                style1.length = length;
+                style1.fontStyle = SWT.BOLD;
+                style1.background = new Color(textLocation.getDisplay(),
+                        166, 166, 166);
+
+                textLocation.setStyleRange(style1);
+            }
+        }
+
+        // win root driver c:\ d:\ etc.
+        if (currentPath.endsWith(":\\")) { //$NON-NLS-1$
+            StyleRange style1 = new StyleRange();
+            style1.start = 0;
+            style1.length = currentPath.length() - 1;
+            style1.fontStyle = SWT.BOLD;
+            style1.background = new Color(textLocation.getDisplay(), 166,
+                    166, 166);
+            textLocation.setStyleRange(style1);
+        }
+    }
 
 	private String getLastLongestPath(String path) {
 
