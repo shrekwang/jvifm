@@ -84,8 +84,15 @@ public class Main {
 		String[][] panelDirs=AppStatus.loadAppStatus();
 		if (! ( panelDirs==null) && panelDirs.length>0) {
 			for (int i=0; i<panelDirs.length; i++) {
-				if (panelDirs[i][0]!=null && panelDirs[i][1]!=null)
-        			fileManager.tabnew(panelDirs[i][0],panelDirs[i][1]);
+                String leftPath = FileLister.FS_ROOT;
+                String rightPath = FileLister.FS_ROOT;
+                if (panelDirs[i][0] !=null && new File(panelDirs[i][0]).isDirectory()) {
+                    leftPath = panelDirs[i][0];
+                }
+                if (panelDirs[i][1] !=null && new File(panelDirs[i][1]).isDirectory()) {
+                    rightPath = panelDirs[i][1];
+                }
+                fileManager.tabnew(leftPath, rightPath);
 			}
 		} else {
     			fileManager.tabnew(FileLister.FS_ROOT,FileLister.FS_ROOT);

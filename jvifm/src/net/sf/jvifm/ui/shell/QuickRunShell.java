@@ -322,8 +322,13 @@ public class QuickRunShell {
 		String newPath = FilenameUtils.concat(pwd, cmd);
 		newPath=FilenameUtils.normalizeNoEndSeparator(newPath);
 		
-		File file = new File(newPath);
-		if (file.exists()) {
+        File file = null;
+        try {
+            file = new File(newPath);
+        } catch (Exception e ) {
+            return false;
+        }
+		if (file !=null && file.exists()) {
 			if (file.isFile()) {
 				// Util.openFileWithDefaultApp(newPath);
 				Command command = new SystemCommand(newPath, args, true);
