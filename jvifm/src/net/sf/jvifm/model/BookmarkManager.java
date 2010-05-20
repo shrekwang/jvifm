@@ -97,6 +97,16 @@ public class BookmarkManager {
 
 	public void add(Bookmark bm) {
 
+        //bookmark has an empty name or in driver root path
+        if (bm.getName().trim().equals("") || bm.getPath().trim().endsWith(":")) {
+            return;
+        }
+        for (Iterator it = bookmarkList.iterator(); it.hasNext();) {
+            Bookmark tempBm = (Bookmark) it.next();
+            //bookmark exists
+            if (tempBm.getName().equals(bm.getName())) return; 
+        }
+
 		boolean keyExists = false;
 		if (bm.getKey() != null) {
 			if (bookmarkMap.keySet().contains(bm.getKey())) {
@@ -107,12 +117,14 @@ public class BookmarkManager {
 			bookmarkMap.put(bm.getKey(), bm);
 		}
 
+
 		bookmarkList.add(bm);
 		if (keyExists) {
 			notifyChangeBookmark(bm.getKey(), bm);
 		} else {
 			notifyAddBookmark(bm);
 		}
+        store();
 
 	}
 
@@ -126,6 +138,7 @@ public class BookmarkManager {
 	public void remove(Bookmark bm) {
 		bookmarkMap.values().remove(bm);
 		bookmarkList.remove(bm);
+        store();
 	}
 
 	public void removeByKey(String key) {
@@ -136,6 +149,7 @@ public class BookmarkManager {
 			bookmarkList.remove(bm);
 			bookmarkMap.remove(key);
 		}
+        store();
 	}
 
 	@SuppressWarnings("unchecked")

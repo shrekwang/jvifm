@@ -121,13 +121,20 @@ public class ShortcutsManager {
 	}
 
 	public void add(Shortcut command) {
+
+		for (Iterator it = shortcutsList.iterator(); it.hasNext();) {
+			Shortcut tempCmd = (Shortcut) it.next();
+            //shortcut exists
+            if (tempCmd.getName().equals(command.getName())) return;
+        }
 		shortcutsList.add(command);
 		notifyAddshortcuts(command);
-
+        store();
 	}
 
 	public void remove(Shortcut shortcut) {
 		shortcutsList.remove(shortcut);
+        store();
 	}
 
 	@SuppressWarnings("unchecked")
