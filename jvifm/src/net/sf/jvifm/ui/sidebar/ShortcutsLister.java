@@ -253,6 +253,7 @@ public class ShortcutsLister extends BasicViLister implements
 
 		if (isChanged) {
 			item.setText(shortcuts.getName());
+			shortcutsManager.update();
 		}
 	}
 

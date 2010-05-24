@@ -24,6 +24,7 @@ package net.sf.jvifm.ui.shell;
 import net.sf.jvifm.model.Bookmark;
 import net.sf.jvifm.model.BookmarkManager;
 import net.sf.jvifm.ui.Messages;
+import net.sf.jvifm.ui.Util;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -154,13 +155,15 @@ public class BookmarkEditShell {
 				if (txtKey.getText().trim().equals("")) {
 					bookmark.setKey(null);
 				} else {
-
 					String oldKey = bookmark.getKey();
 					BookmarkManager bm = BookmarkManager.getInstance();
-					bm.changeBookmarkKey(oldKey, txtKey.getText().trim(),
-							bookmark);
-
-					bookmark.setKey(txtKey.getText().trim());
+                    String newKey = txtKey.getText().trim();
+                    if (! newKey.equals(oldKey) && bm.isKeyExisted(newKey)) {
+                        Util.openMessageWindow("the key has been used, please use another key.");
+                        txtKey.setFocus();
+                        return;
+                    }
+					bm.changeBookmarkKey(oldKey, newKey, bookmark);
 				}
 				isChanged = true;
 				shell.close();

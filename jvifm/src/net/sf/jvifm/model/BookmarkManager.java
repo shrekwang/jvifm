@@ -128,11 +128,15 @@ public class BookmarkManager {
 
 	}
 
+    public boolean isKeyExisted(String key) {
+        return bookmarkMap.containsKey(key) ;
+    }
+
 	public void changeBookmarkKey(String oldKey, String newKey, Bookmark bm) {
 		if (oldKey != null) bookmarkMap.remove(oldKey);
-		
+		bm.setKey(newKey);
 		bookmarkMap.put(newKey, bm);
-
+        store();
 	}
 
 	public void remove(Bookmark bm) {

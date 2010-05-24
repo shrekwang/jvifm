@@ -131,6 +131,10 @@ public class ShortcutsManager {
 		notifyAddshortcuts(command);
         store();
 	}
+	
+	public void update() {
+		store();
+	}
 
 	public void remove(Shortcut shortcut) {
 		shortcutsList.remove(shortcut);
