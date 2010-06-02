@@ -21,11 +21,12 @@ Bugfixes:
 Changes in Version 0.11b
 ---------------------------------------------------
 Features:
-  -- add "open with .." in context menu.
-  -- "find" command add "wholename" option so we can 
-   search the whole file name (including path) now.
-
+  -- add "open with .." item  in context menu.
+  -- "find" command add "wholename" option so jvifm can search the whole file name (including path) now.
+  -- active file panel now has a light yellow background, for better distinguish from inactive panel. 
+  -- cmdline now shows "--original--","--visual--","--tag--" message in different operate mode. 
+ 
 Bugfixes:
-  -- when delete files , the status bar was not updated. 
-  -- file panel is empty when startuped if the app was existed not entering
-    any directory.
+  -- when files been deleted, the status bar was not updated. 
+  -- file panel is empty if jvifm existed when file panel not entered in any driver (windows).
+  -- some other bug fixes.
