@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 import net.sf.jvifm.Main;
 import net.sf.jvifm.model.Bookmark;
 import net.sf.jvifm.model.BookmarkManager;
+import net.sf.jvifm.ui.FileLister.Mode;
 import net.sf.jvifm.ui.shell.QuickRunShell;
 import net.sf.jvifm.util.HomeLocator;
 
@@ -85,7 +86,7 @@ public class FileListerKeyListener extends KeyAdapter {
 			String file = fileLister.getSelectionFiles()[0];
 			fileManager.preview(file);
 		}
-		if (fileLister.isOrigMode() ) {
+		if (fileLister.getOperateMode() == Mode.ORIG ) {
 			event.doit = true;
 			return;
 		}

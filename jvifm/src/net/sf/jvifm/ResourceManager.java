@@ -39,6 +39,8 @@ public class ResourceManager {
 	private static HashMap resources = new HashMap();
 	private static Image fileImage = getImage("file.png");     //$NON-NLS-1$
 	private static Image folderImage = getImage("folder.png"); //$NON-NLS-1$
+	
+	public static final Color ActiveListerBackground=getColor(238, 238, 221);
 
 	@SuppressWarnings("unchecked")
 	public static Image getImage(String url) {
@@ -55,11 +57,19 @@ public class ResourceManager {
 				resources.put(url, img);
 			return img;
 		} catch (Exception e) {
-			System.err
-					.println("SWTResourceManager.getImage: Error getting image "
-							+ url + ", " + e);
+			System.err.println("SWTResourceManager.getImage: Error getting image " + url + ", " + e);
 			return null;
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Color getColor(int red,int green,int blue) {
+		String key=String.valueOf(red)+String.valueOf(green)+String.valueOf(blue);
+		if (resources.containsKey(key))
+			return (Color) resources.get(key);
+		Color color=new Color(Display.getDefault(), red, green, blue);
+		resources.put(key, color);
+		return color;
 	}
 	
 	public static Image getMimeImage(File file) {

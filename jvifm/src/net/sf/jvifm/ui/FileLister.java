@@ -147,6 +147,7 @@ public class FileLister implements ViLister, Panel {
 	private File[] currentFiles = null;
 
 	private ArrayList<FileListerListener> listeners = new ArrayList<FileListerListener>();
+	private Color tableDefaultBackground = null;
 
 	public Control getControl() {
 		return container;
@@ -170,6 +171,7 @@ public class FileLister implements ViLister, Panel {
 		mainArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		initMainArea();
+		
 		initListener();
 		lblStatus = new Label(container, SWT.BORDER);
 		lblStatus.setLayoutData( new GridData(GridData.FILL_HORIZONTAL));
@@ -203,6 +205,7 @@ public class FileLister implements ViLister, Panel {
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 		table.setHeaderVisible(true);
 		table.setLinesVisible(false);
+		this.tableDefaultBackground=table.getBackground();
 
 		columnName = new TableColumn(table, SWT.BORDER);
 		columnName.setText(Messages.getString("FileLister.nameColumnTitle")); //$NON-NLS-1$
@@ -318,6 +321,10 @@ public class FileLister implements ViLister, Panel {
 		table.addFocusListener(new FocusAdapter() {
 			public void focusGained(FocusEvent e) {
 				setTabTitle();
+				table.setBackground(ResourceManager.ActiveListerBackground);
+			}
+			public void focusLost(FocusEvent e) {
+				table.setBackground(tableDefaultBackground);
 			}
 		});
 		table.addSelectionListener(new SelectionAdapter() {
@@ -420,7 +427,7 @@ public class FileLister implements ViLister, Panel {
 	}
 
 	public void tagCurrentItem() {
-		if (this.operateMode != Mode.TAG) {
+		if (this.getOperateMode() != Mode.TAG) {
 			switchToTagMode();
 		} else {
 			toggleSelection(currentRow);
@@ -429,7 +436,7 @@ public class FileLister implements ViLister, Panel {
 	}
 
 	public void switchToTagMode() {
-		operateMode = Mode.TAG;
+		setOperateMode(Mode.TAG);
 		currentRow = table.getSelectionIndex();
 
 		if (cursor == null || cursor.isDisposed()) {
@@ -569,12 +576,12 @@ public class FileLister implements ViLister, Panel {
 	}
 
 	public void switchToVTagMode() {
-		this.operateMode = Mode.VTAG;
+		this.setOperateMode(Mode.VTAG);
 		this.origRow = currentRow;
 	}
 
 	public void switchToOrigMode() {
-		this.operateMode = Mode.ORIG;
+		this.setOperateMode(Mode.ORIG);
 	}
 
 	public void switchPanel() {
@@ -894,7 +901,7 @@ public class FileLister implements ViLister, Panel {
 		if (table.getItemCount() == 0)
 			return;
 
-		switch (operateMode) {
+		switch (getOperateMode()) {
 		case NORMAL :
 			table.setSelection(currentRow);
 			break;
@@ -1059,7 +1066,7 @@ public class FileLister implements ViLister, Panel {
 
 	public void changePwd(String path) {
 
-		if (operateMode != Mode.ORIG )
+		if (getOperateMode() != Mode.ORIG )
 			switchToNormalMode();
 		String nextEntry = getItemFullPath(currentRow);
 		if (nextEntry != null) {
@@ -1382,12 +1389,12 @@ public class FileLister implements ViLister, Panel {
 	}
 
 	public void switchToNormalMode() {
-		if (this.operateMode == Mode.TAG ) {
+		if (this.getOperateMode() == Mode.TAG ) {
 			if (!cursor.isDisposed())
 				cursor.dispose();
 			table.setFocus();
 		}
-		this.operateMode = Mode.NORMAL;
+		this.setOperateMode(Mode.NORMAL);
 	}
 
 	public void cancelOperate() {
@@ -1430,7 +1437,7 @@ public class FileLister implements ViLister, Panel {
 		String[] selection = getSelectionFiles();
 		if (selection.length > 1) {
 			editFile(selection);
-			if (operateMode != Mode.ORIG)
+			if (getOperateMode() != Mode.ORIG)
 				switchToNormalMode();
 			return;
 		}
@@ -1701,6 +1708,23 @@ public class FileLister implements ViLister, Panel {
 	}
 	
 	public boolean isOrigMode() {
-		return this.operateMode==Mode.ORIG;
+		return this.getOperateMode()==Mode.ORIG;
+	}
+
+	public void setOperateMode(Mode operateMode) {
+		String modeTip="";
+		if (operateMode == Mode.ORIG) {
+			modeTip=" -- Original-- ";
+		} else if (operateMode == Mode.TAG) {
+			modeTip=" -- Tag -- ";
+		} else if (operateMode == Mode.VTAG) {
+			modeTip = " -- Visual -- ";
+		}
+		this.fileManager.setModeIndicate(modeTip);
+		this.operateMode = operateMode;
+	}
+
+	public Mode getOperateMode() {
+		return operateMode;
 	}
 }

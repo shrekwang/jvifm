@@ -279,7 +279,7 @@ public class MiniShell {
 		styledText.setCaretOffset(text.length());
 	}
 
-	private void setText(String text) {
+	public void setText(String text) {
 		this.styledText.setText(text);
 	}
 

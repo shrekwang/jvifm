@@ -20,10 +20,15 @@
  */
 package net.sf.jvifm.ui;
 
+import net.sf.jvifm.ResourceManager;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableCursor;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
@@ -49,6 +54,8 @@ public class BasicViLister extends Canvas implements ViLister {
 	protected Mode operateMode = Mode.NORMAL;
 
 	protected int origRow = 0;
+	
+	protected Color tableDefaultBackground=null;
 
 	public BasicViLister(Composite parent, int style) {
 		super(parent, style);
@@ -60,6 +67,7 @@ public class BasicViLister extends Canvas implements ViLister {
 	protected void initViLister() {
 		this.setLayout(new FillLayout());
 		table = new Table(this, SWT.MULTI);
+		tableDefaultBackground = table.getBackground();
 
 		table.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent arg0) {
@@ -68,6 +76,15 @@ public class BasicViLister extends Canvas implements ViLister {
 
 			public void widgetDefaultSelected(SelectionEvent arg0) {
 				enterPath();
+			}
+		});
+		
+		table.addFocusListener(new FocusAdapter() {
+			public void focusGained(FocusEvent e) {
+				table.setBackground(ResourceManager.ActiveListerBackground);
+			}
+			public void focusLost(FocusEvent e) {
+				table.setBackground(tableDefaultBackground);
 			}
 		});
 	}

@@ -1111,6 +1111,10 @@ public class FileManager implements FileListerListener {
 		miniShell.activeWith(leadStr); //$NON-NLS-1$
 		miniShell.setFocus();
 	}
+	
+	public void setModeIndicate(String mode) {
+		miniShell.setText(mode);
+	}
 
 	
 
