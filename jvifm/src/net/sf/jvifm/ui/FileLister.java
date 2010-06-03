@@ -201,7 +201,7 @@ public class FileLister implements ViLister, Panel {
 		textLocation = new StyledText(headGroup, SWT.SINGLE | SWT.BORDER);
 		textLocation.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		table = new Table(mainArea, SWT.MULTI);
+		table = new Table(mainArea, SWT.MULTI | SWT.FULL_SELECTION );
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 		table.setHeaderVisible(true);
 		table.setLinesVisible(false);
