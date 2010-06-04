@@ -332,9 +332,11 @@ public class FileLister implements ViLister, Panel {
 		table.addListener(SWT.Paint, new Listener() {
 			public void handleEvent(Event event) {
 				Point tableSize = table.getSize();
-				Rectangle bottomRect = table.getItem(table.getItemCount() - 1).getBounds();
-				int y = bottomRect.y + bottomRect.height;
-				event.gc.fillRectangle(0, y, tableSize.x, tableSize.y - y);
+				if (table.getItemCount() > 1 ) {
+					Rectangle bottomRect = table.getItem(table.getItemCount() - 1).getBounds();
+					int y = bottomRect.y + bottomRect.height;
+					event.gc.fillRectangle(0, y, tableSize.x, tableSize.y - y);
+				}
 			}
 		});
 
