@@ -40,7 +40,7 @@ public class ResourceManager {
 	private static Image fileImage = getImage("file.png");     //$NON-NLS-1$
 	private static Image folderImage = getImage("folder.png"); //$NON-NLS-1$
 	
-	public static final Color ActiveListerBackground=getColor(238, 238, 221);
+	public static final Color ActiveListerBackground=getColor(255, 252, 220);
 
 	@SuppressWarnings("unchecked")
 	public static Image getImage(String url) {

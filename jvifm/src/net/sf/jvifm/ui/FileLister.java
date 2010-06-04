@@ -76,6 +76,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -201,7 +202,7 @@ public class FileLister implements ViLister, Panel {
 		textLocation = new StyledText(headGroup, SWT.SINGLE | SWT.BORDER);
 		textLocation.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		table = new Table(mainArea, SWT.MULTI | SWT.FULL_SELECTION );
+		table = new Table(mainArea, SWT.MULTI  | SWT.FULL_SELECTION );
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 		table.setHeaderVisible(true);
 		table.setLinesVisible(false);
@@ -327,6 +328,30 @@ public class FileLister implements ViLister, Panel {
 				table.setBackground(tableDefaultBackground);
 			}
 		});
+		
+		table.addListener(SWT.Paint, new Listener() {
+			public void handleEvent(Event event) {
+				Point tableSize = table.getSize();
+				Rectangle bottomRect = table.getItem(table.getItemCount() - 1).getBounds();
+				int y = bottomRect.y + bottomRect.height;
+				event.gc.fillRectangle(0, y, tableSize.x, tableSize.y - y);
+			}
+		});
+
+		table.addListener(SWT.EraseItem, new Listener() {
+			public void handleEvent(Event event) {
+				TableColumn sortColumn = table.getSortColumn();
+				if (sortColumn == null)
+					return;
+				int columnIndex = table.indexOf(sortColumn);
+				if (columnIndex != event.index)
+					return;
+				event.gc.fillRectangle(event.getBounds());
+			}
+		});
+
+
+		
 		table.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent arg0) {
 				currentRow = table.getSelectionIndex();
