@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sf.jvifm.Main;
 import net.sf.jvifm.util.HomeLocator;
 
 import org.dom4j.Document;
@@ -122,13 +123,15 @@ public class ShortcutsManager {
 
 	public void add(Shortcut command) {
 
-		for (Iterator it = shortcutsList.iterator(); it.hasNext();) {
-			Shortcut tempCmd = (Shortcut) it.next();
-            //shortcut exists
-            if (tempCmd.getName().equals(command.getName())) return;
+		for (Shortcut tempCmd : shortcutsList ) {
+            if (tempCmd.getName().equals(command.getName())) {
+				Main.fileManager.setTipInfo("Shortcut '"+command.getName()+"' existed.");
+            	return;
+            }
         }
 		shortcutsList.add(command);
 		notifyAddshortcuts(command);
+		Main.fileManager.setTipInfo("Added shortcut "+command.getName());
         store();
 	}
 	

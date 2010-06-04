@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sf.jvifm.Main;
 import net.sf.jvifm.util.HomeLocator;
 
 import org.dom4j.Document;
@@ -101,10 +102,12 @@ public class BookmarkManager {
         if (bm.getName().trim().equals("") || bm.getPath().trim().endsWith(":")) {
             return;
         }
-        for (Iterator it = bookmarkList.iterator(); it.hasNext();) {
-            Bookmark tempBm = (Bookmark) it.next();
-            //bookmark exists
-            if (tempBm.getName().equals(bm.getName())) return; 
+        
+        for (Bookmark tempBm : bookmarkList ) {
+            if (tempBm.getName().equals(bm.getName())) {
+				Main.fileManager.setTipInfo("Bookmark '"+bm.getName()+"' existed. ");
+            	return; 
+            }
         }
 
 		boolean keyExists = false;
@@ -121,8 +124,10 @@ public class BookmarkManager {
 		bookmarkList.add(bm);
 		if (keyExists) {
 			notifyChangeBookmark(bm.getKey(), bm);
+			Main.fileManager.setTipInfo("Changed Bookmark '"+bm.getKey()+"' to "+bm.getName());
 		} else {
 			notifyAddBookmark(bm);
+			Main.fileManager.setTipInfo("Added Bookmark '"+bm.getName()+"'");
 		}
         store();
 
