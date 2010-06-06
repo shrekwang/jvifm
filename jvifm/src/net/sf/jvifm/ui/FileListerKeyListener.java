@@ -234,14 +234,24 @@ public class FileListerKeyListener extends KeyAdapter {
 			}
 		} else {
 			if (cmd.startsWith("m")) {
-				File file = new File(fileLister.getPwd());
-				Bookmark bookmark = new Bookmark();
-				bookmark.setName(file.getName());
-				bookmark.setPath(file.getPath());
-				String key = cmd.substring(1, 2);
-				bookmark.setKey(key);
-				BookmarkManager bm = BookmarkManager.getInstance();
-				bm.add(bookmark);
+				
+				String[] selections=fileLister.getSelectionFiles();
+				if (selections!=null && selections.length > 0) {
+					File file = new File(selections[0]);
+					if (file.isDirectory() ) {
+						Bookmark bookmark = new Bookmark();
+						bookmark.setName(file.getName());
+						bookmark.setPath(file.getPath());
+						String key = cmd.substring(1, 2);
+						bookmark.setKey(key);
+						BookmarkManager bm = BookmarkManager.getInstance();
+						bm.add(bookmark);					
+					} else {
+						fileManager.setTipInfo(file.getName()+" is not directory.");
+					}
+					
+				}
+
 			}
 			if (cmd.startsWith("'")) {
 				String key = cmd.substring(1, 2);
