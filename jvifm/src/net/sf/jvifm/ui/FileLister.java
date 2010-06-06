@@ -1707,8 +1707,10 @@ public class FileLister implements ViLister, Panel {
 	public void addshortcuts() {
 		String[] selectionFiles = getSelectionFiles();
 		File file = new File(selectionFiles[0]);
-		if (file.isDirectory())
+		if (!file.isFile()) {
+			fileManager.setStatusInfo(file.getName()+" is not a file.");
 			return;
+		}
 		Shortcut shortcuts = new Shortcut();
 		shortcuts.setName(file.getName());
 		shortcuts.setText(file.getPath());
