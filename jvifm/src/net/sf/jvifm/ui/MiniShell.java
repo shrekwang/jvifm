@@ -218,7 +218,7 @@ public class MiniShell {
 			for (int i = 0; i < completeOptions.length; i++) {
 				sb.append("[" + completeOptions[i] + "]  ");
 			}
-			Main.fileManager.setTipInfo(sb.toString());
+			Main.fileManager.setStatusInfo(sb.toString());
 			styledText.setCaretOffset(styledText.getText().length());
 		} else {
 
@@ -270,7 +270,7 @@ public class MiniShell {
 			}
 		}
 
-		Main.fileManager.setTipInfo(sb.toString());
+		Main.fileManager.setStatusInfo(sb.toString());
 
 	}
 

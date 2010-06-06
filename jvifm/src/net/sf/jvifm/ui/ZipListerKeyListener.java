@@ -91,7 +91,7 @@ public class ZipListerKeyListener extends KeyAdapter {
 
 			if (event.character >= '0' && event.character <= '9') {
 				countBuffer.append(event.character);
-				fileManager.setTipInfo(countBuffer.toString()
+				fileManager.setStatusInfo(countBuffer.toString()
 						+ commandBuffer.toString());
 			} else if (oneCharCmdMatcher.matches()) {
 				commandBuffer.append(event.character);
@@ -99,18 +99,18 @@ public class ZipListerKeyListener extends KeyAdapter {
 			} else if (twoCharCmdMatcher.matches()) {
 				commandBuffer.append(event.character);
 				mode = IMPEND;
-				fileManager.setTipInfo(countBuffer.toString()
+				fileManager.setStatusInfo(countBuffer.toString()
 						+ commandBuffer.toString());
 			}
 		} else if (mode.equals(IMPEND)) {
 
 			commandBuffer.append(event.character);
-			fileManager.setTipInfo(countBuffer.toString()
+			fileManager.setStatusInfo(countBuffer.toString()
 					+ commandBuffer.toString());
 			mode = DONE;
 		}
 		if (mode.equals(DONE)) {
-			fileManager.setTipInfo("");
+			fileManager.setStatusInfo("");
 			doAction();
 			commandBuffer.delete(0, commandBuffer.length());
 			countBuffer.delete(0, countBuffer.length());

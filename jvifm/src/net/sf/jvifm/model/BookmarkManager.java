@@ -105,31 +105,23 @@ public class BookmarkManager {
         
         for (Bookmark tempBm : bookmarkList ) {
             if (tempBm.getName().equals(bm.getName())) {
-				Main.fileManager.setTipInfo("Bookmark '"+bm.getName()+"' existed. ");
+				Main.fileManager.setStatusInfo("Bookmark '"+bm.getName()+"' existed. ");
             	return; 
             }
         }
 
-		boolean keyExists = false;
 		if (bm.getKey() != null) {
 			if (bookmarkMap.keySet().contains(bm.getKey())) {
-				Bookmark oldBookmark = (Bookmark) bookmarkMap.get(bm.getKey());
-				bookmarkList.remove(oldBookmark);
-				keyExists = true;
+				Main.fileManager.setStatusInfo("Bookmark key '"+bm.getKey()+"' existed.");
+				return;
 			}
-			bookmarkMap.put(bm.getKey(), bm);
 		}
 
-
+		bookmarkMap.put(bm.getKey(), bm);
 		bookmarkList.add(bm);
-		if (keyExists) {
-			notifyChangeBookmark(bm.getKey(), bm);
-			Main.fileManager.setTipInfo("Changed Bookmark '"+bm.getKey()+"' to "+bm.getName());
-		} else {
-			notifyAddBookmark(bm);
-			Main.fileManager.setTipInfo("Added Bookmark '"+bm.getName()+"'");
-		}
-        store();
+		notifyAddBookmark(bm);
+       store();
+		Main.fileManager.setStatusInfo("Added Bookmark '"+bm.getName()+"'");
 
 	}
 

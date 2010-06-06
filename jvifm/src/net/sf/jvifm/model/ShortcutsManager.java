@@ -125,13 +125,13 @@ public class ShortcutsManager {
 
 		for (Shortcut tempCmd : shortcutsList ) {
             if (tempCmd.getName().equals(command.getName())) {
-				Main.fileManager.setTipInfo("Shortcut '"+command.getName()+"' existed.");
+				Main.fileManager.setStatusInfo("Shortcut '"+command.getName()+"' existed.");
             	return;
             }
         }
 		shortcutsList.add(command);
 		notifyAddshortcuts(command);
-		Main.fileManager.setTipInfo("Added shortcut "+command.getName());
+		Main.fileManager.setStatusInfo("Added shortcut "+command.getName());
         store();
 	}
 	

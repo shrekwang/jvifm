@@ -35,15 +35,14 @@ public class JobStatus   {
 	private Composite container;
 	private ProgressBar progressBar;
 	private Label lblStatus;
-	private Label lblTipInfo;
 	
 
 	public JobStatus(Composite parent,int style) {
 		
 		GridLayout gridLayout=new GridLayout();
 		gridLayout.numColumns=4;
-		gridLayout.marginRight=10;
-		gridLayout.marginLeft=10;
+		gridLayout.marginRight=40;
+		gridLayout.marginLeft=20;
 		gridLayout.marginHeight=0;
 		gridLayout.verticalSpacing=0;
 		container=new Composite(parent,SWT.NONE);
@@ -54,19 +53,12 @@ public class JobStatus   {
 		progressBar=new ProgressBar(container , SWT.INDETERMINATE|SWT.NONE);
 		
 		lblStatus=new Label(container,SWT.NONE);
-		lblStatus.setText("  ");
+		lblStatus.setText("faint");
+		lblStatus.setAlignment(SWT.RIGHT);
 		GridData gridData=new GridData();
-		gridData.widthHint=350;
-		lblStatus.setLayoutData(gridData);
-		
-		
-		lblTipInfo=new Label(container,SWT.NONE);
-		lblTipInfo.setText("  ");
-		
-		gridData=new GridData();
 		gridData.horizontalAlignment=GridData.FILL;
 		gridData.grabExcessHorizontalSpace=true;
-		lblTipInfo.setLayoutData(gridData);
+		lblStatus.setLayoutData(gridData);
 		
 		progressBar.setVisible(false);
 		
@@ -81,9 +73,7 @@ public class JobStatus   {
 	public void updateStatus(String status) {
 		lblStatus.setText(status);
 	}
-	public void setTip(String tip)  {
-		lblTipInfo.setText(tip);
-    }
+	
 	public void setLayoutData(Object data) {
 		container.setLayoutData(data);
 	}

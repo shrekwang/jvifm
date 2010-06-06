@@ -76,7 +76,7 @@ public class MiscFileCommand extends Command {
 				File file = new File(args[i]);
 				FileOperator.calcDirInfo(file, infos);
 			}
-			fileManager.setTipInfo(infos[1] + " dirs," + infos[2]
+			fileManager.setStatusInfo(infos[1] + " dirs," + infos[2]
 					+ " files, total size is "
 					+ StringUtil.formatSize(infos[0]));
 			return;
@@ -85,18 +85,18 @@ public class MiscFileCommand extends Command {
 		if (cmd.equals("md5sum") && args != null && args.length > 0) {
 			try {
 				String md5sum = Digest.digest(args[0], "MD5");
-				fileManager.setTipInfo("md5sum is: " + md5sum);
+				fileManager.setStatusInfo("md5sum is: " + md5sum);
 			} catch (Exception e) {
-				fileManager.setTipInfo("md5sum can't calculate");
+				fileManager.setStatusInfo("md5sum can't calculate");
 			}
 			return;
 		}
 		if (cmd.equals("sha1sum") && args != null && args.length > 0) {
 			try {
 				String md5sum = Digest.digest(args[0], "SHA");
-				fileManager.setTipInfo("sha1sum is: " + md5sum);
+				fileManager.setStatusInfo("sha1sum is: " + md5sum);
 			} catch (Exception e) {
-				fileManager.setTipInfo("sha1sum can't calculate");
+				fileManager.setStatusInfo("sha1sum can't calculate");
 			}
 			return;
 		}

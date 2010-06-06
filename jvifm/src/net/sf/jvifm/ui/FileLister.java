@@ -672,7 +672,7 @@ public class FileLister implements ViLister, Panel {
 		commandBuffer.setCommandSourceFiles(selectionFiles);
 		commandBuffer.setCommandSourcePath(pwd);
 
-		fileManager.setTipInfo(selectionFiles.length + " Items moved."); //$NON-NLS-1$
+		fileManager.setStatusInfo(selectionFiles.length + " Items moved."); //$NON-NLS-1$
 		switchToNormalMode();
 		table.setSelection(currentRow);
 
@@ -686,7 +686,7 @@ public class FileLister implements ViLister, Panel {
 		commandBuffer.setCommandSourceFiles(selectionFiles);
 		commandBuffer.setCommandSourcePath(pwd);
 
-		fileManager.setTipInfo(selectionFiles.length + " Items copyed."); //$NON-NLS-1$
+		fileManager.setStatusInfo(selectionFiles.length + " Items copyed."); //$NON-NLS-1$
 		switchToNormalMode();
 		table.setSelection(currentRow);
 
@@ -700,7 +700,7 @@ public class FileLister implements ViLister, Panel {
 		clipboard.setContents(new Object[] { selectionFiles },
 				new Transfer[] { transfer });
 		clipboard.dispose();
-		fileManager.setTipInfo(selectionFiles.length
+		fileManager.setStatusInfo(selectionFiles.length
 				+ " Items copyed to clipboard."); //$NON-NLS-1$
 		switchToNormalMode();
 
@@ -801,9 +801,9 @@ public class FileLister implements ViLister, Panel {
 			}
 
 			if (isSuccess) {
-				fileManager.setTipInfo("command successed."); //$NON-NLS-1$
+				fileManager.setStatusInfo("command successed."); //$NON-NLS-1$
 			} else {
-				fileManager.setTipInfo("command failed."); //$NON-NLS-1$
+				fileManager.setStatusInfo("command failed."); //$NON-NLS-1$
 			}
 
 			item.setText(0, textEditor.getText().trim());
@@ -891,9 +891,9 @@ public class FileLister implements ViLister, Panel {
 							FilenameUtils.concat(pwd, newEditor.getText()
 									.trim())));
 					if (isSuccess) {
-						fileManager.setTipInfo("rename filename successed."); //$NON-NLS-1$
+						fileManager.setStatusInfo("rename filename successed."); //$NON-NLS-1$
 					} else {
-						fileManager.setTipInfo("rename filename failed."); //$NON-NLS-1$
+						fileManager.setStatusInfo("rename filename failed."); //$NON-NLS-1$
 					}
 					item.setText(newEditor.getText().trim());
 					newEditor.dispose();
@@ -1592,7 +1592,7 @@ public class FileLister implements ViLister, Panel {
 		}
 
 		if (!isIncrease && !isFind)
-			fileManager.setTipInfo("file not found"); //$NON-NLS-1$
+			fileManager.setStatusInfo("file not found"); //$NON-NLS-1$
 		redraw();
 	}
 

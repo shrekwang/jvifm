@@ -1116,12 +1116,6 @@ public class FileManager implements FileListerListener {
 		miniShell.setText(mode);
 	}
 
-	
-
-	public void setTipInfo(String tip) {
-		statusBar.setTip(tip);
-	}
-
 	public Shell getShell() {
 		return shell;
 	}
