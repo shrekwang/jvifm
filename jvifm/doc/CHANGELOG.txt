@@ -28,5 +28,7 @@ Features:
  
 Bugfixes:
   -- when files been deleted, the status bar was not updated. 
-  -- file panel is empty if jvifm existed when file panel not entered in any driver (windows).
+  -- file panel is empty if jvifm existed when file panel not entered in any path (windows).
+  -- not existed path inputted in address bar will be added to history problem now fixed. 
+  -- shortcut or bookmark duplicated problem fixed.
   -- some other bug fixes.
