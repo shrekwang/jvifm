@@ -1087,7 +1087,7 @@ public class FileLister implements ViLister, Panel {
 	public void visit(String path) {
 
         File file=new File(path);
-        if (!file.exists()) {
+        if (!file.exists() && !FS_ROOT.equals(path)) {
             fileManager.setStatusInfo(path+" not existed.");
             return;
         }
