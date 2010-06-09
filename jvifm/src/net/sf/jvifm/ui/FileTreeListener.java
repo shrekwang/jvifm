@@ -1,5 +1,6 @@
 package net.sf.jvifm.ui;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 
 public class FileTreeListener extends ViKeyListener {
@@ -12,6 +13,11 @@ public class FileTreeListener extends ViKeyListener {
 	
 	public void keyPressed(KeyEvent event) {
 		super.keyPressed(event);
+		if (event.keyCode==SWT.CR) {
+			fileTree.showCurrentNodeInFileLister();
+    		return;
+    	}
+		
 		switch (event.character) {
 		case 'h':
 			fileTree.selectParentDir();

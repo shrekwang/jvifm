@@ -33,6 +33,8 @@ import net.sf.jvifm.model.Bookmark;
 import net.sf.jvifm.model.BookmarkManager;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TreeAdapter;
@@ -52,6 +54,7 @@ public class FileTree extends Canvas implements ViLister {
 	private TreeItem currentItem;
 	private Image folderImage;
 	private Image driveImage;
+	private Color treeDefaultBackground;
     private BookmarkManager bookmarkManager=BookmarkManager.getInstance();
     
     private List<TreeItem> selectedItems=new ArrayList<TreeItem>();
@@ -108,6 +111,8 @@ public class FileTree extends Canvas implements ViLister {
 		this.setLayout(new FillLayout());
 
 		tree = new Tree(this, SWT.NONE);
+		this.treeDefaultBackground=tree.getBackground();
+		
 		if (Main.operatingSystem == Main.WINDOWS	) {
 			buildRootNode(null);
 		} else {
@@ -121,6 +126,15 @@ public class FileTree extends Canvas implements ViLister {
 			}
 		});
 
+		tree.addFocusListener(new FocusAdapter() {
+			public void focusGained(FocusEvent e) {
+				tree.setBackground(ResourceManager.ActiveListerBackground);
+			}
+			public void focusLost(FocusEvent e) {
+				tree.setBackground(treeDefaultBackground);
+			}
+		});
+		
 		tree.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				TreeItem item = (TreeItem) e.item;
@@ -169,6 +183,14 @@ public class FileTree extends Canvas implements ViLister {
 
 	private void showInFileLister(String path) {
 		Main.fileManager.getActivePanel().visit(path);
+	}
+	
+	public void showCurrentNodeInFileLister() {
+		TreeItem[] items=tree.getSelection();
+		if (items ==null || items.length < 1 ) return;
+		TreeItem item=items[0];
+		File file = (File) item.getData();
+		showInFileLister(file.getAbsolutePath());
 	}
 
 	public void expandTree(TreeItem item) {
@@ -459,7 +481,7 @@ public class FileTree extends Canvas implements ViLister {
 		currentItem = item;
 		tree.setSelection(currentItem);
 		File file = (File) currentItem.getData();
-		showInFileLister(file.getAbsolutePath());
+		//showInFileLister(file.getAbsolutePath());
 	}
 
 	
