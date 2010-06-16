@@ -131,8 +131,8 @@ public class ViKeyListener extends KeyAdapter {
     		case '$': viLister.cursorBottom(); break;
     		case 'G': viLister.cursorBottom(); break;
     		case 'p': viLister.doPaste(); break;
-    		
     		case ' ': viLister.switchPanel(); break;
+    		case '@': viLister.switchPanel(); break;
     		case ':': fileManager.activeMiniShell(viLister, ":"); break;
     		case '/': fileManager.activeMiniShell(viLister, "/"); break;
 			

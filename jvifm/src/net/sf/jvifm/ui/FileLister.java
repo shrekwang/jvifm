@@ -273,6 +273,7 @@ public class FileLister implements ViLister, Panel {
 		table.removeAll();
 		String dirPosInfo = (String) historyManager.getSelectedItem(pwd);
 		generateItems(currentFiles, dirPosInfo);
+		updateStatusText();
 	}
 
 	public void addListener(FileListerListener listener) {
@@ -1159,7 +1160,7 @@ public class FileLister implements ViLister, Panel {
 			table.removeAll();
 			String dirPosInfo = (String) historyManager.getSelectedItem(path);
 			generateItems(currentFiles, dirPosInfo);
-
+			updateStatusText();
             changeLocationText();
 
 		}
@@ -1366,7 +1367,6 @@ public class FileLister implements ViLister, Panel {
 		}
 		if (!hasMatchSelectedName) currentRow = 0;
 		table.setSelection(currentRow);
-		lblStatus.setText("total " + table.getItemCount() + " items"); //$NON-NLS-1$ //$NON-NLS-2$
 		return items;
 	}
 
@@ -1680,6 +1680,7 @@ public class FileLister implements ViLister, Panel {
 
 			table.setSelection(items);
 			currentRow = table.getSelectionIndex();
+		    updateStatusText();
 		}
 
 	}

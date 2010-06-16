@@ -20,6 +20,7 @@
  */
 package net.sf.jvifm.ui;
 
+import net.sf.jvifm.Main;
 import net.sf.jvifm.ResourceManager;
 
 import org.eclipse.swt.SWT;
@@ -318,6 +319,11 @@ public class BasicViLister extends Canvas implements ViLister {
 		// found");
 		redraw();
 	}
+	
+	public void switchPanel() {
+		FileLister fileLister=Main.fileManager.getActivePanel();
+    	fileLister.active();
+	}
 
 	public void upOneDir() {
 	}
@@ -328,7 +334,6 @@ public class BasicViLister extends Canvas implements ViLister {
 
 	public void doChange() {
 		// TODO Auto-generated method stub
-
 	}
 
 	public void doCut() {
@@ -346,9 +351,6 @@ public class BasicViLister extends Canvas implements ViLister {
 
 	}
 
-	public void switchPanel() {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 }
