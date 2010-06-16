@@ -872,7 +872,7 @@ public class FileManager implements FileListerListener {
 
 		sideviewTypeToolItem.setText(Messages
 				.getString("FileManager.labelFolderTree")); //$NON-NLS-1$
-		only();
+		//only();
 		mainSashForm.setWeights(new int[]{4,6});
 		showSideBar();
 	}

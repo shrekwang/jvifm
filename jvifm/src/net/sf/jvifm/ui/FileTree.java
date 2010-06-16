@@ -27,8 +27,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sf.jvifm.CommandBuffer;
 import net.sf.jvifm.Main;
 import net.sf.jvifm.ResourceManager;
+import net.sf.jvifm.control.Command;
+import net.sf.jvifm.control.CommandRunner;
+import net.sf.jvifm.control.CopyCommand;
+import net.sf.jvifm.control.MoveCommand;
+import net.sf.jvifm.control.RemoveCommand;
 import net.sf.jvifm.model.Bookmark;
 import net.sf.jvifm.model.BookmarkManager;
 
@@ -58,6 +64,7 @@ public class FileTree extends Canvas implements ViLister {
     private BookmarkManager bookmarkManager=BookmarkManager.getInstance();
     
     private List<TreeItem> selectedItems=new ArrayList<TreeItem>();
+    private CommandRunner commandRunner = CommandRunner.getInstance();
     
     private String searchString;
     
@@ -252,7 +259,10 @@ public class FileTree extends Canvas implements ViLister {
 	
 	public void collapseItem() {
 		TreeItem parent=currentItem.getParentItem();
-		if (parent!=null) parent.setExpanded(false);
+		if (parent!=null) { 
+			parent.setExpanded(false);
+			setSelection(parent);
+		}
 	}
 	
 	public void selectParentDir() {
@@ -480,7 +490,7 @@ public class FileTree extends Canvas implements ViLister {
 	private void setSelection(TreeItem item) {
 		currentItem = item;
 		tree.setSelection(currentItem);
-		File file = (File) currentItem.getData();
+		//File file = (File) currentItem.getData();
 		//showInFileLister(file.getAbsolutePath());
 	}
 
@@ -550,13 +560,64 @@ public class FileTree extends Canvas implements ViLister {
 
 	@Override public void doChange() { 	}
 
-	@Override public void doCut() { 	}
+	@Override public void doCut() {
+		File file = (File) currentItem.getData();
+		String path=file.getPath();
+		String parent=file.getParent();
+		CommandBuffer commandBuffer = CommandBuffer.getInstance();
+		commandBuffer.setImpendingCommand("mv"); //$NON-NLS-1$
+		commandBuffer.setCommandSourceFiles(new String[] {path});
+		commandBuffer.setCommandSourcePath(parent);
+		Main.fileManager.setStatusInfo("One folder copyed."); //$NON-NLS-1$
+	}
 
-	@Override public void doDelete() { 	}
+	@Override public void doDelete() { 
+		File file = (File) currentItem.getData();
+		String path=file.getPath();
+		String parent=file.getParent();
+		Command command = new RemoveCommand(new String[]{path}, parent);
+		CommandRunner commandRunner = CommandRunner.getInstance();
+		commandRunner.run(command);
+	}
 
-	@Override public void doPaste() { }
+	@Override public void doPaste() { 
+		
+		CommandBuffer commandBuffer = CommandBuffer.getInstance();
+		String[] srcFiles = commandBuffer.getCommandSourceFiles();
+		String operate = commandBuffer.getImpendingCommand();
 
-	@Override public void doYank() { }
+		if (operate == null || srcFiles == null)
+			return;
+		String srcPath = commandBuffer.getCommandSourcePath();
+		
+		File file = (File) currentItem.getData();
+		String dstPath=file.getParent();
+
+		Command command = null;
+		if (operate.equals("cp")) { //$NON-NLS-1$
+			command = new CopyCommand(srcPath, dstPath, srcFiles);
+		} else if (operate.equals("mv")) { //$NON-NLS-1$
+			command = new MoveCommand(srcPath, dstPath, srcFiles);
+		}
+		command.setInActiveFileLister(Main.fileManager.getInActivePanel());
+		commandRunner.run(command);
+
+		// refresh();
+		commandBuffer.setImpendingCommand(null);
+		commandBuffer.setCommandSourceFiles(null);
+		
+	}
+
+	@Override public void doYank() { 
+		File file = (File) currentItem.getData();
+		String path=file.getPath();
+		String parent=file.getParent();
+		CommandBuffer commandBuffer = CommandBuffer.getInstance();
+		commandBuffer.setImpendingCommand("cp"); //$NON-NLS-1$
+		commandBuffer.setCommandSourceFiles(new String[] {path});
+		commandBuffer.setCommandSourcePath(parent);
+		Main.fileManager.setStatusInfo("One folder copyed."); //$NON-NLS-1$
+	}
 
 	
 	@Override public void refresh() { }
@@ -566,6 +627,7 @@ public class FileTree extends Canvas implements ViLister {
 
 	@Override public void tagCurrentItem() {
 		
+		/*
 		Object selection=currentItem.getData("selection");
 		
 		if (selection !=null && selection.equals("true")) {
@@ -577,6 +639,7 @@ public class FileTree extends Canvas implements ViLister {
 			currentItem.setData("selection", "true");
 			selectedItems.add(currentItem);
 		}
+		*/
 	}
 	
 	
