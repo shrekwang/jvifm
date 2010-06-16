@@ -95,16 +95,16 @@ public abstract class Command {
 	public void removeFromActivePanel(final String dir, final String[] files) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-				fileLister.removeFromView(dir, files);
+				if (fileLister !=null ) fileLister.removeFromView(dir, files);
 			}
 		});
 	}
+	
 
 	public void removeFromInActivePanel(final String dir, final String[] files) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-				if (inActiveFileLister != null)
-					inActiveFileLister.removeFromView(dir, files);
+				if (inActiveFileLister != null) inActiveFileLister.removeFromView(dir, files);
 			}
 		});
 	}

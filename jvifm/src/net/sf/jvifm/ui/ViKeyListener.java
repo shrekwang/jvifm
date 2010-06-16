@@ -138,6 +138,7 @@ public class ViKeyListener extends KeyAdapter {
 			
     		case 'n': viLister.searchNext(true); break;
     		case 'N': viLister.searchNext(false); break;
+    		case 'r': viLister.refresh(); break;
     		
 			}
 		} else {

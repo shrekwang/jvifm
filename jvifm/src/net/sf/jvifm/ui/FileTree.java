@@ -606,6 +606,7 @@ public class FileTree extends Canvas implements ViLister {
 		commandBuffer.setImpendingCommand(null);
 		commandBuffer.setCommandSourceFiles(null);
 		
+		
 	}
 
 	@Override public void doYank() { 
@@ -620,8 +621,22 @@ public class FileTree extends Canvas implements ViLister {
 	}
 
 	
-	@Override public void refresh() { }
+	@Override public void refresh() {
+		refreshItem(currentItem);
+	}
 
+	
+	private void refreshItem(TreeItem item) {
+		TreeItem[] children = item.getItems();
+
+		for (int i = 0; i < children.length; i++)
+			children[i].dispose();
+		
+		File file = (File) item.getData();
+		expandTree(item);
+		item.setExpanded(true);
+		showInFileLister(file.getAbsolutePath());
+	}
 
 	@Override public void switchToVTagMode() { 	}
 
