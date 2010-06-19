@@ -80,8 +80,6 @@ public class FileModelManager {
 		return instance;
 	}
 	
-	
-	
 	public void calcDirInfo(File file, long[] infos) {
 		
 		if (file.isDirectory()) {
@@ -143,34 +141,9 @@ public class FileModelManager {
 		} else {
 			file.setLastModified(lastModified);
 		}
+		notifyAddFile(file);
 		return true;
 	}
-
-
-	public String getFileName(String fullPath) {
-		int index = fullPath.lastIndexOf(File.separator);
-		if (index >= 0 && index < fullPath.length() - 1)
-			return fullPath.substring(index + 1);
-		return fullPath;
-	}
-
-	/**
-	 * whether the file name is wildcard or not
-	 * 
-	 * @param name
-	 *            filename
-	 * 
-	 */
-	public boolean isWildCardFileName(String name) {
-		if (name.indexOf("*") > -1 || name.indexOf("?") > -1)
-			return true;
-		return false;
-	}
-
-	/**
-	 * create a new empty file or set the last modified time
-	 */
-	
 
 	public boolean mkdir(String path) {
 		File file = new File(path);
@@ -231,7 +204,7 @@ public class FileModelManager {
 		File dstFile = new File(destPath);
 
 		if (srcFile.isFile()) {
-			if( ! dstFile.isFile()) dstFile = new File(dstFile, srcFile.getName());
+			if( ! dstFile.isFile()) dstFile = new File(destPath, srcFile.getName());
 			copyFile(srcFile, dstFile);
 		} else {
 			dstFile = new File(dstFile.getPath(), srcFile.getName());
@@ -240,138 +213,31 @@ public class FileModelManager {
 		}
 		notifyAddFile(dstFile);
 	}
-
-	/*****************************************************************************************/
-	/*****   private section   **************************************************************/
-	/*****************************************************************************************/
-
-	private void copyFile(File srcFile, File dstFile) throws IOException {
-		File dstParent = dstFile.getParentFile();
-		if (!dstParent.exists())
-			dstParent.mkdirs();
-
-		FileInputStream input = new FileInputStream(srcFile);
-		FileOutputStream output = new FileOutputStream(dstFile);
-		try {
-			byte[] buffer = new byte[1024 * 16];
-			int n = 0;
-			while (-1 != (n = input.read(buffer)) ) {
-				output.write(buffer, 0, n);
-			}
-			dstFile.setLastModified(srcFile.lastModified());
-		} finally {
-			try {
-				if (input != null) input.close();
-			} catch (Exception e) {
-			}
-			try {
-				if (output != null) output.close();
-			} catch (Exception e) {
-			}
-		}
-	}
-
-	public void copyDirectory(File srcDir, File dstDir) throws IOException {
-
-		File[] files = srcDir.listFiles();
-		if (files == null) { // null if security restricted
-			throw new IOException("Failed to list contents of " + srcDir);
-		}
-		for (int i = 0; i < files.length; i++) {
-			File copiedFile = new File(dstDir, files[i].getName());
-			if (files[i].isDirectory()) {
-				copiedFile.mkdirs();
-				copyDirectory(files[i], copiedFile);
-			} else {
-				copyFile(files[i], copiedFile);
-			}
-		}
-	}
 	
 	public void mv(String srcPath, String destPath) throws IOException {
 
 		File srcFile = new File(srcPath);
 		File dstFile = new File(destPath);
 		
-		if (srcFile.isFile() && dstFile.isFile())
+		String srcParent=srcFile.getParent();
+		String srcFileName=srcFile.getName();
+		
+		if (srcFile.isFile()) {
+			if (!dstFile.isFile()) dstFile=new File(destPath,srcFileName);
 			moveFile(srcFile, dstFile);
-		if (srcFile.isFile() && dstFile.isDirectory())
-			moveFileToDirectory(srcFile, dstFile, true);
-		if (srcFile.isDirectory() && dstFile.isDirectory()) {
-			moveDirectoryToDirectory(srcFile, dstFile, true);
+		} else {
+			dstFile = new File(dstFile.getPath(), srcFileName);
+			moveDirectory(srcFile, dstFile);
 		}
+		notifyRemoveFile(srcParent, srcFileName);
+		notifyAddFile(dstFile);
 
-	}
-
-	public void moveDirectoryToDirectory(File src, File destDir,
-			boolean createDestDir) throws IOException {
-
-		if (!destDir.exists() && createDestDir) {
-			destDir.mkdirs();
-		}
-		if (!destDir.exists()) {
-			throw new FileNotFoundException("Destination directory '" + destDir
-					+ "' does not exist [createDestDir=" + createDestDir + "]");
-		}
-		if (!destDir.isDirectory()) {
-			throw new IOException("Destination '" + destDir
-					+ "' is not a directory");
-		}
-		moveDirectory(src, new File(destDir, src.getName()));
-
-	}
-
-	public void moveDirectory(File srcDir, File destDir) throws IOException {
-		if (srcDir == null) {
-			throw new NullPointerException("Source must not be null");
-		}
-		if (destDir == null) {
-			throw new NullPointerException("Destination must not be null");
-		}
-		if (!srcDir.exists()) {
-			throw new FileNotFoundException("Source '" + srcDir
-					+ "' does not exist");
-		}
-		if (!srcDir.isDirectory()) {
-			throw new IOException("Source '" + srcDir + "' is not a directory");
-		}
-
-		boolean rename = srcDir.renameTo(destDir);
-		if (!rename) {
-			copyDirectory(srcDir, destDir);
-			FileUtils.deleteDirectory(srcDir);
-			if (srcDir.exists()) {
-				throw new IOException("Failed to delete original directory '"
-						+ srcDir + "' after copy to '" + destDir + "'");
-			}
-		}
-	}
-
-	public void moveFile(File srcFile, File destFile) throws IOException {
-
-		boolean rename = srcFile.renameTo(destFile);
-		if (!rename) {
-			copyFile(srcFile, destFile);
-			if (!srcFile.delete()) {
-				FileUtils.deleteQuietly(destFile);
-				throw new IOException("Failed to delete original file '"
-						+ srcFile + "' after copy to '" + destFile + "'");
-			}
-		}
-	}
-
-	public void moveFileToDirectory(File srcFile, File destDir,
-			boolean createDestDir) throws IOException {
-
-		if (!destDir.exists() && createDestDir) {
-			destDir.mkdirs();
-		}
-		moveFile(srcFile, new File(destDir, srcFile.getName()));
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void unzip(String zipFilePath, String dstPath) throws Exception {
-		ZipFile zipFile = new ZipFile(new File(zipFilePath));
+		File file=new File(zipFilePath);
+		ZipFile zipFile = new ZipFile(file);
 		ZipEntry entry = null;
 		Enumeration e = zipFile.getEntries();
 		while (e.hasMoreElements() ) {
@@ -391,19 +257,7 @@ public class FileModelManager {
 		}
 		zipFile.close();
 	}
-
-	private void extractEntry(InputStream zi, File file) throws Exception {
-		BufferedOutputStream bf = new BufferedOutputStream(
-				new FileOutputStream(file));
-		while (true) {
-			int n = zi.read(buffer);
-			if (n < 0)
-				break;
-			bf.write(buffer, 0, n);
-		}
-		bf.close();
-	}
-
+	
 	public void untar(String tarFilePath, String dstPath) throws IOException {
 
 		InputStream in = null;
@@ -455,7 +309,8 @@ public class FileModelManager {
 
 	public void tar(String filename, String[] paths, String compressMethod)
 			throws Exception {
-		FileOutputStream fo = new FileOutputStream(new File(filename));
+		File tarFile=new File(filename);
+		FileOutputStream fo = new FileOutputStream(tarFile);
 		TarOutputStream to = null;
 		if (compressMethod == null) {
 			to = new TarOutputStream(fo);
@@ -476,8 +331,116 @@ public class FileModelManager {
 			doTar(to, file);
 		}
 		to.close();
-
+		notifyAddFile(tarFile);
 	}
+	
+	public void zip(String filename, String[] paths) throws Exception {
+		File zipFile=new File(filename);
+		ZipOutputStream zo = new ZipOutputStream(new FileOutputStream(zipFile));
+		for (int i = 0; i < paths.length; i++) {
+			File file = new File(paths[i]).getAbsoluteFile();
+			prefix = file.getParent();
+			if (!prefix.endsWith(File.separator))
+				prefix = prefix + File.separator;
+			doZip(zo, file);
+		}
+		zo.close();
+		notifyAddFile(zipFile);
+	}
+
+
+	/*****************************************************************************************/
+	/***************************   private section   *****************************************/
+	/*****************************************************************************************/
+
+	private void copyFile(File srcFile, File dstFile) throws IOException {
+		File dstParent = dstFile.getParentFile();
+		if (!dstParent.exists())
+			dstParent.mkdirs();
+
+		FileInputStream input = new FileInputStream(srcFile);
+		FileOutputStream output = new FileOutputStream(dstFile);
+		try {
+			byte[] buffer = new byte[1024 * 16];
+			int n = 0;
+			while (-1 != (n = input.read(buffer)) ) {
+				output.write(buffer, 0, n);
+			}
+			dstFile.setLastModified(srcFile.lastModified());
+		} finally {
+			try { if (input != null) input.close(); } catch (Exception e) { }
+			try { if (output != null) output.close(); } catch (Exception e) { }
+		}
+	}
+
+	private void copyDirectory(File srcDir, File dstDir) throws IOException {
+
+		File[] files = srcDir.listFiles();
+		if (files == null) { // null if security restricted
+			throw new IOException("Failed to list contents of " + srcDir);
+		}
+		for (int i = 0; i < files.length; i++) {
+			File copiedFile = new File(dstDir, files[i].getName());
+			if (files[i].isDirectory()) {
+				copiedFile.mkdirs();
+				copyDirectory(files[i], copiedFile);
+			} else {
+				copyFile(files[i], copiedFile);
+			}
+		}
+	}
+	
+	private void moveDirectory(File srcDir, File destDir) throws IOException {
+		if (srcDir == null) {
+			throw new NullPointerException("Source must not be null");
+		}
+		if (destDir == null) {
+			throw new NullPointerException("Destination must not be null");
+		}
+		if (!srcDir.exists()) {
+			throw new FileNotFoundException("Source '" + srcDir
+					+ "' does not exist");
+		}
+		if (!srcDir.isDirectory()) {
+			throw new IOException("Source '" + srcDir + "' is not a directory");
+		}
+
+		boolean rename = srcDir.renameTo(destDir);
+		if (!rename) {
+			copyDirectory(srcDir, destDir);
+			FileUtils.deleteDirectory(srcDir);
+			if (srcDir.exists()) {
+				throw new IOException("Failed to delete original directory '"
+						+ srcDir + "' after copy to '" + destDir + "'");
+			}
+		}
+	}
+
+	private void moveFile(File srcFile, File destFile) throws IOException {
+
+		boolean rename = srcFile.renameTo(destFile);
+		if (!rename) {
+			copyFile(srcFile, destFile);
+			if (!srcFile.delete()) {
+				FileUtils.deleteQuietly(destFile);
+				throw new IOException("Failed to delete original file '"
+						+ srcFile + "' after copy to '" + destFile + "'");
+			}
+		}
+	}
+
+	private void extractEntry(InputStream zi, File file) throws Exception {
+		BufferedOutputStream bf = new BufferedOutputStream(
+				new FileOutputStream(file));
+		while (true) {
+			int n = zi.read(buffer);
+			if (n < 0)
+				break;
+			bf.write(buffer, 0, n);
+		}
+		bf.close();
+	}
+
 
 	private void doTar(TarOutputStream to, File file) throws Exception {
 
@@ -517,19 +480,7 @@ public class FileModelManager {
 
 	}
 
-	public void zip(String filename, String[] paths) throws Exception {
-		ZipOutputStream zo = new ZipOutputStream(new FileOutputStream(new File(
-				filename)));
-		for (int i = 0; i < paths.length; i++) {
-			File file = new File(paths[i]).getAbsoluteFile();
-			prefix = file.getParent();
-			if (!prefix.endsWith(File.separator))
-				prefix = prefix + File.separator;
-			doZip(zo, file);
-		}
-		zo.close();
-
-	}
+	
 
 	private void doZip(ZipOutputStream zo, File file) throws Exception {
 
