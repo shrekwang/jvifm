@@ -35,9 +35,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import net.sf.jvifm.model.FileModelManager;
 import net.sf.jvifm.ui.Util;
 import net.sf.jvifm.ui.shell.OptionShell;
-import net.sf.jvifm.util.FileOperator;
 import net.sf.jvifm.util.StringUtil;
 
 import org.apache.commons.io.FilenameUtils;
@@ -65,21 +65,14 @@ public class CopyCommand extends InterruptableCommand {
 	protected void doFileOperator(String src, String dst, String fileName)
 			throws Exception {
 		String baseName = FilenameUtils.getName(src);
-		boolean isSame = false;
-
 		updateStatusInfo("copying file " + baseName);
-
 		// if is same file, make a copy
-		if (FileOperator.isSameFile(src, dst)) {
+		if (fileModelManager.isSameFile(src, dst)) {
 			dst = FilenameUtils.concat(dst, FilenameUtils.getBaseName(src)
 					+ "(1)." + FilenameUtils.getExtension(src));
 			new File(dst).createNewFile();
-			isSame = true;
 		}
-		cp(src, dst);
-		addToPanel(dstDir, new String[] { fileName });
-		if (isSame)
-			addToPanel(dstDir, new String[] { dst });
+		fileModelManager.cp(src, dst);
 	}
 
 	public void execute() throws Exception {
@@ -91,7 +84,7 @@ public class CopyCommand extends InterruptableCommand {
 
 			String src = FilenameUtils.concat(srcDir, files[i]);
 			strValue = "";
-			if (FileOperator.isDestFileExisted(src, dstDir)) {
+			if (fileModelManager.isDestFileExisted(src, dstDir)) {
 				if (yesToAll) {
 					doFileOperator(src, dstDir, files[i]);
 				} else if (noToAll) {
@@ -139,73 +132,5 @@ public class CopyCommand extends InterruptableCommand {
 
 	}
 
-	public void cp(String srcPath, String destPath) throws IOException {
-
-		File srcFile = new File(srcPath);
-		File dstFile = new File(destPath);
-		if (srcFile == null)
-			throw new NullPointerException("source file  is null");
-		if (dstFile == null)
-			throw new NullPointerException("dest file is null");
-
-		if (srcFile.isFile() && dstFile.isFile())
-			copyFile(srcFile, dstFile);
-
-		if (srcFile.isFile() && dstFile.isDirectory())
-			copyFile(srcFile, new File(dstFile, srcFile.getName()));
-
-		if (srcFile.isDirectory() && dstFile.isDirectory()) {
-			File newDstFile = new File(FilenameUtils.concat(dstFile.getPath(),
-					srcFile.getName()));
-			newDstFile.mkdirs();
-			copyDirectory(srcFile, newDstFile);
-		}
-
-	}
-
-	public void copyFile(File srcFile, File dstFile) throws IOException {
-		File dstParent = dstFile.getParentFile();
-		if (!dstParent.exists())
-			dstParent.mkdirs();
-
-		FileInputStream input = new FileInputStream(srcFile);
-		FileOutputStream output = new FileOutputStream(dstFile);
-		try {
-			byte[] buffer = new byte[1024 * 16];
-			int n = 0;
-			while (-1 != (n = input.read(buffer)) && !aborted) {
-				output.write(buffer, 0, n);
-			}
-			dstFile.setLastModified(srcFile.lastModified());
-		} finally {
-			try {
-				if (input != null) input.close();
-			} catch (Exception e) {
-			}
-			try {
-				if (output != null) output.close();
-			} catch (Exception e) {
-			}
-		}
-	}
-
-	public void copyDirectory(File srcDir, File dstDir) throws IOException {
-
-		File[] files = srcDir.listFiles();
-		if (files == null) { // null if security restricted
-			throw new IOException("Failed to list contents of " + srcDir);
-		}
-		for (int i = 0; i < files.length; i++) {
-			if (this.aborted)
-				return;
-			File copiedFile = new File(dstDir, files[i].getName());
-			if (files[i].isDirectory()) {
-				copiedFile.mkdirs();
-				copyDirectory(files[i], copiedFile);
-			} else {
-				copyFile(files[i], copiedFile);
-			}
-		}
-	}
-
+	
 }

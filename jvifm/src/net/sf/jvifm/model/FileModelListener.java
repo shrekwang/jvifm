@@ -19,21 +19,14 @@
  *
  */
 
-package net.sf.jvifm.control;
+package net.sf.jvifm.model;
 
-import org.apache.commons.io.FilenameUtils;
+import java.io.File;
 
-public class MoveCommand extends CopyCommand {
+public interface FileModelListener {
+	
+	public void onAdd(File file);
 
-	public MoveCommand(String srcDir, String dstDir, String[] files) {
-		super(srcDir, dstDir, files);
-	}
-
-	protected void doFileOperator(String src, String dst, String fileName)
-			throws Exception {
-		String baseName = FilenameUtils.getName(src);
-		updateStatusInfo("moving file " + baseName);
-		fileModelManager.mv(src, dst);
-	}
-
+	public void onRemove(String parent, String name);
+	
 }

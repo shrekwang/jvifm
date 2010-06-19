@@ -37,6 +37,8 @@ import net.sf.jvifm.control.MoveCommand;
 import net.sf.jvifm.control.RemoveCommand;
 import net.sf.jvifm.model.Bookmark;
 import net.sf.jvifm.model.BookmarkManager;
+import net.sf.jvifm.model.FileModelListener;
+import net.sf.jvifm.model.FileModelManager;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -50,10 +52,11 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-public class FileTree extends Canvas implements ViLister {
+public class FileTree extends Canvas implements ViLister , FileModelListener {
 
 	private Tree tree;
 	private TreeItem root;
@@ -62,6 +65,8 @@ public class FileTree extends Canvas implements ViLister {
 	private Image driveImage;
 	private Color treeDefaultBackground;
     private BookmarkManager bookmarkManager=BookmarkManager.getInstance();
+    private FileModelManager fileModelManager=FileModelManager.getInstance();
+    
     
     private List<TreeItem> selectedItems=new ArrayList<TreeItem>();
     private CommandRunner commandRunner = CommandRunner.getInstance();
@@ -161,7 +166,7 @@ public class FileTree extends Canvas implements ViLister {
 		tree.addKeyListener(new FileTreeListener(this) );
 		
 		if (path != null) syncView(path);
-
+		fileModelManager.addListener(this);
 	}
 	
 	public void syncView(String path) {
@@ -174,6 +179,8 @@ public class FileTree extends Canvas implements ViLister {
 			File file=(File)items[i].getData();
 			if (path.equalsIgnoreCase(file.getPath())) {
 				setSelection(items[i]);
+				expandTree(currentItem);
+				currentItem.setExpanded(true);
 				break;
 			}
 			if (path.startsWith(file.getPath()) ) {
@@ -234,6 +241,7 @@ public class FileTree extends Canvas implements ViLister {
 		item.setImage(image);
 		item.setData(file);
 
+		//for virtual parent node
 		new TreeItem(item, SWT.NULL);
 	}
 
@@ -257,12 +265,16 @@ public class FileTree extends Canvas implements ViLister {
 	}
 	
 	
-	public void collapseItem() {
-		TreeItem parent=currentItem.getParentItem();
-		if (parent!=null) { 
-			parent.setExpanded(false);
-			setSelection(parent);
+	public void toggleExpanded() {
+		boolean expanded=currentItem.getExpanded();
+		if (expanded) {
+			currentItem.setExpanded(false);
+		} else {
+			expandTree(currentItem);
+			currentItem.setExpanded(true);
 		}
+		File file = (File) currentItem.getData();
+		showInFileLister(file.getAbsolutePath());
 	}
 	
 	public void selectParentDir() {
@@ -656,6 +668,63 @@ public class FileTree extends Canvas implements ViLister {
 		}
 		*/
 	}
+	@Override
+	public void onAdd(final File file) {
+		if (!file.isDirectory()) return;
+		final String parent=file.getParent();
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				TreeItem item=tree.getItem(0);
+				while (true) {
+					item=getNextItem(item);
+					if (item==null) break;
+					File parentFile = (File) item.getData();
+					if (parentFile!=null ) {
+						if ( parentFile.getPath().equals(parent) && item.getExpanded()==true ) {
+							addFileToTree(item, file, folderImage);
+						}
+					}
+				}
+			}
+		});
+	}
+	@Override
+	public void onRemove(final String parent, final String name) {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				TreeItem item=tree.getItem(0);
+				while (true) {
+					item=getNextItem(item);
+					if (item==null) break;
+					
+					TreeItem parentItem=item.getParentItem();
+					if (parentItem==null) continue;
+					
+					File parentFile = (File) parentItem.getData();
+					if (parentFile!=null ) {
+						if ( parentFile.getPath().equals(parent) && item.getText().equals(name) ) {
+							if (currentItem==item) {
+								TreeItem nextItem=getNextItem(item);
+								if (nextItem!=null) {
+									setSelection(nextItem);
+								} else {
+									setSelection(getPrevItem(item));
+								}
+							}
+							item.dispose();
+							break;
+						}
+					}
+				}
+			}
+		});
+	}
+	
+	public void dispose() {
+		super.dispose();
+		fileModelManager.removeListener(this);
+	}
+	
 	
 	
 }

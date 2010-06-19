@@ -70,10 +70,10 @@ public class Main {
         initServer();
 		
 		try {
-			 File logFile=new File(HomeLocator.getConfigHome() + File.separator + "jvifm.log");
+			File logFile=new File(HomeLocator.getConfigHome() + File.separator + "jvifm.log");
 			PrintStream ps=new PrintStream(new FileOutputStream(logFile));
-			System.setOut(ps);
-			System.setErr(ps);
+			//System.setOut(ps);
+			//System.setErr(ps);
 		}catch (Exception e){
 			e.printStackTrace();
 		}

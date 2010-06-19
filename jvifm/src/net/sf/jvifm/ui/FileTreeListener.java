@@ -32,7 +32,7 @@ public class FileTreeListener extends ViKeyListener {
 			fileTree.listBookMarks();
 			break;
 		case 'o':
-			fileTree.openWithDefault();
+			fileTree.toggleExpanded();
 		}
 	}
 
@@ -40,10 +40,7 @@ public class FileTreeListener extends ViKeyListener {
 	protected void doAction() {
 		super.doAction();
 		String cmd=getCmd();
-		
-		if (cmd.equals("zc")) {
-			fileTree.collapseItem();
-		} else if (cmd.equals("gj")) {
+		if (cmd.equals("gj")) {
 			fileTree.cursorNextSibling();
 		} else if  (cmd.equals("gk")) {
 			fileTree.cursorPrevSibling();

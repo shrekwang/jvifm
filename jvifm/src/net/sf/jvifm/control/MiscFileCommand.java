@@ -30,7 +30,6 @@ import net.sf.jvifm.ui.Messages;
 import net.sf.jvifm.ui.Util;
 import net.sf.jvifm.ui.shell.OptionShell;
 import net.sf.jvifm.util.Digest;
-import net.sf.jvifm.util.FileOperator;
 import net.sf.jvifm.util.StringUtil;
 
 import org.apache.commons.io.FilenameUtils;
@@ -74,7 +73,7 @@ public class MiscFileCommand extends Command {
 			long[] infos = new long[] { 0, 0, 0 };
 			for (int i = 0; i < args.length; i++) {
 				File file = new File(args[i]);
-				FileOperator.calcDirInfo(file, infos);
+				fileModelManager.calcDirInfo(file, infos);
 			}
 			fileManager.setStatusInfo(infos[1] + " dirs," + infos[2]
 					+ " files, total size is "

@@ -75,7 +75,7 @@ public class UnCompressCommand extends InterruptableCommand {
 
 		File dstDir = new File(dstPath);
 		String parent = dstDir.getParent();
-		addToPanel(parent, new String[] { dstPath });
+		//addToPanel(parent, new String[] { dstPath });
 
 	}
 
@@ -95,10 +95,10 @@ public class UnCompressCommand extends InterruptableCommand {
 			if (!entry.isDirectory()) {
 				File dstParentDir = dstEntryFile.getParentFile();
 				if (!dstParentDir.exists())
-					dstParentDir.mkdirs();
+					fileModelManager.mkdir(dstParentDir.getPath());
 				extractEntry(zipFile.getInputStream(entry), dstEntryFile);
 			} else {
-				dstEntryFile.mkdirs();
+				fileModelManager.mkdir(dstEntryFile.getPath());
 			}
 		}
 		zipFile.close();
@@ -144,7 +144,7 @@ public class UnCompressCommand extends InterruptableCommand {
 		TarEntry tarEntry = tin.getNextEntry();
 		File file = new File(dstPath);
 		if (!file.exists())
-			file.mkdirs();
+			fileModelManager.mkdir(file.getPath());
 
 		while (tarEntry != null && !aborted) {
 			File entryPath = new File(dstPath + File.separatorChar
@@ -152,7 +152,7 @@ public class UnCompressCommand extends InterruptableCommand {
 			updateStatusInfo("uncompressing " + tarEntry.getName());
 			File parent = entryPath.getParentFile();
 			if (!parent.exists())
-				parent.mkdirs();
+				fileModelManager.mkdir(parent.getPath());
 			if (!tarEntry.isDirectory()) {
 
 				FileOutputStream fout = new FileOutputStream(entryPath);

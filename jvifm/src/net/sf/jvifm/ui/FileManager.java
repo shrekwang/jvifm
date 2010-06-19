@@ -55,7 +55,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -820,11 +819,7 @@ public class FileManager implements FileListerListener {
 	}
 
 	public void showBookmarkSidevew() {
-		Control[] childrens = sideViewContentContainer.getChildren();
-		for (int i = 0; i < childrens.length; i++) {
-			if (!childrens[i].isDisposed())
-				childrens[i].dispose();
-		}
+		if (sideViLister !=null) sideViLister.dispose();
 		sideViLister = new BookmarkLister(sideViewContentContainer, SWT.NONE);
 		sideViewContentContainer.layout();
 		sideviewTypeToolItem.setText(Messages
@@ -833,11 +828,7 @@ public class FileManager implements FileListerListener {
 	}
 
 	public void showShortcutsSideview() {
-		Control[] childrens = sideViewContentContainer.getChildren();
-		for (int i = 0; i < childrens.length; i++) {
-			if (!childrens[i].isDisposed())
-				childrens[i].dispose();
-		}
+		if (sideViLister !=null) sideViLister.dispose();
 		sideViLister = new ShortcutsLister(sideViewContentContainer, SWT.NONE);
 		sideViewContentContainer.layout();
 		sideviewTypeToolItem.setText(Messages
@@ -846,11 +837,14 @@ public class FileManager implements FileListerListener {
 	}
 
 	public void showHistorySideview() {
+		/*
 		Control[] childrens = sideViewContentContainer.getChildren();
 		for (int i = 0; i < childrens.length; i++) {
 			if (!childrens[i].isDisposed())
 				childrens[i].dispose();
 		}
+		*/
+		if (sideViLister !=null) sideViLister.dispose();
 		sideViLister = new HistoryLister(sideViewContentContainer, SWT.NONE);
 		sideViewContentContainer.layout();
 
@@ -861,18 +855,14 @@ public class FileManager implements FileListerListener {
 	}
 
 	public void showFileTree() {
-		Control[] childrens = sideViewContentContainer.getChildren();
-		for (int i = 0; i < childrens.length; i++) {
-			if (!childrens[i].isDisposed())
-				childrens[i].dispose();
-		}
+		
+		if (sideViLister !=null) sideViLister.dispose();
 		String pwd=getActivePanel().getPwd();
 		sideViLister = new FileTree(sideViewContentContainer, SWT.NONE, pwd);
 		sideViewContentContainer.layout();
 
 		sideviewTypeToolItem.setText(Messages
 				.getString("FileManager.labelFolderTree")); //$NON-NLS-1$
-		//only();
 		mainSashForm.setWeights(new int[]{4,6});
 		showSideBar();
 	}

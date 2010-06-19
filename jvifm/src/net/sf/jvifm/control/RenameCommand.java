@@ -28,7 +28,6 @@ import java.util.List;
 
 import net.sf.jvifm.Main;
 import net.sf.jvifm.model.filter.WildcardFilter2;
-import net.sf.jvifm.util.FileOperator;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -47,7 +46,7 @@ public class RenameCommand extends Command {
 	public void execute() throws Exception {
 		List<String> destFileList = filterWildCard(dstDir);
 		for (int i = 0; i < destFileList.size(); i++) {
-			FileOperator.rename(fromStr, toStr, destFileList.get(i));
+			fileModelManager.rename(fromStr, toStr, destFileList.get(i));
 		}
 		refreshActivePanel();
 

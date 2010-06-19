@@ -74,7 +74,7 @@ public class CompressCommand extends Command {
 		}
 
 		String parentPath = new File(dstFile).getParent();
-		addToPanel(parentPath, new String[] { dstFile });
+		//addToPanel(parentPath, new String[] { dstFile });
 		switchToNormal();
 
 	}

@@ -24,6 +24,7 @@ package net.sf.jvifm.control;
 import java.io.File;
 
 import net.sf.jvifm.Main;
+import net.sf.jvifm.model.FileModelManager;
 import net.sf.jvifm.ui.FileLister;
 
 import org.eclipse.swt.widgets.Display;
@@ -36,6 +37,8 @@ public abstract class Command {
 	protected String[] files;
 	protected FileLister fileLister;
 	protected FileLister inActiveFileLister;
+	
+	protected FileModelManager fileModelManager=FileModelManager.getInstance();
 
 	private String action;
 
@@ -84,30 +87,6 @@ public abstract class Command {
 		});
 	}
 
-	public void addToPanel(final String dir, final String[] files) {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				fileLister.addToView(dir, files);
-			}
-		});
-	}
-
-	public void removeFromActivePanel(final String dir, final String[] files) {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				if (fileLister !=null ) fileLister.removeFromView(dir, files);
-			}
-		});
-	}
-	
-
-	public void removeFromInActivePanel(final String dir, final String[] files) {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				if (inActiveFileLister != null) inActiveFileLister.removeFromView(dir, files);
-			}
-		});
-	}
 
 	public void showStatusAnimation() {
 		Display.getDefault().syncExec(new Runnable() {

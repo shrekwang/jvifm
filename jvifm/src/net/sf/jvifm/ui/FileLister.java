@@ -39,6 +39,8 @@ import net.sf.jvifm.control.MoveCommand;
 import net.sf.jvifm.control.RemoveCommand;
 import net.sf.jvifm.control.UnCompressCommand;
 import net.sf.jvifm.model.FileListerListener;
+import net.sf.jvifm.model.FileModelListener;
+import net.sf.jvifm.model.FileModelManager;
 import net.sf.jvifm.model.HistoryManager;
 import net.sf.jvifm.model.MimeManager;
 import net.sf.jvifm.model.Preference;
@@ -47,7 +49,6 @@ import net.sf.jvifm.model.ShortcutsManager;
 import net.sf.jvifm.model.filter.WildcardFilter2;
 import net.sf.jvifm.ui.factory.GuiDataFactory;
 import net.sf.jvifm.util.FileComprator;
-import net.sf.jvifm.util.FileOperator;
 import net.sf.jvifm.util.StringUtil;
 import net.sf.jvifm.util.ZipUtil;
 
@@ -96,7 +97,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 
-public class FileLister implements ViLister, Panel {
+public class FileLister implements ViLister, Panel , FileModelListener {
 	
 	enum Mode { NORMAL, TAG, VTAG, ORIG };
 
@@ -133,6 +134,7 @@ public class FileLister implements ViLister, Panel {
 	private String pwd;
 	private boolean showDetail = true;
 	private HistoryManager historyManager = new HistoryManager();
+	private FileModelManager fileModelManager=FileModelManager.getInstance();
 	private int sizeWidth;
 	private int dateWidth;
 
@@ -181,6 +183,7 @@ public class FileLister implements ViLister, Panel {
 			pwd=FS_ROOT;
 		}
 		this.pwd = pwd;
+		fileModelManager.addListener(this);
 		visit(pwd);
 	}
 
@@ -794,7 +797,7 @@ public class FileLister implements ViLister, Panel {
 				}
 
 			} else if (itemType.equals("folder")) {
-				isSuccess = FileOperator.mkdir(currentFile.getPath());
+				isSuccess = fileModelManager.mkdir(currentFile.getPath());
 
 			} else if (itemType.equals("rename")) {
 				isSuccess = currentFile.renameTo(
@@ -1637,48 +1640,27 @@ public class FileLister implements ViLister, Panel {
 		textLocation.setFocus();
 	}
 
-	public void addToView(String dstDir, String[] datas) {
-		if (datas.length <= 0)
-			return;
-
-		TableItem[] items = null;
-		TableItem[] geneItems = null;
+	public void addToView(File file) {
+		String dstDir=file.getParent();
+		TableItem item=null;
 		if (pwd.equalsIgnoreCase(dstDir)) {
-			List<File> fileList = new ArrayList<File>();
-			List<TableItem> fileExistedItems = new ArrayList<TableItem>();
-			for (int i = 0; i < datas.length; i++) {
-				File file = new File(FilenameUtils.concat(dstDir, FilenameUtils
-						.getName(datas[i])));
-				int result = searchAll(file.getName());
-				if (result == -1) {
-					fileList.add(file);
-				} else {
-					TableItem item = table.getItem(result);
-					item.setText(1, StringUtil.formatSize(file.length()));
+			int itemIndex=searchTableItem(file.getName());
+			if (itemIndex < 0 ) {
+				String dirPosInfo = (String) historyManager.getSelectedItem(pwd);
+				TableItem[] genItems=generateItems(new File[]{file}, dirPosInfo);
+				item=genItems[0];
+			} else {
+				if (showDetail) {
+					item=table.getItem(itemIndex);
+					if (file.isDirectory()) {
+						item.setText(1, "--");
+					} else {
+						item.setText(1, StringUtil.formatSize(file.length()));
+					}
 					item.setText(2, StringUtil.formatDate(file.lastModified()));
-					fileExistedItems.add(item);
 				}
 			}
-
-			items = new TableItem[fileList.size() + fileExistedItems.size()];
-			for (int i = 0; i < fileExistedItems.size(); i++) {
-				items[i] = (TableItem) fileExistedItems.get(i);
-			}
-
-			File[] files = new File[fileList.size()];
-			for (int i = 0; i < fileList.size(); i++) {
-				files[i] = (File) fileList.get(i);
-			}
-			String dirPosInfo = (String) historyManager.getSelectedItem(pwd);
-			geneItems = generateItems(files, dirPosInfo);
-
-			int index = fileExistedItems.size();
-			for (int i = 0; i < geneItems.length; i++) {
-				items[index++] = geneItems[i];
-
-			}
-
-			table.setSelection(items);
+			table.setSelection(item);
 			currentRow = table.getSelectionIndex();
 		    updateStatusText();
 		}
@@ -1694,7 +1676,7 @@ public class FileLister implements ViLister, Panel {
 			int index = currentRow;
 			for (int i = 0; i < datas.length; i++) {
 				String fileName = FilenameUtils.getName(datas[i]);
-				index = searchAll(fileName);
+				index = searchTableItem(fileName);
 				if (index > -1)
 					table.remove(index);
 			}
@@ -1725,7 +1707,7 @@ public class FileLister implements ViLister, Panel {
 
 	}
 
-	public int searchAll(String name) {
+	public int searchTableItem(String name) {
 		TableItem[] items = table.getItems();
 		for (int i = 0; i < items.length; i++) {
 			if (name.equals(items[i].getText(0)))
@@ -1762,4 +1744,25 @@ public class FileLister implements ViLister, Panel {
 	public Mode getOperateMode() {
 		return operateMode;
 	}
+
+	@Override
+	public void onAdd(final File file) {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				addToView(file);
+			}
+		});
+		
+	}
+
+	@Override
+	public void onRemove(final String parent, final String name) {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				removeFromView(parent,new String[]{name});
+			}
+		});
+	}
+	
+	
 }
