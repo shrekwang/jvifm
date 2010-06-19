@@ -48,11 +48,14 @@ public class Preference {
 		if (preference == null) {
 			File file = new File(RC_FILE);
 			if (file.exists()) {
+				BufferedInputStream bis =null;
 				try {
-					BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+					bis = new BufferedInputStream(new FileInputStream(file));
 					properties.load(bis);
 				} catch (IOException e) {
 					e.printStackTrace();
+				} finally {
+					if (bis!=null) try {bis.close(); } catch (Exception e) {}
 				}
 			}
 			preference = new Preference();
@@ -99,11 +102,14 @@ public class Preference {
 	}
 
 	public void save() {
+		BufferedOutputStream bos =null;
 		try {
-			BufferedOutputStream bos = new BufferedOutputStream( new FileOutputStream(RC_FILE));
+			bos = new BufferedOutputStream( new FileOutputStream(RC_FILE));
 			properties.store(bos, null);
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if (bos !=null) try { bos.close(); } catch (Exception e) {}
 		}
 	}
 

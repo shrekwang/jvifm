@@ -21,18 +21,34 @@
 
 package net.sf.jvifm.model;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.tools.bzip2.CBZip2InputStream;
+import org.apache.tools.bzip2.CBZip2OutputStream;
+import org.apache.tools.tar.TarEntry;
+import org.apache.tools.tar.TarInputStream;
+import org.apache.tools.tar.TarOutputStream;
+import org.apache.tools.zip.ZipEntry;
+import org.apache.tools.zip.ZipFile;
+import org.apache.tools.zip.ZipOutputStream;
 
 public class FileModelManager {
 	
+	private byte[] buffer = new byte[1024 * 8];
+	private String prefix = "";
 	private static FileModelManager instance=null;
 	private ArrayList<FileModelListener> listeners = new ArrayList<FileModelListener>();
 	
@@ -352,6 +368,203 @@ public class FileModelManager {
 		}
 		moveFile(srcFile, new File(destDir, srcFile.getName()));
 	}
+	
+	@SuppressWarnings("unchecked")
+	public void unzip(String zipFilePath, String dstPath) throws Exception {
+		ZipFile zipFile = new ZipFile(new File(zipFilePath));
+		ZipEntry entry = null;
+		Enumeration e = zipFile.getEntries();
+		while (e.hasMoreElements() ) {
+			entry = (org.apache.tools.zip.ZipEntry) e.nextElement();
+			String dstEntryPath = dstPath + File.separator + entry.getName();
 
+			File dstEntryFile = new File(dstEntryPath);
+
+			if (!entry.isDirectory()) {
+				File dstParentDir = dstEntryFile.getParentFile();
+				if (!dstParentDir.exists())
+					mkdir(dstParentDir.getPath());
+				extractEntry(zipFile.getInputStream(entry), dstEntryFile);
+			} else {
+				mkdir(dstEntryFile.getPath());
+			}
+		}
+		zipFile.close();
+	}
+
+	private void extractEntry(InputStream zi, File file) throws Exception {
+		BufferedOutputStream bf = new BufferedOutputStream(
+				new FileOutputStream(file));
+		while (true) {
+			int n = zi.read(buffer);
+			if (n < 0)
+				break;
+			bf.write(buffer, 0, n);
+		}
+		bf.close();
+	}
+
+	public void untar(String tarFilePath, String dstPath) throws IOException {
+
+		InputStream in = null;
+		String ext = FilenameUtils.getExtension(tarFilePath);
+		if (ext.equals("gz") || ext.equals("tgz")) {
+			in = new GZIPInputStream(new FileInputStream(new File(tarFilePath)));
+		} else if (ext.equals("bz2")) {
+
+			BufferedInputStream bis = new BufferedInputStream(
+					new FileInputStream(new File(tarFilePath)));
+			int b = bis.read();
+			if (b != 'B') {
+				throw new IOException("Invalid bz2 file.");
+			}
+			b = bis.read();
+			if (b != 'Z') {
+				throw new IOException("Invalid bz2 file.");
+			}
+			in = new CBZip2InputStream(bis);
+
+		} else {
+			in = new FileInputStream(new File(tarFilePath));
+		}
+
+		TarInputStream tin = new TarInputStream(in);
+		TarEntry tarEntry = tin.getNextEntry();
+		File file = new File(dstPath);
+		if (!file.exists())
+			mkdir(file.getPath());
+
+		while (tarEntry != null ) {
+			File entryPath = new File(dstPath + File.separatorChar
+					+ tarEntry.getName());
+			File parent = entryPath.getParentFile();
+			if (!parent.exists())
+				mkdir(parent.getPath());
+			if (!tarEntry.isDirectory()) {
+
+				FileOutputStream fout = new FileOutputStream(entryPath);
+				tin.copyEntryContents(fout);
+				fout.close();
+			} else {
+				entryPath.mkdir();
+			}
+			tarEntry = tin.getNextEntry();
+		}
+		tin.close();
+	}
+
+	public void tar(String filename, String[] paths, String compressMethod)
+			throws Exception {
+		FileOutputStream fo = new FileOutputStream(new File(filename));
+		TarOutputStream to = null;
+		if (compressMethod == null) {
+			to = new TarOutputStream(fo);
+		} else if (compressMethod.equals("gz")) {
+			to = new TarOutputStream(new GZIPOutputStream(fo));
+		} else if (compressMethod.equals("bz2")) {
+			fo.write('B');
+			fo.write('Z');
+			to = new TarOutputStream(new CBZip2OutputStream(fo));
+
+		}
+
+		for (int i = 0; i < paths.length; i++) {
+			File file = new File(paths[i]).getAbsoluteFile();
+			prefix = file.getParent();
+			if (!prefix.endsWith(File.separator))
+				prefix = prefix + File.separator;
+			doTar(to, file);
+		}
+		to.close();
+
+	}
+
+	private void doTar(TarOutputStream to, File file) throws Exception {
+
+		if (file.isDirectory()) {
+			File[] subFiles = file.listFiles();
+			for (int i = 0; i < subFiles.length; i++) {
+				if (subFiles[i].isDirectory()) {
+					doTar(to, subFiles[i]);
+				} else {
+					putEntry(to, subFiles[i]);
+				}
+			}
+		} else {
+			putEntry(to, file);
+		}
+
+	}
+
+	private void putEntry(TarOutputStream to, File file) throws Exception {
+
+		String name = file.getPath().substring(prefix.length());
+
+		TarEntry entry = new TarEntry(file);
+		entry.setName(name);
+
+		to.putNextEntry(entry);
+		BufferedInputStream bi = new BufferedInputStream(new FileInputStream(
+				file));
+		while (true) {
+			int n = bi.read(buffer);
+			if (n < 0)
+				break;
+			to.write(buffer, 0, n);
+		}
+		to.closeEntry();
+		bi.close();
+
+	}
+
+	public void zip(String filename, String[] paths) throws Exception {
+		ZipOutputStream zo = new ZipOutputStream(new FileOutputStream(new File(
+				filename)));
+		for (int i = 0; i < paths.length; i++) {
+			File file = new File(paths[i]).getAbsoluteFile();
+			prefix = file.getParent();
+			if (!prefix.endsWith(File.separator))
+				prefix = prefix + File.separator;
+			doZip(zo, file);
+		}
+		zo.close();
+
+	}
+
+	private void doZip(ZipOutputStream zo, File file) throws Exception {
+
+		if (file.isDirectory()) {
+			File[] subFiles = file.listFiles();
+			for (int i = 0; i < subFiles.length; i++) {
+				if (subFiles[i].isDirectory()) {
+					doZip(zo, subFiles[i]);
+				} else {
+					putEntry(zo, subFiles[i]);
+				}
+			}
+		} else {
+			putEntry(zo, file);
+		}
+
+	}
+
+	private void putEntry(ZipOutputStream zo, File file) throws Exception {
+
+		String name = file.getPath().substring(prefix.length());
+
+		ZipEntry entry = new ZipEntry(name);
+		zo.putNextEntry(entry);
+		BufferedInputStream bi = new BufferedInputStream(new FileInputStream(
+				file));
+		while (true) {
+			int n = bi.read(buffer);
+			if (n < 0)
+				break;
+			zo.write(buffer, 0, n);
+		}
+		zo.closeEntry();
+		bi.close();
+
+	}
 
 }

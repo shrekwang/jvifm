@@ -212,7 +212,6 @@ public class ZipLister extends BasicViLister implements Panel {
 	}
 
 	private File extractToTemp(FileObject fileObject) {
-		String ext = fileObject.getName().getExtension();
 		String basename = fileObject.getName().getBaseName();
 		File tempFile = null;
 		try {

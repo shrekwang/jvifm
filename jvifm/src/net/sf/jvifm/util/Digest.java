@@ -49,15 +49,17 @@ public class Digest {
 	public static String digest(String filename, String algorithm)
 			throws Exception {
 		FileInputStream fis = new FileInputStream(filename);
+		DigestInputStream dis = null;
 		MessageDigest md = MessageDigest.getInstance(algorithm);
 
 		try {
-			DigestInputStream dis = new DigestInputStream(fis, md);
+			dis = new DigestInputStream(fis, md);
 			byte[] buffer = new byte[8192];
 			while (dis.read(buffer) != -1)
 				;
 		} finally {
 			fis.close();
+			dis.close();
 		}
 
 		String result = byteArrayToHexString(md.digest());

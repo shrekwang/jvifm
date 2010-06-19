@@ -122,6 +122,52 @@ public class Util {
 
 	}
 	
+	public static void editFile(String pwd, String[] paths) {
+		Preference preference = Preference.getInstance();
+		String EDITOR = preference.getEditorApp();
+		String[] cmd = new String[paths.length + 5];
+		cmd[0] = EDITOR;
+		cmd[1] = "--servername";
+		cmd[2] = "JVIFM";
+		cmd[3] = "-p";
+		cmd[4] = "--remote-tab-silent";
+		System.arraycopy(paths, 0, cmd, 5, paths.length);
+
+		try {
+			Runtime.getRuntime().exec(cmd, null, new File(pwd));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void editFile(String pwd, String path) {
+		Preference preference = Preference.getInstance();
+		String EDITOR = preference.getEditorApp();
+		File file = new File(path);
+		if (file.isFile() && file.canRead()) {
+			String ext = FilenameUtils.getExtension(path);
+			if (ext.equals("zip") || ext.equals("jar") || //$NON-NLS-1$ //$NON-NLS-2$
+					ext.equals("war")) { //$NON-NLS-1$
+				Main.fileManager.zipTabNew(path);
+			} else {
+				try {
+					String param1 = "-p";
+					String param2 = "--remote-tab-silent";
+					String param3 = "--servername";
+					String param4 = "JVIFM";
+
+					String cmd[] = { EDITOR, param3, param4, param1, param2,
+							path };
+					// String cmd[]={EDITOR , path};
+					Runtime.getRuntime().exec(cmd, null, new File(pwd));
+				} catch (Exception e) {
+					Util.openFileWithDefaultApp(path);
+				}
+			}
+		}
+
+	}
+	
 	public static IOFileFilter getDefaultDirFilter() {
 		IOFileFilter filter = new AndFileFilter(
 				getDefaultFileFilter(), DirectoryFileFilter.DIRECTORY);

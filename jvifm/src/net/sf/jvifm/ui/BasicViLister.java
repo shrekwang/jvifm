@@ -38,8 +38,6 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class BasicViLister extends Canvas implements ViLister {
 	
-	protected enum Mode { NORMAL, TAG, VTAG, ORIG };
-	
 	protected Table table;
 
 	private TableCursor cursor;

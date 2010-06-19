@@ -49,7 +49,6 @@ public class BookmarkLister extends BasicViLister implements BookmarkListener {
     //private java.util.List bookmarkList=null;
 	
     private Image folderImage = ResourceManager.getImage("folder.png");
-    private TableEditor editor;
     private BookmarkManager bookmarkManager=BookmarkManager.getInstance();
 
     public BookmarkLister(Composite parent, int style) {
@@ -124,7 +123,6 @@ public class BookmarkLister extends BasicViLister implements BookmarkListener {
     	String path=bookmark.getPath();
     	
     	File file=new File(path);
-    	if (file==null) return;
     	if (!file.exists() || !file.isDirectory()) {
     		Util.openMessageWindow("the location doesn't exists");
     	}

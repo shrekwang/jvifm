@@ -43,7 +43,6 @@ import net.sf.jvifm.model.FileModelListener;
 import net.sf.jvifm.model.FileModelManager;
 import net.sf.jvifm.model.HistoryManager;
 import net.sf.jvifm.model.MimeManager;
-import net.sf.jvifm.model.Preference;
 import net.sf.jvifm.model.Shortcut;
 import net.sf.jvifm.model.ShortcutsManager;
 import net.sf.jvifm.model.filter.WildcardFilter2;
@@ -99,16 +98,13 @@ import org.eclipse.swt.widgets.Text;
 
 public class FileLister implements ViLister, Panel , FileModelListener {
 	
-	enum Mode { NORMAL, TAG, VTAG, ORIG };
-
 	public static final String FS_ROOT = "file system"; //$NON-NLS-1$
 	public static final String ADD_ITEM = "ADD_ITEM"; //$NON-NLS-1$
 	public static final String REMOVE_ITEM = "REMOVE_ITEM"; //$NON-NLS-1$
 
-	private Preference preference = Preference.getInstance();
 	private CommandRunner commandRunner = CommandRunner.getInstance();
 	private static String ENV_OS = System.getProperty("os.name"); //$NON-NLS-1$
-	private String EDITOR = preference.getEditorApp();
+	
 
 	private Table table;
 	private Composite container;
@@ -491,7 +487,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 				if (nextEntry == null || file == null)
 					return;
 				if (file.isFile() && file.canRead()) {
-					editFile(nextEntry);
+					Util.editFile(getPwd(),nextEntry);
 				}
 			}
 		});
@@ -1040,9 +1036,6 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		setTabTitle();
 	}
 
-	public void deactive() {
-		// textLocation.setBackground(deactiveColor);
-	}
 
 	public void setCursorPosition(int row) {
 		currentRow = row;
@@ -1175,7 +1168,6 @@ public class FileLister implements ViLister, Panel , FileModelListener {
     private void changeLocationText() {
     	if (table.getItemCount() == 0) return;
 		File selectFile = new File(getItemFullPath(currentRow));
-        if (selectFile == null ) return;
         String currentPath = ""; 
         if (selectFile.isDirectory()) {
             currentPath=selectFile.getPath();
@@ -1471,7 +1463,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 
 		String[] selection = getSelectionFiles();
 		if (selection.length > 1) {
-			editFile(selection);
+			Util.editFile(getPwd(),selection);
 			if (getOperateMode() != Mode.ORIG)
 				switchToNormalMode();
 			return;
@@ -1489,7 +1481,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		}
 		File file = new File(nextEntry);
 		if (file.isFile() && count == 1) {
-			editFile(nextEntry);
+			Util.editFile(getPwd(),nextEntry);
 		} else if (file.isFile() && count != 1) {
 			file = file.getParentFile();
 			visit(file.getPath());
@@ -1522,48 +1514,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		}
 	}
 
-	public void editFile(String[] paths) {
-		String[] cmd = new String[paths.length + 5];
-		cmd[0] = EDITOR;
-		cmd[1] = "--servername";
-		cmd[2] = "JVIFM";
-		cmd[3] = "-p";
-		cmd[4] = "--remote-tab-silent";
-		System.arraycopy(paths, 0, cmd, 5, paths.length);
-
-		try {
-			Runtime.getRuntime().exec(cmd, null, new File(pwd));
-		} catch (Exception e) {
-			// Util.openFileWithDefaultApp(path);
-		}
-	}
-
-	public void editFile(String path) {
-		// if path is file and can read, then use vim to edit it.
-		File file = new File(path);
-		if (file.isFile() && file.canRead()) {
-			String ext = FilenameUtils.getExtension(path);
-			if (ext.equals("zip") || ext.equals("jar") || //$NON-NLS-1$ //$NON-NLS-2$
-					ext.equals("war")) { //$NON-NLS-1$
-				fileManager.zipTabNew(path);
-			} else {
-				try {
-					String param1 = "-p";
-					String param2 = "--remote-tab-silent";
-					String param3 = "--servername";
-					String param4 = "JVIFM";
-
-					String cmd[] = { EDITOR, param3, param4, param1, param2,
-							path };
-					// String cmd[]={EDITOR , path};
-					Runtime.getRuntime().exec(cmd, null, new File(pwd));
-				} catch (Exception e) {
-					Util.openFileWithDefaultApp(path);
-				}
-			}
-		}
-
-	}
+	
 
 	public void incSearch(String pattern, boolean isForward, boolean isIncrease) {
 

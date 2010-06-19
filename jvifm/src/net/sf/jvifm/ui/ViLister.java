@@ -21,6 +21,8 @@
 package net.sf.jvifm.ui;
 
 public interface ViLister {
+	
+	public enum Mode { NORMAL, TAG, VTAG, ORIG };
 
 	public void cursorDown();
 
