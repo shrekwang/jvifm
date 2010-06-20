@@ -142,6 +142,10 @@ public class MiniShell {
 	private void cancelOperate() {
 		styledText.setText("");
 		currentCommand = -99;
+		activeViLister();
+	}
+	
+	private void activeViLister() {
 		if (lister == null || lister.isDisposed()) {
 			fileManager.activePanel();
 		} else {
@@ -152,17 +156,8 @@ public class MiniShell {
 
 	private void doCommand() {
 		currentCommand = -99;
-		if (lister == null || lister.isDisposed()) {
-			fileManager.activePanel();
-		} else {
-			lister.setFocus();
-			lister = null;
-		}
 		if (styledText.getText().startsWith(":")) {
-
-			commandhistory.add(styledText.getText()); // add to command
-														// history
-
+			commandhistory.add(styledText.getText()); 
 			String cmdText = styledText.getText().substring(1).trim();
 			String cmd;
 			String[] args;
@@ -190,6 +185,7 @@ public class MiniShell {
 			}
 		}
 		styledText.setText("");
+		activeViLister();
 	}
 
 	private void doAutoComplete() {

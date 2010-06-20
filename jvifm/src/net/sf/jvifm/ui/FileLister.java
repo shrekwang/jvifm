@@ -1034,6 +1034,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	public void active() {
 		table.setFocus();
 		setTabTitle();
+		setModeIndicate();
 	}
 
 
@@ -1127,9 +1128,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 
 			} else {
 				path = "/"; //$NON-NLS-1$
-
 			}
-
 		}
 
 		File file = null;
@@ -1166,14 +1165,17 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	}
 
     private void changeLocationText() {
-    	if (table.getItemCount() == 0) return;
-		File selectFile = new File(getItemFullPath(currentRow));
         String currentPath = ""; 
-        if (selectFile.isDirectory()) {
-            currentPath=selectFile.getPath();
-        } else {
-            currentPath=selectFile.getParent();
-        }
+    	if (table.getItemCount() == 0) {
+    		currentPath=getPwd();
+	    } else {
+			File selectFile = new File(getItemFullPath(currentRow));
+	        if (selectFile.isDirectory()) {
+	            currentPath=selectFile.getPath();
+	        } else {
+	            currentPath=selectFile.getParent();
+	        }
+	    }
         textLocation.setText(getLastLongestPath(currentPath));
         if (currentPath.indexOf(File.separator) > -1) {
             int length = currentPath.substring(currentPath.lastIndexOf(File.separator))
@@ -1618,27 +1620,33 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 
 	}
 
-	public void removeFromView(String dstDir, String[] datas) {
-
-		if (datas.length <= 0)
-			return;
-		if (pwd.equalsIgnoreCase(dstDir)) {
-			// ArrayList fileList=new ArrayList();
-			int index = currentRow;
-			for (int i = 0; i < datas.length; i++) {
-				String fileName = FilenameUtils.getName(datas[i]);
-				index = searchTableItem(fileName);
-				if (index > -1)
-					table.remove(index);
+	public void removeFromView(File file) {
+		
+		TableItem[] items = table.getItems();
+		List<Integer> matchedItems=new ArrayList<Integer>();
+		for (int i = 0; i < items.length; i++) {
+			String abspath=getItemFullPath(i);
+			if (abspath!=null && abspath.startsWith(file.getPath())) {
+				File tempFile=new File(abspath);
+				if (!tempFile.exists()) matchedItems.add(i);
 			}
-
-			if (index < table.getItemCount() - 1) {
-				currentRow = index;
-			} else {
-				currentRow = table.getItemCount() - 1;
-			}
-			table.setSelection(currentRow);
 		}
+		if (matchedItems.size() ==0 ) return;
+		
+		int[] indices=new int[matchedItems.size()];
+		for (int i=0; i< matchedItems.size(); i++) {
+			indices[i]=matchedItems.get(i);
+		}
+		table.remove(indices);
+		int lastIndex=indices[indices.length-1];
+		
+		if (lastIndex < table.getItemCount() - 1) {
+			currentRow = lastIndex;
+		} else {
+			currentRow = table.getItemCount() - 1;
+		}
+		table.setSelection(currentRow);
+			
         updateStatusText();
 
 	}
@@ -1680,6 +1688,11 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	}
 
 	public void setOperateMode(Mode operateMode) {
+		this.operateMode = operateMode;
+		setModeIndicate();
+	}
+	
+	public void setModeIndicate() {
 		String modeTip="";
 		if (operateMode == Mode.ORIG) {
 			modeTip=" -- Original-- ";
@@ -1689,7 +1702,6 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 			modeTip = " -- Visual -- ";
 		}
 		this.fileManager.setModeIndicate(modeTip);
-		this.operateMode = operateMode;
 	}
 
 	public Mode getOperateMode() {
@@ -1707,10 +1719,10 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	}
 
 	@Override
-	public void onRemove(final String parent, final String name) {
+	public void onRemove(final File file) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-				removeFromView(parent,new String[]{name});
+				removeFromView(file);
 			}
 		});
 	}

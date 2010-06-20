@@ -22,6 +22,7 @@ package net.sf.jvifm.ui;
 
 import net.sf.jvifm.Main;
 import net.sf.jvifm.ResourceManager;
+import net.sf.jvifm.ui.ViLister.Mode;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableCursor;
@@ -51,6 +52,27 @@ public class BasicViLister extends Canvas implements ViLister {
 	protected String countString = null;
 
 	protected Mode operateMode = Mode.NORMAL;
+
+	public Mode getOperateMode() {
+		return operateMode;
+	}
+
+	public void setOperateMode(Mode operateMode) {
+		this.operateMode = operateMode;
+		setModeIndicate();
+	}
+	
+	public void setModeIndicate() {
+		String modeTip="";
+		if (operateMode == Mode.ORIG) {
+			modeTip=" -- Original-- ";
+		} else if (operateMode == Mode.TAG) {
+			modeTip=" -- Tag -- ";
+		} else if (operateMode == Mode.VTAG) {
+			modeTip = " -- Visual -- ";
+		}
+		Main.fileManager.setModeIndicate(modeTip);
+	}
 
 	protected int origRow = 0;
 	
@@ -93,12 +115,12 @@ public class BasicViLister extends Canvas implements ViLister {
 	}
 
 	public void switchToVTagMode() {
-		this.operateMode = Mode.VTAG;
+		this.setOperateMode(Mode.VTAG);
 		this.origRow = currentRow;
 	}
 
 	public void switchToTagMode() {
-		this.operateMode = Mode.TAG;
+		this.setOperateMode(Mode.TAG);
 		currentRow = table.getSelectionIndex();
 
 		if (cursor == null || cursor.isDisposed()) {
@@ -111,7 +133,7 @@ public class BasicViLister extends Canvas implements ViLister {
 	}
 
 	public void tagCurrentItem() {
-		if (this.operateMode != Mode.TAG) {
+		if (this.getOperateMode() != Mode.TAG) {
 			switchToTagMode();
 		} else {
 			toggleSelection(currentRow);
@@ -177,7 +199,7 @@ public class BasicViLister extends Canvas implements ViLister {
 	}
 
 	protected void doSelect() {
-		switch (this.operateMode) {
+		switch (this.getOperateMode()) {
 		case NORMAL:
 			table.setSelection(currentRow);
 			break;
@@ -267,12 +289,12 @@ public class BasicViLister extends Canvas implements ViLister {
 	}
 
 	public void switchToNormalMode() {
-		if (this.operateMode == Mode.TAG) {
+		if (this.getOperateMode() == Mode.TAG) {
 			if (!cursor.isDisposed())
 				cursor.dispose();
 			table.setFocus();
 		}
-		this.operateMode = Mode.NORMAL;
+		this.setOperateMode(Mode.NORMAL);
 	}
 
 	public void enterPath() {
@@ -330,25 +352,13 @@ public class BasicViLister extends Canvas implements ViLister {
 		table.setFocus();
 	}
 
-	public void doChange() {
-		// TODO Auto-generated method stub
-	}
+	public void doChange() { }
 
-	public void doCut() {
-		// TODO Auto-generated method stub
+	public void doCut() { }
 
-	}
+	public void doYank() { }
 
-	public void doYank() {
-		// TODO Auto-generated method stub
+	public void refresh() { }
 
-	}
-
-	public void refresh() {
-		// TODO Auto-generated method stub
-
-	}
-
-	
 
 }

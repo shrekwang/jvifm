@@ -837,13 +837,6 @@ public class FileManager implements FileListerListener {
 	}
 
 	public void showHistorySideview() {
-		/*
-		Control[] childrens = sideViewContentContainer.getChildren();
-		for (int i = 0; i < childrens.length; i++) {
-			if (!childrens[i].isDisposed())
-				childrens[i].dispose();
-		}
-		*/
 		if (sideViLister !=null) sideViLister.dispose();
 		sideViLister = new HistoryLister(sideViewContentContainer, SWT.NONE);
 		sideViewContentContainer.layout();
@@ -1021,6 +1014,7 @@ public class FileManager implements FileListerListener {
 
 	public void showSideBar() {
 		mainSashForm.setMaximizedControl(null);
+		setModeIndicate("");
 	}
 
 	public void changePanel() {
@@ -1038,8 +1032,7 @@ public class FileManager implements FileListerListener {
 		if (sideViLister instanceof HistoryLister) {
 			((HistoryLister) sideViLister).loadHistoryRecord();
 		}
-		// leftPanel.redraw();
-		// rightPanel.redraw();
+		
 	}
 
 	public FileLister getActivePanel() {
@@ -1092,6 +1085,7 @@ public class FileManager implements FileListerListener {
 
 	public void activeSideView() {
 		sideViLister.activeWidget();
+		setModeIndicate("");
 	}
 
 

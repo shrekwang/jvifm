@@ -689,7 +689,7 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
 		});
 	}
 	@Override
-	public void onRemove(final String parent, final String name) {
+	public void onRemove(final File removedFile) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
 				TreeItem item=tree.getItem(0);
@@ -697,23 +697,18 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
 					item=getNextItem(item);
 					if (item==null) break;
 					
-					TreeItem parentItem=item.getParentItem();
-					if (parentItem==null) continue;
+					File file = (File) item.getData();
+					if (file==null) continue;
 					
-					File parentFile = (File) parentItem.getData();
-					if (parentFile!=null ) {
-						if ( parentFile.getPath().equals(parent) && item.getText().equals(name) ) {
-							if (currentItem==item) {
-								TreeItem nextItem=getNextItem(item);
-								if (nextItem!=null) {
-									setSelection(nextItem);
-								} else {
-									setSelection(getPrevItem(item));
-								}
-							}
-							item.dispose();
-							break;
+					if (file.equals(removedFile)) {
+						TreeItem nextItem=getNextItem(item);
+						if (nextItem!=null) {
+							setSelection(nextItem);
+						} else {
+							setSelection(getPrevItem(item));
 						}
+						item.dispose();
+						break;
 					}
 				}
 			}

@@ -27,6 +27,6 @@ public interface FileModelListener {
 	
 	public void onAdd(File file);
 
-	public void onRemove(String parent, String name);
+	public void onRemove(File file);
 	
 }

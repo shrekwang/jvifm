@@ -68,9 +68,9 @@ public class FileModelManager {
 		}
 	}
 
-	public void notifyRemoveFile(String parent, String name) {
+	public void notifyRemoveFile(File file) {
 		for (FileModelListener listener : listeners) {
-			listener.onRemove(parent, name);
+			listener.onRemove(file);
 		}
 	}
 
@@ -114,18 +114,14 @@ public class FileModelManager {
 		
 		File dstFile = new File(path);
 		if (!dstFile.exists()) return;
-		String parent=dstFile.getParent();
-		String filename=dstFile.getName();
-		
 		if (dstFile.isFile()) {
 			dstFile.delete();
 		}
-
 		if (dstFile.isDirectory()) {
 			FileUtils.deleteDirectory(dstFile);
 		}
 		
-		notifyRemoveFile(parent,filename);
+		notifyRemoveFile(dstFile);
 
 	}
 	
@@ -218,18 +214,14 @@ public class FileModelManager {
 
 		File srcFile = new File(srcPath);
 		File dstFile = new File(destPath);
-		
-		String srcParent=srcFile.getParent();
-		String srcFileName=srcFile.getName();
-		
 		if (srcFile.isFile()) {
-			if (!dstFile.isFile()) dstFile=new File(destPath,srcFileName);
+			if (!dstFile.isFile()) dstFile=new File(destPath,srcFile.getName());
 			moveFile(srcFile, dstFile);
 		} else {
-			dstFile = new File(dstFile.getPath(), srcFileName);
+			dstFile = new File(dstFile.getPath(), srcFile.getName());
 			moveDirectory(srcFile, dstFile);
 		}
-		notifyRemoveFile(srcParent, srcFileName);
+		notifyRemoveFile(srcFile);
 		notifyAddFile(dstFile);
 
 	}
