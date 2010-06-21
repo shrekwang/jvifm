@@ -110,7 +110,7 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
     		File file=new File(mark.getPath());
 			addFileToTree(tree, file, folderImage);
 	  	}
-		setSelection(tree.getTopItem());
+		setSelection(tree.getItem(0));
 		syncView(pwd);
 	}
 	
@@ -518,10 +518,9 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
 	
 
 	private void setSelection(TreeItem item) {
+		if (item==null) return;
 		currentItem = item;
 		tree.setSelection(currentItem);
-		//File file = (File) currentItem.getData();
-		//showInFileLister(file.getAbsolutePath());
 	}
 
 	
