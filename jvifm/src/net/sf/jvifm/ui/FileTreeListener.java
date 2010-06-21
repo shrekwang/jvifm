@@ -26,7 +26,7 @@ public class FileTreeListener extends ViKeyListener {
 			fileTree.filterView();
 			break;
 		case 'u':
-			fileTree.buildRootNode(null);
+			fileTree.backToRoot();
 			break;
 		case 'B':
 			fileTree.listBookMarks();

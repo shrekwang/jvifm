@@ -194,6 +194,21 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
 		}
 			
 	}
+	
+	public void backToRoot() {
+		TreeItem item0=tree.getItem(0);
+		File file = (File)item0.getData();
+				
+		tree.removeAll();
+		if (Main.operatingSystem == Main.WINDOWS	) {
+			buildRootNode(null);
+		} else {
+			buildRootNode(new File("/"));
+		}
+		if (file!=null ) {
+			syncView(file.getPath());
+		}
+	}
 
 	private void showInFileLister(String path) {
 		Main.fileManager.getActivePanel().visit(path);
@@ -264,6 +279,9 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
 		
 	}
 	
+	public void removeChildren() {
+		tree.removeAll();
+	}
 	
 	public void toggleExpanded() {
 		boolean expanded=currentItem.getExpanded();

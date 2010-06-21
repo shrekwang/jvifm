@@ -1638,10 +1638,10 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 			indices[i]=matchedItems.get(i);
 		}
 		table.remove(indices);
-		int lastIndex=indices[indices.length-1];
+		int firstIndex=indices[0];
 		
-		if (lastIndex < table.getItemCount() - 1) {
-			currentRow = lastIndex;
+		if (firstIndex < table.getItemCount() - 1) {
+			currentRow = firstIndex;
 		} else {
 			currentRow = table.getItemCount() - 1;
 		}

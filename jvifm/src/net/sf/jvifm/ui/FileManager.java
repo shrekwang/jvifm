@@ -80,6 +80,7 @@ public class FileManager implements FileListerListener {
 	private SashForm mainSashForm;
 	private TabFolder tabFolder;
 	private Tray systemTray;
+	private Composite sideViewHeadContainer;
 	private Composite sideViewContentContainer;
 	private ViLister sideViLister;
 
@@ -676,7 +677,7 @@ public class FileManager implements FileListerListener {
 		sideViewContainer.setLayout(GuiDataFactory.createkGridLayout(1, 0, 0,
 				0, 0, true));
 		{
-			Composite sideViewHeadContainer = new Composite(sideViewContainer,
+			sideViewHeadContainer = new Composite(sideViewContainer,
 					SWT.BORDER);
 			sideViewHeadContainer.setLayout(GuiDataFactory.createkGridLayout(2,
 					0, 0, 0, 0, false));
@@ -824,6 +825,7 @@ public class FileManager implements FileListerListener {
 		sideViewContentContainer.layout();
 		sideviewTypeToolItem.setText(Messages
 				.getString("FileManager.labelBookmark")); //$NON-NLS-1$
+		sideViewHeadContainer.layout();
 		showSideBar();
 	}
 
@@ -833,6 +835,7 @@ public class FileManager implements FileListerListener {
 		sideViewContentContainer.layout();
 		sideviewTypeToolItem.setText(Messages
 				.getString("FileManager.labelShortcuts")); //$NON-NLS-1$
+		sideViewHeadContainer.layout();
 		showSideBar();
 	}
 
@@ -843,6 +846,7 @@ public class FileManager implements FileListerListener {
 
 		sideviewTypeToolItem.setText(Messages
 				.getString("FileManager.labelHistory")); //$NON-NLS-1$
+		sideViewHeadContainer.layout();
 		showSideBar();
 
 	}
@@ -856,7 +860,7 @@ public class FileManager implements FileListerListener {
 
 		sideviewTypeToolItem.setText(Messages
 				.getString("FileManager.labelFolderTree")); //$NON-NLS-1$
-		mainSashForm.setWeights(new int[]{4,6});
+		sideViewHeadContainer.layout();
 		showSideBar();
 	}
 
