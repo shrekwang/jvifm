@@ -28,8 +28,8 @@ Basic Movement
       n    search next pattern
       N    search previous pattern
 
-      tab or space   switch between two file lister panel.
-      @   switch to side panel
+      tab or space   switch between two file lister panels.
+      @              switch between side panel and file lister panel.
 
 
 Additional Normal Mode Keys 
@@ -48,18 +48,19 @@ Additional Normal Mode Keys
     x   uncompress the current archive file ( support tar, tar.gz,tar.bz2,zip,jar,war)
 
 Additional Normal Mode Keys in Folder tree:
-    i    enter the current node
-    u    back to file system root
-    B    open the folder with bookmarks as root nodes
-    zc   collapse the current node
-    gj   move cursor to the next sibling
-    gk   move cursor to the previous sibling
+    i      enter the current node
+    B      open the folder with bookmarks as root nodes
+    u      back to file system root
+    o      toggle(expand/collapse) the current node
+    gj     move cursor to the next sibling
+    gk     move cursor to the previous sibling
+    <cr>   display current node in file lister
     
         
 Marks 
-        Marks are set the same way as they are in vi. 
-        m[a-z] to set a mark for the current file.
-        '[a-z] moves to the file set for the mark.
+    Marks are set the same way as they are in vi. 
+    m[a-z] to set a mark for the current file.
+    '[a-z] moves to the file set for the mark.
 
       
 
