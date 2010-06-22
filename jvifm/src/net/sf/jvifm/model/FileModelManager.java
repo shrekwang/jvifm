@@ -226,7 +226,7 @@ public class FileModelManager {
 
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	public void unzip(String zipFilePath, String dstPath) throws Exception {
 		File file=new File(zipFilePath);
 		ZipFile zipFile = new ZipFile(file);

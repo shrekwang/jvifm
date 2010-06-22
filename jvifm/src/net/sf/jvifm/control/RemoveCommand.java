@@ -26,7 +26,6 @@ import static net.sf.jvifm.ui.Messages.msgOptionCancel;
 import static net.sf.jvifm.ui.Messages.msgOptionNo;
 import static net.sf.jvifm.ui.Messages.msgOptionYes;
 import static net.sf.jvifm.ui.Messages.msgRmConfirmDlgTitle;
-import net.sf.jvifm.model.FileModelManager;
 import net.sf.jvifm.ui.Util;
 import net.sf.jvifm.ui.shell.OptionShell;
 

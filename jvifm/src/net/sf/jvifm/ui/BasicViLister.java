@@ -22,7 +22,6 @@ package net.sf.jvifm.ui;
 
 import net.sf.jvifm.Main;
 import net.sf.jvifm.ResourceManager;
-import net.sf.jvifm.ui.ViLister.Mode;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableCursor;

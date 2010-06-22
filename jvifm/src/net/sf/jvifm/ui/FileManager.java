@@ -853,8 +853,14 @@ public class FileManager implements FileListerListener {
 
 	public void showFileTree() {
 		
-		if (sideViLister !=null) sideViLister.dispose();
 		String pwd=getActivePanel().getPwd();
+		if (sideViLister !=null && sideViLister instanceof FileTree) {
+			((FileTree)sideViLister).syncView(pwd);
+			showSideBar();
+			return;
+		}
+		
+		if (sideViLister !=null) sideViLister.dispose();
 		sideViLister = new FileTree(sideViewContentContainer, SWT.NONE, pwd);
 		sideViewContentContainer.layout();
 
