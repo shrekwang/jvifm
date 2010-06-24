@@ -31,11 +31,7 @@ import static net.sf.jvifm.ui.Messages.msgOptionYes;
 import static net.sf.jvifm.ui.Messages.msgOptionYesToAll;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
-import net.sf.jvifm.model.FileModelManager;
 import net.sf.jvifm.ui.Util;
 import net.sf.jvifm.ui.shell.OptionShell;
 import net.sf.jvifm.util.StringUtil;

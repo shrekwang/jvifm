@@ -28,8 +28,7 @@ import org.apache.commons.cli.Options;
 
 public class CommandRegister {
 
-	@SuppressWarnings("unchecked")
-	private HashMap commands = new HashMap();
+	private HashMap<String,Options> commands = new HashMap<String,Options>();
 
 	private static CommandRegister instance = new CommandRegister();
 
@@ -37,7 +36,6 @@ public class CommandRegister {
 		return instance;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void register(String name, Options options) {
 		commands.put(name, options);
 	}
@@ -53,13 +51,13 @@ public class CommandRegister {
 		return (Options) result;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public String[] getCmdNames() {
 		if (commands == null)
 			return null;
 		String[] result = new String[commands.keySet().size()];
 		int i = 0;
-		for (Iterator it = commands.keySet().iterator(); it.hasNext();) {
+		for ( Iterator it = commands.keySet().iterator(); it.hasNext();) {
 			result[i++] = (String) it.next();
 		}
 		return result;
