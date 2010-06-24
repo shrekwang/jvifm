@@ -65,16 +65,14 @@ public class FindCommand extends InterruptableCommand {
 	}
 
 	private void find(File directory, IOFileFilter filter) {
-		if (this.aborted)
-			return;
+		if (Thread.currentThread().isInterrupted()) return;
 		File[] list = directory.listFiles();
 		if (list == null) {
 			return;
 		}
 		int sz = list.length;
 		for (int i = 0; i < sz; i++) {
-			if (this.aborted)
-				return;
+			if (Thread.currentThread().isInterrupted()) return;
 			File tmp = list[i];
 			if (filter.accept(tmp)) {
 				// retlist.add(tmp);

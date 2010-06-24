@@ -60,6 +60,7 @@ public class CopyCommand extends InterruptableCommand {
 
 	protected void doFileOperator(String src, String dst, String fileName)
 			throws Exception {
+		if (Thread.currentThread().isInterrupted()) return;
 		String baseName = FilenameUtils.getName(src);
 		updateStatusInfo("copying file " + baseName);
 		// if is same file, make a copy

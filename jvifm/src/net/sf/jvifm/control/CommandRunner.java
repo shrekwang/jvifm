@@ -29,12 +29,17 @@ import org.eclipse.swt.widgets.Display;
 public class CommandRunner {
 
 	private static CommandRunner instance = new CommandRunner();
+	private static Thread currentLongRunJob=null;
 
 	private CommandRunner() {
 	}
 
 	public static CommandRunner getInstance() {
 		return instance;
+	}
+	
+	public void killCurrentJob() {
+		currentLongRunJob.interrupt();
 	}
 
 	public void run(final Command command) {
@@ -70,7 +75,7 @@ public class CommandRunner {
 		};
 		thread.start();
 		if (command instanceof InterruptableCommand)
-			Main.currentJob = (InterruptableCommand) command;
+			currentLongRunJob=thread;
 	}
 
 }

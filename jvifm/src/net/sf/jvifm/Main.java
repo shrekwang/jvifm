@@ -50,7 +50,6 @@ public class Main {
 	public static FileManager fileManager;
 	public static Display display;
 	public static Shell shell;
-	public static InterruptableCommand currentJob;
 
 	public static int operatingSystem;
 	public static final int LINUX=1;

@@ -21,18 +21,14 @@
 
 package net.sf.jvifm.control;
 
+/**
+ * this is just a mark interface
+ */
 public class InterruptableCommand  extends Command {
-	protected boolean aborted=false;
-
 	@Override
 	public void execute() throws Exception {
 		
 	}
-	
-	public void abort() {
-		this.aborted=true;
-	}
-	
 
 }
 

@@ -346,10 +346,10 @@ public class FileModelManager {
 	/*****************************************************************************************/
 
 	private void copyFile(File srcFile, File dstFile) throws IOException {
+		if (Thread.currentThread().isInterrupted()) return;
+		
 		File dstParent = dstFile.getParentFile();
-		if (!dstParent.exists())
-			dstParent.mkdirs();
-
+		if (!dstParent.exists()) dstParent.mkdirs();
 		FileInputStream input = new FileInputStream(srcFile);
 		FileOutputStream output = new FileOutputStream(dstFile);
 		try {
@@ -367,6 +367,8 @@ public class FileModelManager {
 
 	private void copyDirectory(File srcDir, File dstDir) throws IOException {
 
+		if (Thread.currentThread().isInterrupted()) return;
+		
 		File[] files = srcDir.listFiles();
 		if (files == null) { // null if security restricted
 			throw new IOException("Failed to list contents of " + srcDir);

@@ -53,8 +53,8 @@ public class MetaCommand extends Command {
 	public void execute() {
 
 		if (cmd.equals("kill")) {
-			if (Main.currentJob != null)
-				Main.currentJob.abort();
+			CommandRunner commandRunner=CommandRunner.getInstance();
+			commandRunner.killCurrentJob();
 			return;
 		}
 		if (cmd.equals("about")) {
