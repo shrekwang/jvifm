@@ -27,19 +27,18 @@ import java.io.PrintStream;
 
 import net.sf.jvifm.control.CommandRegister;
 import net.sf.jvifm.control.FindCommand;
-import net.sf.jvifm.control.InterruptableCommand;
 import net.sf.jvifm.control.ListFileCommand;
 import net.sf.jvifm.control.MetaCommand;
 import net.sf.jvifm.control.MiscFileCommand;
 import net.sf.jvifm.control.TouchCommand;
 import net.sf.jvifm.model.AppStatus;
 import net.sf.jvifm.model.BookmarkManager;
-import net.sf.jvifm.model.ShortcutsManager;
 import net.sf.jvifm.model.MimeManager;
+import net.sf.jvifm.model.ShortcutsManager;
 import net.sf.jvifm.ui.FileLister;
 import net.sf.jvifm.ui.FileManager;
-import net.sf.jvifm.util.HomeLocator;
 import net.sf.jvifm.util.FileListerServer;
+import net.sf.jvifm.util.HomeLocator;
 
 import org.apache.commons.cli.Options;
 import org.eclipse.swt.widgets.Display;

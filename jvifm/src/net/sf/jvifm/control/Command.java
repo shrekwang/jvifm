@@ -63,10 +63,9 @@ public abstract class Command {
 	public void listSubFileInPanel(final File[] files) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-				fileLister.listSubFiles(files);
+				fileLister.removeAllItem();
+				fileLister.generateItems(files, "",false);
 				fileLister.switchToNormalMode();
-				if (files.length > 0)
-					fileLister.setCursorPosition(0);
 			}
 		});
 	}
@@ -74,7 +73,7 @@ public abstract class Command {
 	public void addSubFileInPanel(final File file) {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-				fileLister.addSubFiles(file);
+				fileLister.generateItems(new File[] {file}, "",true);
 			}
 		});
 	}

@@ -143,7 +143,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	private int currentRow = 0;
 	private int origRow = 0;
 
-	private File[] currentFiles = null;
+	
 
 	private ArrayList<FileListerListener> listeners = new ArrayList<FileListerListener>();
 	private Color tableDefaultBackground = null;
@@ -266,12 +266,17 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		} else {
 			isReverse = false;
 		}
-
+		
+		int itemCount=table.getItemCount();
+		if (itemCount==0) return;
+		File[] currentFiles = new File[itemCount];
+		for (int i=0; i<itemCount; i++) {
+			currentFiles[i]=new File(getItemFullPath(i));
+		}
 		sortList(currentFiles, sortColumn, isReverse);
-
 		table.removeAll();
 		String dirPosInfo = (String) historyManager.getSelectedItem(pwd);
-		generateItems(currentFiles, dirPosInfo);
+		generateItems(currentFiles, dirPosInfo,false);
 		updateStatusText();
 	}
 
@@ -1105,6 +1110,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		}
 		if (pwd.equals(""))historyManager.setSelectedItem(pwd, nextEntry); //$NON-NLS-1$
 
+		File[] currentFiles = null;
 		// if ( path.endsWith(":")) path=path+File.separator; //$NON-NLS-1$
 		// change pwd to file system root
 		if (path.equals(FS_ROOT)) {
@@ -1154,7 +1160,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 
 			table.removeAll();
 			String dirPosInfo = (String) historyManager.getSelectedItem(path);
-			generateItems(currentFiles, dirPosInfo);
+			generateItems(currentFiles, dirPosInfo,false);
 			updateStatusText();
             changeLocationText();
 
@@ -1273,46 +1279,6 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		lblStatus.setText("total " + table.getItemCount() + " items"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-	public void addSubFiles(File subFile) {
-
-		TableItem item = new TableItem(table, SWT.BORDER);
-		String subFilesPath = subFile.getPath().substring(pwd.length() + 1);
-		item.setText(0, subFilesPath);
-		item.setImage(0, ResourceManager.getMimeImage(subFile));
-		if (subFile.isDirectory()) {
-			item.setText(1, "--"); //$NON-NLS-1$
-		} else {
-			item.setText(1, StringUtil.formatSize(subFile.length()));
-		}
-		item.setText(2, StringUtil.formatDate(subFile.lastModified()));
-		table.setSelection(item);
-		currentRow = table.getItemCount() - 1;
-        updateStatusText();
-
-	}
-	
-
-	public void listSubFiles(File[] subFileList) {
-		this.currentFiles = subFileList;
-		table.removeAll();
-
-		for (int i = 0; i < currentFiles.length; i++) {
-			TableItem item = new TableItem(table, SWT.BORDER);
-			String subFilesPath = currentFiles[i].getPath().substring(
-					pwd.length() + 1);
-			item.setText(0, subFilesPath);
-			item.setImage(0,ResourceManager.getMimeImage(currentFiles[i]));
-			if (currentFiles[i].isDirectory()) {
-				item.setText(1, "--"); //$NON-NLS-1$
-			} else {
-				item.setText(1, StringUtil.formatSize(currentFiles[i].length()));
-			}
-			item.setText(2, StringUtil.formatDate(currentFiles[i]
-					.lastModified()));
-		}
-        updateStatusText();
-	}
-
 	private File[] getFilteredFiles(File file, String filterString) {
 		File[] subFiles;
 		IOFileFilter fileFilter=Util.getDefaultFileFilter();
@@ -1337,7 +1303,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	
 	
 
-	private TableItem[] generateItems(File[] subFiles, String selectedName) {
+	public TableItem[] generateItems(File[] subFiles, String selectedName,boolean appendMode) {
 
 		boolean hasMatchSelectedName = false;
 		if (subFiles == null || subFiles.length == 0)
@@ -1347,7 +1313,8 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		for (int i = 0; i < subFiles.length; i++) {
 			items[i] = new TableItem(table, SWT.BORDER, index++);
 
-			items[i].setText(0, subFiles[i].getName());
+			String subFilePath = subFiles[i].getPath().substring(pwd.length() + 1);
+			items[i].setText(0, subFilePath);
 			items[i].setImage(0,ResourceManager.getMimeImage(subFiles[i]));
 			if (subFiles[i].getName().equals(selectedName)) {
 				currentRow = index - 1;
@@ -1362,8 +1329,13 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 				items[i].setText(2, StringUtil.formatDate(subFiles[i].lastModified()));
 			}
 		}
-		if (!hasMatchSelectedName) currentRow = 0;
-		table.setSelection(currentRow);
+		if (appendMode) {
+			currentRow=table.getItemCount()-1;
+		} else {
+			if (!hasMatchSelectedName) currentRow = 0;
+		}
+		if (currentRow >-1) table.setSelection(currentRow);
+		updateStatusText();
 		return items;
 	}
 
@@ -1595,29 +1567,32 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 
 	public void addToView(File file) {
 		String dstDir=file.getParent();
-		TableItem item=null;
 		if (pwd.equalsIgnoreCase(dstDir)) {
 			int itemIndex=searchTableItem(file.getName());
 			if (itemIndex < 0 ) {
 				String dirPosInfo = (String) historyManager.getSelectedItem(pwd);
-				TableItem[] genItems=generateItems(new File[]{file}, dirPosInfo);
-				item=genItems[0];
+				generateItems(new File[]{file}, dirPosInfo,true);
 			} else {
-				if (showDetail) {
-					item=table.getItem(itemIndex);
-					if (file.isDirectory()) {
-						item.setText(1, "--");
-					} else {
-						item.setText(1, StringUtil.formatSize(file.length()));
-					}
-					item.setText(2, StringUtil.formatDate(file.lastModified()));
-				}
+				updateItem(file,itemIndex);
 			}
-			table.setSelection(item);
-			currentRow = table.getSelectionIndex();
 		    updateStatusText();
 		}
 
+	}
+	
+	public void updateItem(File file,int itemIndex) {
+		TableItem item=null;
+		if (showDetail) {
+			item=table.getItem(itemIndex);
+			if (file.isDirectory()) {
+				item.setText(1, "--");
+			} else {
+				item.setText(1, StringUtil.formatSize(file.length()));
+			}
+			item.setText(2, StringUtil.formatDate(file.lastModified()));
+		}
+		table.setSelection(item);
+		currentRow = table.getSelectionIndex();
 	}
 
 	public void removeFromView(File file) {
