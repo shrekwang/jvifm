@@ -73,7 +73,6 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
     
     private String searchString;
     
-    private Color selectedColor = Main.display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
     private Color noSelectedColor = Main.display.getSystemColor(SWT.COLOR_WHITE);
 
     public void buildRootList(List<File> fileList) {
@@ -620,7 +619,7 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
 		String srcPath = commandBuffer.getCommandSourcePath();
 		
 		File file = (File) currentItem.getData();
-		String dstPath=file.getParent();
+		String dstPath=file.getPath();
 
 		Command command = null;
 		if (operate.equals("cp")) { //$NON-NLS-1$
