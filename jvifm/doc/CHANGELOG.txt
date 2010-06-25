@@ -27,8 +27,10 @@ Features:
   -- cmdline now shows "--original--","--visual--","--tag--" message in different operate mode. 
  
 Bugfixes:
+  -- file tree panel now works more properly.
   -- when files been deleted, the status bar was not updated. 
   -- file panel is empty if jvifm existed when file panel not entered in any path (windows).
   -- not existed path inputted in address bar will be added to history problem now fixed. 
   -- shortcut or bookmark duplicated problem fixed.
+  -- sort function not work properly when in search results.
   -- some other bug fixes.
