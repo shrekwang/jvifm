@@ -1310,10 +1310,10 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 			return new TableItem[] {};
 		TableItem[] items = new TableItem[subFiles.length];
 		int index = table.getItemCount();
+		int nameStart=pwd.endsWith(File.separator) ? pwd.length() : pwd.length()+1;
 		for (int i = 0; i < subFiles.length; i++) {
 			items[i] = new TableItem(table, SWT.BORDER, index++);
-
-			String subFilePath = subFiles[i].getPath().substring(pwd.length() + 1);
+			String subFilePath = subFiles[i].getPath().substring(nameStart);
 			items[i].setText(0, subFilePath);
 			items[i].setImage(0,ResourceManager.getMimeImage(subFiles[i]));
 			if (subFiles[i].getName().equals(selectedName)) {
