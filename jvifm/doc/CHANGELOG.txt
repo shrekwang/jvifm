@@ -34,3 +34,12 @@ Bugfixes:
   -- shortcut or bookmark duplicate problem fixed.
   -- sort function not work properly when in search results.
   -- various other bug fixes.
+
+
+Changes in Version 0.12b
+---------------------------------------------------
+Features:
+ 
+Bugfixes:
+  -- "mkdir" don't update file list view if current dir is in a driver path (windows).
+
