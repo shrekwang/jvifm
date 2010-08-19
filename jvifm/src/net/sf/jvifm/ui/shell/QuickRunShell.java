@@ -272,7 +272,7 @@ public class QuickRunShell {
 			return currentOption.getExtraInfo();
 		}
 
-		if (path.indexOf(pwd) == 0) {
+		if (path.indexOf(pwd) == 0 && ! pwd.equals(FileLister.FS_ROOT)) {
 			if (path.equalsIgnoreCase(pwd) || path.endsWith(":\\")) {
 				tmpText = currentOption.getName();
 			} else if (pwd.endsWith(File.separator)) {

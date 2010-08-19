@@ -98,7 +98,7 @@ import org.eclipse.swt.widgets.Text;
 
 public class FileLister implements ViLister, Panel , FileModelListener {
 	
-	public static final String FS_ROOT = "file system"; //$NON-NLS-1$
+	public static final String FS_ROOT = ""; //$NON-NLS-1$
 	public static final String ADD_ITEM = "ADD_ITEM"; //$NON-NLS-1$
 	public static final String REMOVE_ITEM = "REMOVE_ITEM"; //$NON-NLS-1$
 
@@ -1567,6 +1567,9 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 
 	public void addToView(File file) {
 		String dstDir=file.getParent();
+		if (dstDir.endsWith(File.separator)) {
+			dstDir=dstDir.substring(0,dstDir.length()-1);
+		}
 		if (pwd.equalsIgnoreCase(dstDir)) {
 			int itemIndex=searchTableItem(file.getName());
 			if (itemIndex < 0 ) {
