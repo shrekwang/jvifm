@@ -1664,7 +1664,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	}
 
 	public void dispose() {
-		container.dispose();
+		//container.dispose();
 	}
 	
 	public boolean isOrigMode() {

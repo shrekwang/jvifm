@@ -89,6 +89,14 @@ public class ZipLister extends BasicViLister implements Panel {
 		this.filename = zipfilename;
 		initData();
 	}
+	public void dispose() {
+		super.dispose();
+		if (currentFileObject !=null ) {
+			try {
+				currentFileObject.close();
+			} catch (Exception e ) { }
+		}
+	}
 
 	private void initData() {
 		try {

@@ -914,6 +914,17 @@ public class FileManager implements FileListerListener {
 
 		if (tabFolder.getItemCount() > 1) {
 			TabItem currentItem = (tabFolder.getSelection())[0];
+			String tabtype = (String) currentItem.getData("tabtype"); //$NON-NLS-1$
+			if (tabtype.equals("fileLister")) { //$NON-NLS-1$
+				sashForm = (SashForm) currentItem.getControl();
+				leftPanel = (Panel) sashForm.getData("leftPanel"); //$NON-NLS-1$
+				leftPanel.dispose();
+				rightPanel = (Panel) sashForm.getData("rightPanel"); //$NON-NLS-1$
+				rightPanel.dispose();
+			} else if (tabtype.equals("zipLister")) { //$NON-NLS-1$
+				ZipLister zipLister = (ZipLister) currentItem.getControl();
+				zipLister.dispose();
+			}
 			currentItem.dispose();
 		} else {
 			Main.exit();
