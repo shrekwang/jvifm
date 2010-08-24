@@ -42,4 +42,5 @@ Features:
  
 Bugfixes:
   -- "mkdir" don't update file list view if current dir is in a driver path (windows).
+  -- "unzip" don't update file list view problem fixed.
 
