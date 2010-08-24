@@ -41,6 +41,7 @@ Changes in Version 0.12b
 Features:
  
 Bugfixes:
-  -- "mkdir" don't update file list view if current dir is in a driver path (windows).
+  -- "mkdir" or "touch" don't update file list view if current dir is in a driver root path (windows).
   -- "unzip" don't update file list view problem fixed.
+  --  zip file remained open if the file had been browsed inside jvifm problme fixed.
 
