@@ -1566,19 +1566,25 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	}
 
 	public void addToView(File file) {
-		String dstDir=file.getParent();
-		if (dstDir.endsWith(File.separator)) {
-			dstDir=dstDir.substring(0,dstDir.length()-1);
-		}
-		if (pwd.equalsIgnoreCase(dstDir)) {
-			int itemIndex=searchTableItem(file.getName());
-			if (itemIndex < 0 ) {
-				String dirPosInfo = (String) historyManager.getSelectedItem(pwd);
-				generateItems(new File[]{file}, dirPosInfo,true);
-			} else {
-				updateItem(file,itemIndex);
+		File tmpFile=file;
+		while (true ) {
+			String dstDir=tmpFile.getParent();
+			if (dstDir == null ) break;
+			if (dstDir.endsWith(File.separator)) {
+				dstDir=dstDir.substring(0,dstDir.length()-1);
 			}
-		    updateStatusText();
+			if (pwd.equalsIgnoreCase(dstDir)) {
+				int itemIndex=searchTableItem(tmpFile.getName());
+				if (itemIndex < 0 ) {
+					String dirPosInfo = (String) historyManager.getSelectedItem(pwd);
+					generateItems(new File[]{tmpFile}, dirPosInfo,true);
+				} else {
+					updateItem(tmpFile,itemIndex);
+				}
+			    updateStatusText();
+			    break;
+			}
+			tmpFile=new File(dstDir);
 		}
 
 	}
