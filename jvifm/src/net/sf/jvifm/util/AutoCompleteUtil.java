@@ -67,14 +67,18 @@ public class AutoCompleteUtil {
 
 		if (files == null || files.length <= 0)
 			return null;
+		boolean lowerCase = false;
+		if (fileName.toLowerCase().equals(fileName)) {
+			lowerCase = true;
+		}
 		for (int i = 0; i < files.length; i++) {
-			if (files[i].getName().toLowerCase().startsWith(fileName)
+			String tmpFileName = files[i].getName();
+			if (lowerCase) tmpFileName = tmpFileName.toLowerCase();
+			if (tmpFileName.startsWith(fileName)
 					|| path.endsWith(File.separator)
-					|| FilenameUtils.wildcardMatch(files[i].getName(),
-							fileName, IOCase.INSENSITIVE))
+					|| FilenameUtils.wildcardMatch(tmpFileName, fileName, IOCase.INSENSITIVE))
 				if (onlyDir) {
-					if (files[i].isDirectory())
-						list.add(files[i]);
+					if (files[i].isDirectory()) list.add(files[i]);
 				} else {
 					list.add(files[i]);
 				}
@@ -106,16 +110,22 @@ public class AutoCompleteUtil {
 
 		BookmarkManager bookmarkManager = BookmarkManager.getInstance();
 
+		boolean lowerCase = false;
+		if (name.toLowerCase().equals(name)) {
+			lowerCase = true;
+		}
 		List bookmarkList = bookmarkManager.getAll();
 		if (bookmarkList != null) {
 			for (Iterator it = bookmarkList.iterator(); it.hasNext();) {
 				Bookmark bookmark = (Bookmark) it.next();
 				String bookmarkName = bookmark.getName();
-				if (bookmarkName.toLowerCase().startsWith(name)
-						|| FilenameUtils.wildcardMatch(bookmarkName, name,
-								IOCase.INSENSITIVE))
+				if (lowerCase) {
+					bookmarkName = bookmarkName.toLowerCase();
+				}
+				if ( FilenameUtils.wildcardMatch(bookmarkName, name, IOCase.INSENSITIVE)
+						|| bookmarkName.startsWith(name)) {
 					result.add(bookmark.getPath());
-
+				}
 			}
 		}
 
@@ -205,15 +215,22 @@ public class AutoCompleteUtil {
 
 		ShortcutsManager scm = ShortcutsManager.getInstance();
 
+		boolean lowerCase = false;
+		if (cmd.toLowerCase().equals(cmd)) {
+			lowerCase = true;
+		}
 		ArrayList customCmdNameList = scm.getAll();
 		if (customCmdNameList != null) {
 			for (Iterator it = customCmdNameList.iterator(); it.hasNext();) {
 				Shortcut shortcut = (Shortcut) it.next();
 				String cmdName = shortcut.getName();
-				if (cmdName.toLowerCase().startsWith(cmd)
-						|| FilenameUtils.wildcardMatch(cmdName, cmd,
-								IOCase.INSENSITIVE))
+				if (lowerCase) {
+					cmdName = cmdName.toLowerCase();
+				}
+				if ( FilenameUtils.wildcardMatch(cmdName, cmd, IOCase.INSENSITIVE)
+						||  cmdName.startsWith(cmd) ) {
 					result.add(shortcut);
+				}
 			}
 		}
 
