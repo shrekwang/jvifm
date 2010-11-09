@@ -71,7 +71,7 @@ public class AboutShell {
 			}
 			{
 				lblName = new Label(container, SWT.WRAP);
-				lblName.setText("Jvifm 0.11b");
+				lblName.setText("Jvifm 0.12b");
 				GridData label4LData = new GridData();
 				label4LData.verticalAlignment = GridData.BEGINNING;
 				label4LData.horizontalAlignment = GridData.CENTER;
@@ -88,7 +88,7 @@ public class AboutShell {
 			}
 			{
 				lblCopyRight = new Label(container, SWT.WRAP);
-				lblCopyRight.setText("Copyright 2006-2009 by shrek wang");
+				lblCopyRight.setText("Copyright 2006-2010 by shrek wang");
 				GridData label1LData = new GridData();
 				label1LData.verticalAlignment = GridData.BEGINNING;
 				label1LData.horizontalAlignment = GridData.CENTER;
