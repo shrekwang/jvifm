@@ -39,9 +39,11 @@ Bugfixes:
 Changes in Version 0.12b
 ---------------------------------------------------
 Features:
- 
+  --  show total space/ free space info when browse driver root path(windows).
+  
 Bugfixes:
   -- "mkdir" or "touch" don't update file list view if current dir is in a driver root path (windows).
   -- "unzip" don't update file list view problem fixed.
   --  zip file remained open if the file had been browsed inside jvifm problme fixed.
+ 
 
