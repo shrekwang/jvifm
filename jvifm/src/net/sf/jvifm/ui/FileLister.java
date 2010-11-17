@@ -1113,6 +1113,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		File[] currentFiles = null;
 		// if ( path.endsWith(":")) path=path+File.separator; //$NON-NLS-1$
 		// change pwd to file system root
+		columnDate.setText(Messages.getString("FileLister.dateColumnTitle")); //$NON-NLS-1$
 		if (path.equals(FS_ROOT)) {
 			if (ENV_OS.substring(0, 3).equalsIgnoreCase("win")) { //$NON-NLS-1$
 				String selection = (String) historyManager.getSelectedItem(""); //$NON-NLS-1$
@@ -1126,10 +1127,13 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 							selection + File.separator)) {
 						currentRow = i;
 					}
+					item.setText(1, StringUtil.formatSize(currentFiles[i].getTotalSpace()));
+					item.setText(2, StringUtil.formatSize(currentFiles[i].getFreeSpace()));
 					item.setImage(0, driveImage);
 				}
 				table.setSelection(currentRow);
 				pwd = ""; //$NON-NLS-1$
+				columnDate.setText(Messages.getString("FileLister.freeSpaceColumnTitle")); //$NON-NLS-1$
 				return;
 
 			} else {
