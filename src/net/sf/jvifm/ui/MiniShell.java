@@ -80,7 +80,7 @@ public class MiniShell {
 					currentSelectionCompletion = 0;
 
 				}
-				if (e.keyCode == SWT.ESC) {
+				if (e.keyCode == SWT.ESC || (e.keyCode=='[' && e.stateMask == SWT.CTRL)) {
 					cancelOperate();
 					return;
 				}

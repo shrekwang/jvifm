@@ -73,7 +73,7 @@ public class FileListerKeyListener extends KeyAdapter {
 			fileLister.editAddress();
 			return;
 		}
-		if (event.keyCode == SWT.ESC) {
+		if (event.keyCode == SWT.ESC || (event.keyCode=='[' && event.stateMask == SWT.CTRL)) {
 			fileLister.cancelOperate();
 			return;
 		}

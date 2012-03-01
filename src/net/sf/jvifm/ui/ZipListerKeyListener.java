@@ -69,7 +69,7 @@ public class ZipListerKeyListener extends KeyAdapter {
 			// zipLister.editAddress();
 			return;
 		}
-		if (event.keyCode == SWT.ESC) {
+		if (event.keyCode == SWT.ESC || (event.keyCode=='[' && event.stateMask == SWT.CTRL)) {
 			zipLister.cancelOperate();
 			return;
 		}

@@ -114,7 +114,7 @@ public class QuickRunShell {
 						return;
 					}
 				}
-				if (e.keyCode == SWT.ESC) {
+				if (e.keyCode == SWT.ESC || (e.keyCode=='[' && e.stateMask == SWT.CTRL)) {
 					e.doit = false;
 					cancelOperate();
 				}

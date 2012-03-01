@@ -140,7 +140,7 @@ public class ShortcutsLister extends BasicViLister implements
 					newEditor.dispose();
 					table.setFocus();
 				}
-				if (event.character == SWT.ESC) {
+				if (event.keyCode == SWT.ESC || (event.keyCode=='[' && event.stateMask == SWT.CTRL)) {
 					newEditor.dispose();
 					table.setFocus();
 				}

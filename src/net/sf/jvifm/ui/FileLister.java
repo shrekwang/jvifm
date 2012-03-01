@@ -834,7 +834,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 				updateEditItem(textEditor,itemType);
 				table.setFocus();
 			}
-			if (event.character == SWT.ESC) {
+			if (event.keyCode == SWT.ESC || (event.keyCode=='[' && event.stateMask == SWT.CTRL)) {
 				if (itemType.equals("file") || itemType.equals("folder")) {
 					table.remove(currentRow);
 					if (table.getItemCount() > 0)
@@ -904,7 +904,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 					newEditor.dispose();
 					table.setFocus();
 				}
-				if (event.character == SWT.ESC) {
+				if (event.keyCode == SWT.ESC || (event.keyCode=='[' && event.stateMask == SWT.CTRL)) {
 					newEditor.dispose();
 					table.setFocus();
 				}

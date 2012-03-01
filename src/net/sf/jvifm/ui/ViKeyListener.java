@@ -60,7 +60,7 @@ public class ViKeyListener extends KeyAdapter {
 	    		return;
 	    	}
 	    
-	    	if (event.keyCode==SWT.ESC){
+	    	if (event.keyCode == SWT.ESC || (event.keyCode=='[' && event.stateMask == SWT.CTRL)) {
 	    		viLister.cancelOperate();
 	    		return;
 	    	}
