@@ -1098,6 +1098,16 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		refreshHistoryInfo();
 		historyManager.addToHistory(path);
 	}
+	
+	private File[] getReadAbleRoots() {
+		ArrayList<File> rootList = new ArrayList<File>();
+		for (File file : File.listRoots() ) {
+			if (file.canRead()) {
+				rootList.add(file);
+			}
+		}
+		return rootList.toArray(new File[]{});
+	}
 
 	public void changePwd(String path) {
 
@@ -1118,7 +1128,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 			if (ENV_OS.substring(0, 3).equalsIgnoreCase("win")) { //$NON-NLS-1$
 				String selection = (String) historyManager.getSelectedItem(""); //$NON-NLS-1$
 				table.removeAll();
-				currentFiles = File.listRoots();
+				currentFiles = this.getReadAbleRoots();
 				currentRow = 0;
 				for (int i = 0; i < currentFiles.length; i++) {
 					TableItem item = new TableItem(table, SWT.BORDER);
