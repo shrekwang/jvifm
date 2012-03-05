@@ -41,6 +41,7 @@ import net.sf.jvifm.util.FileListerServer;
 import net.sf.jvifm.util.HomeLocator;
 
 import org.apache.commons.cli.Options;
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -64,6 +65,9 @@ public class Main {
 
 	public static void main(String[] args) {
 		initConfigDir();
+		boolean locked = createLockFile();
+		if (!locked) return;
+		
 		initCommandRegister();
         initServer();
 		
@@ -105,6 +109,23 @@ public class Main {
 	}
 	
 	
+	public static boolean createLockFile() {
+		File lockFile = new File(FilenameUtils.concat(HomeLocator.getConfigHome(),".lock"));
+		if (lockFile.exists()) return false;
+		try {
+			return lockFile.createNewFile();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	public static void removeLockFile() {
+		File lockFile = new File(FilenameUtils.concat(HomeLocator.getConfigHome(),".lock"));
+		try {
+			lockFile.delete();
+		} catch (Exception e) {
+		}
+	}
 
 	public static void initConfigDir() {
 		File file = new File(HomeLocator.getConfigHome());
@@ -124,6 +145,7 @@ public class Main {
 		ShortcutsManager.getInstance().store();
 		MimeManager.getInstance().store();
 		AppStatus.writeAppStatus();
+		removeLockFile();
 		shell.dispose();
 		display.dispose();
 		System.exit(0);
