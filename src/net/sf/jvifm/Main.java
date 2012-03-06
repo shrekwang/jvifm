@@ -24,6 +24,9 @@ package net.sf.jvifm;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 
 import net.sf.jvifm.control.CommandRegister;
 import net.sf.jvifm.control.FindCommand;
@@ -55,6 +58,8 @@ public class Main {
 	public static final int LINUX=1;
 	public static final int WINDOWS=2;
 	
+	private static FileLock fileLock;
+	
 	static {
         if (System.getProperty("os.name").toUpperCase().indexOf("WINDOWS") != -1) {
             operatingSystem = WINDOWS;
@@ -65,7 +70,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		initConfigDir();
-		boolean locked = createLockFile();
+		boolean locked = createFileLock();
 		if (!locked) return;
 		
 		initCommandRegister();
@@ -109,20 +114,22 @@ public class Main {
 	}
 	
 	
-	public static boolean createLockFile() {
+	public static boolean createFileLock() {
 		File lockFile = new File(FilenameUtils.concat(HomeLocator.getConfigHome(),".lock"));
-		if (lockFile.exists()) return false;
 		try {
-			return lockFile.createNewFile();
+			FileChannel channel = new RandomAccessFile(lockFile, "rw").getChannel();
+		    fileLock = channel.tryLock();
+		    if (fileLock !=null) { 
+		    	return true;
+		    }
 		} catch (Exception e) {
-			return false;
 		}
+		return false;
 	}
 	
-	public static void removeLockFile() {
-		File lockFile = new File(FilenameUtils.concat(HomeLocator.getConfigHome(),".lock"));
+	public static void releaseLockFile() {
 		try {
-			lockFile.delete();
+			fileLock.release();
 		} catch (Exception e) {
 		}
 	}
@@ -139,13 +146,14 @@ public class Main {
             e.printStackTrace();
         }
     }
+    
 	
 	public static void exit() {
+		releaseLockFile();
 		BookmarkManager.getInstance().store();
 		ShortcutsManager.getInstance().store();
 		MimeManager.getInstance().store();
 		AppStatus.writeAppStatus();
-		removeLockFile();
 		shell.dispose();
 		display.dispose();
 		System.exit(0);
