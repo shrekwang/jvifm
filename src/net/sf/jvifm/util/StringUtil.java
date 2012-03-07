@@ -25,14 +25,16 @@ import java.text.*;
 
 public class StringUtil {
 
+	private static SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	private static DecimalFormat df = new DecimalFormat("#.##");
+	
+	
 	public static String formatDate(long dateValue) {
-		SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		return simpleFormat.format(new Date(dateValue));
 	}
 
 	public static String formatSize(long fileSize) {
 
-		DecimalFormat df = new DecimalFormat("#.##");
 		if (fileSize < 1024) {
 			return String.valueOf(fileSize)+"bytes";
 		} else if (fileSize >= 1024 && fileSize < 1048576) {
