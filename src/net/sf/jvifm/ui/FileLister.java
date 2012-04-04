@@ -143,8 +143,11 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	private int currentRow = 0;
 	private int origRow = 0;
 
+    private File[] tableContentFiles = null;
+    private boolean winRoot = false;
+    private String selectedName = "";
+    private boolean hasMatchSelectedName = false;
 	
-
 	private ArrayList<FileListerListener> listeners = new ArrayList<FileListerListener>();
 	private Color tableDefaultBackground = null;
 
@@ -201,10 +204,18 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		textLocation = new StyledText(headGroup, SWT.SINGLE | SWT.BORDER);
 		textLocation.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		table = new Table(mainArea, SWT.MULTI  | SWT.FULL_SELECTION );
+		table = new Table(mainArea, SWT.MULTI  | SWT.FULL_SELECTION | SWT.VIRTUAL);
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 		table.setHeaderVisible(true);
 		table.setLinesVisible(false);
+        table.addListener(SWT.SetData, new Listener() {
+            public void handleEvent(Event e) {
+              TableItem item = (TableItem)e.item;
+              int index = table.indexOf(item);
+              generateOneItem(item,tableContentFiles[index],index);
+            }
+        });
+        
 		this.tableDefaultBackground=table.getBackground();
 
 		columnName = new TableColumn(table, SWT.BORDER);
@@ -276,7 +287,8 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		sortList(currentFiles, sortColumn, isReverse);
 		table.removeAll();
 		String dirPosInfo = (String) historyManager.getSelectedItem(pwd);
-		generateItems(currentFiles, dirPosInfo,false);
+		this.selectedName = dirPosInfo;
+		generateItems(currentFiles, false);
 		updateStatusText();
 	}
 
@@ -637,8 +649,8 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	}
 
 	public void brief() {
-		columnSize.dispose();
-		columnDate.dispose();
+		//columnSize.dispose();
+		//columnDate.dispose();
 		showDetail = false;
 	}
 
@@ -1094,6 +1106,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
             fileManager.setStatusInfo(path+" not existed.");
             return;
         }
+
 		changePwd(path);
 		refreshHistoryInfo();
 		historyManager.addToHistory(path);
@@ -1109,6 +1122,11 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		return rootList.toArray(new File[]{});
 	}
 
+	private void setTableContentFiles(File[] files) {
+		this.tableContentFiles = files;
+		table.setItemCount(files.length);
+		table.clearAll();
+	}
 	public void changePwd(String path) {
 
 		if (getOperateMode() != Mode.ORIG )
@@ -1126,9 +1144,15 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		columnDate.setText(Messages.getString("FileLister.dateColumnTitle")); //$NON-NLS-1$
 		if (path.equals(FS_ROOT)) {
 			if (ENV_OS.substring(0, 3).equalsIgnoreCase("win")) { //$NON-NLS-1$
+				this.winRoot = true;
 				String selection = (String) historyManager.getSelectedItem(""); //$NON-NLS-1$
-				table.removeAll();
-				currentFiles = this.getReadAbleRoots();
+				
+				//currentFiles = this.getReadAbleRoots();
+				setTableContentFiles(this.getReadAbleRoots());
+				pwd = ""; //$NON-NLS-1$
+				table.setSelection(currentRow);
+			
+				/*
 				currentRow = 0;
 				for (int i = 0; i < currentFiles.length; i++) {
 					TableItem item = new TableItem(table, SWT.BORDER);
@@ -1142,15 +1166,16 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 					item.setImage(0, driveImage);
 				}
 				table.setSelection(currentRow);
-				pwd = ""; //$NON-NLS-1$
 				columnDate.setText(Messages.getString("FileLister.freeSpaceColumnTitle")); //$NON-NLS-1$
+				*/
 				return;
 
 			} else {
 				path = "/"; //$NON-NLS-1$
 			}
 		}
-
+		
+		this.winRoot = false;
 		File file = null;
 		if (path.endsWith(":")) {
 			file = new File(path + File.separator);
@@ -1171,10 +1196,9 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 			}
 
 			sortList(currentFiles, sortColumn, isReverse);
-
-			table.removeAll();
 			String dirPosInfo = (String) historyManager.getSelectedItem(path);
-			generateItems(currentFiles, dirPosInfo,false);
+			this.selectedName = dirPosInfo;
+			generateItems(currentFiles, false);
 			updateStatusText();
             changeLocationText();
 
@@ -1315,16 +1339,56 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		Arrays.sort(subFiles, FileComprator.getFileComprator(sortColumn, isReverse));
 	}
 	
+	private void generateOneItemForWinRoot(TableItem item, File file,int index) {
+		item.setText(0,file.getPath().substring(0, 2));
+		
+		item.setText(1, StringUtil.formatSize(file.getTotalSpace()));
+		item.setText(2, StringUtil.formatSize(file.getFreeSpace()));
+		item.setImage(0, driveImage);
+		String selection = (String) historyManager.getSelectedItem(""); //$NON-NLS-1$
+		if (file.getPath().equalsIgnoreCase( selection + File.separator)) {
+			currentRow = index;
+		}
+	}
 	
+    public void generateOneItem(TableItem item,File file,int index) {
 
-	public TableItem[] generateItems(File[] subFiles, String selectedName,boolean appendMode) {
-
-		boolean hasMatchSelectedName = false;
-		if (subFiles == null || subFiles.length == 0)
-			return new TableItem[] {};
-		TableItem[] items = new TableItem[subFiles.length];
-		int index = table.getItemCount();
+    	if (this.winRoot == true ) {
+    		generateOneItemForWinRoot(item,file,index);
+    		return;
+    	}
 		int nameStart=pwd.endsWith(File.separator) ? pwd.length() : pwd.length()+1;
+        String subFilePath = file.getPath().substring(nameStart);
+        item.setText(0, subFilePath);
+        item.setImage(0,ResourceManager.getMimeImage(file));
+        if (file.getName().equals(selectedName)) {
+			currentRow = index;
+			hasMatchSelectedName = true;
+		}
+        if (showDetail) {
+            if (file.isDirectory()) {
+                item.setText(1, "--");
+            } else {
+                item.setText(1, StringUtil.formatSize(file.length()));
+            }
+            item.setText(2, StringUtil.formatDate(file.lastModified()));
+        } else {
+            item.setText(1,"");
+            item.setText(2,"");
+        }
+    }
+
+	public void generateItems(File[] subFiles, boolean appendMode) {
+
+		if (subFiles == null )
+			subFiles = new File[]{};
+		//TableItem[] items = new TableItem[subFiles.length];
+		//int index = table.getItemCount();
+		//int nameStart=pwd.endsWith(File.separator) ? pwd.length() : pwd.length()+1;
+		hasMatchSelectedName = false;
+		this.setTableContentFiles(subFiles);
+        
+        /*
 		for (int i = 0; i < subFiles.length; i++) {
 			items[i] = new TableItem(table, SWT.BORDER, index++);
 			String subFilePath = subFiles[i].getPath().substring(nameStart);
@@ -1341,8 +1405,12 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 					items[i].setText(1, StringUtil.formatSize(subFiles[i].length()));
 				}
 				items[i].setText(2, StringUtil.formatDate(subFiles[i].lastModified()));
+			} else {
+				items[i].setText(1,"");
+				items[i].setText(2,"");
 			}
 		}
+        */
 		if (appendMode) {
 			currentRow=table.getItemCount()-1;
 		} else {
@@ -1350,7 +1418,6 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		}
 		if (currentRow >-1) table.setSelection(currentRow);
 		updateStatusText();
-		return items;
 	}
 
 	public void doUnCompress(boolean extractToPwd) {
@@ -1591,7 +1658,8 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 				int itemIndex=searchTableItem(tmpFile.getName());
 				if (itemIndex < 0 ) {
 					String dirPosInfo = (String) historyManager.getSelectedItem(pwd);
-					generateItems(new File[]{tmpFile}, dirPosInfo,true);
+					this.selectedName = dirPosInfo;
+					generateItems(new File[]{tmpFile}, true);
 				} else {
 					updateItem(tmpFile,itemIndex);
 				}
@@ -1613,6 +1681,10 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 				item.setText(1, StringUtil.formatSize(file.length()));
 			}
 			item.setText(2, StringUtil.formatDate(file.lastModified()));
+		} else {
+			item = table.getItem(itemIndex);
+			item.setText(1,"");
+			item.setText(2,"");
 		}
 		table.setSelection(item);
 		currentRow = table.getSelectionIndex();
