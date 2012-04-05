@@ -333,6 +333,9 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 					refreshHistoryInfo();
 					table.setFocus();
 				}
+				if (event.keyCode == SWT.ESC || (event.keyCode=='[' && event.stateMask == SWT.CTRL)) {
+					table.setFocus();
+				}
 			}
 
 		});
@@ -1161,29 +1164,9 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		if (path.equals(FS_ROOT)) {
 			if (ENV_OS.substring(0, 3).equalsIgnoreCase("win")) { //$NON-NLS-1$
 				this.winRoot = true;
-				String selection = (String) historyManager.getSelectedItem(""); //$NON-NLS-1$
-				
-				//currentFiles = this.getReadAbleRoots();
 				setTableContentFiles(this.getReadAbleRoots());
 				pwd = ""; //$NON-NLS-1$
 				table.setSelection(currentRow);
-			
-				/*
-				currentRow = 0;
-				for (int i = 0; i < currentFiles.length; i++) {
-					TableItem item = new TableItem(table, SWT.BORDER);
-					item.setText(0, currentFiles[i].getPath().substring(0, 2));
-					if (currentFiles[i].getPath().equalsIgnoreCase(
-							selection + File.separator)) {
-						currentRow = i;
-					}
-					item.setText(1, StringUtil.formatSize(currentFiles[i].getTotalSpace()));
-					item.setText(2, StringUtil.formatSize(currentFiles[i].getFreeSpace()));
-					item.setImage(0, driveImage);
-				}
-				table.setSelection(currentRow);
-				columnDate.setText(Messages.getString("FileLister.freeSpaceColumnTitle")); //$NON-NLS-1$
-				*/
 				return;
 
 			} else {
@@ -1348,13 +1331,6 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		return subFiles;
 	}
 
-	@SuppressWarnings("unchecked")
-	private void sortList(File[] subFiles, String sortString, boolean isReverse) {
-		if (sortString != null) this.sortColumn = sortString;
-		if (sortColumn == null) return;
-		Arrays.sort(subFiles, FileComprator.getFileComprator(sortColumn, isReverse));
-	}
-	
 	private void generateOneItemForWinRoot(TableItem item, File file,int index) {
 		item.setText(0,file.getPath().substring(0, 2));
 		
@@ -1398,35 +1374,9 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 
 		if (subFiles == null )
 			subFiles = new File[]{};
-		//TableItem[] items = new TableItem[subFiles.length];
-		//int index = table.getItemCount();
-		//int nameStart=pwd.endsWith(File.separator) ? pwd.length() : pwd.length()+1;
 		hasMatchSelectedName = false;
 		this.setTableContentFiles(subFiles);
         
-        /*
-		for (int i = 0; i < subFiles.length; i++) {
-			items[i] = new TableItem(table, SWT.BORDER, index++);
-			String subFilePath = subFiles[i].getPath().substring(nameStart);
-			items[i].setText(0, subFilePath);
-			items[i].setImage(0,ResourceManager.getMimeImage(subFiles[i]));
-			if (subFiles[i].getName().equals(selectedName)) {
-				currentRow = index - 1;
-				hasMatchSelectedName = true;
-			}
-			if (showDetail) {
-				if (subFiles[i].isDirectory()) {
-					items[i].setText(1, "--");
-				} else {
-					items[i].setText(1, StringUtil.formatSize(subFiles[i].length()));
-				}
-				items[i].setText(2, StringUtil.formatDate(subFiles[i].lastModified()));
-			} else {
-				items[i].setText(1,"");
-				items[i].setText(2,"");
-			}
-		}
-        */
 		if (appendMode) {
 			currentRow=table.getItemCount()-1;
 		} else {
