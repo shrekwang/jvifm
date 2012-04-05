@@ -26,7 +26,7 @@ import org.apache.commons.io.*;
 
 public class FileComprator {
 	
-	public static Comparator getFileComprator(String field,boolean isReverse) {
+	public static Comparator<File> getFileComprator(String field,boolean isReverse) {
 		if (field.equals("size")) {
 			return new CompratorBySize(isReverse);
 		} else if (field.equals("name")) {
@@ -40,24 +40,20 @@ public class FileComprator {
 	}
 }
 
-    class CompratorByLastModified implements Comparator {
+    class CompratorByLastModified implements Comparator<File> {
     	private boolean isReverse=false;
     	
     	public CompratorByLastModified(boolean isReverse) {
     		this.isReverse=isReverse;
     	}
 
-       public int compare(Object o1, Object o2) {
+       public int compare(File file1, File file2) {
 
-           File file1 = (File)o1;
-           File file2 = (File)o2;
            long diff = file1.lastModified() - file2.lastModified();
            int result;
 
-           if (diff > 0)
+           if (diff >= 0)
               result= 1;
-           else if (diff == 0)
-              result= 0;
            else
               result= -1;
            if (isReverse) return 0-result; 
@@ -71,22 +67,18 @@ public class FileComprator {
     }
 
 
-   class CompratorBySize implements Comparator {
+   class CompratorBySize implements Comparator<File> {
 	   private boolean isReverse=false;
    	
 	   	public CompratorBySize(boolean isReverse) {
 	   		this.isReverse=isReverse;
 	   	}
-       public int compare(Object o1, Object o2) {
-           File file1 = (File)o1;
-           File file2 = (File)o2;
+       public int compare(File file1, File file2) {
            long diff = file1.length() - file2.length();
            int result;
 
-           if (diff > 0)
+           if (diff >= 0)
               result= 1;
-           else if (diff == 0)
-              result= 0;
            else
               result= -1;
            if (isReverse) return 0-result; 
@@ -98,16 +90,14 @@ public class FileComprator {
        }
 
     }
-    class CompratorByName implements Comparator {
+    class CompratorByName implements Comparator<File> {
     	 private boolean isReverse=false;
     	   	
  	   	public CompratorByName(boolean isReverse) {
  	   		this.isReverse=isReverse;
  	   	}
 
-       public int compare(Object o1, Object o2) {
-           File file1 = (File)o1;
-           File file2 = (File)o2;
+       public int compare(File file1, File file2) {
            boolean file1IsFile=file1.isDirectory() ? false : true;
            boolean file2IsFile=file2.isDirectory() ? false : true;
            
@@ -129,15 +119,13 @@ public class FileComprator {
        }
 
     }
-    class CompratorByExt implements Comparator {
+    class CompratorByExt implements Comparator<File> {
     	 private boolean isReverse=false;
  	   	
   	   	public  CompratorByExt(boolean isReverse) {
   	   		this.isReverse=isReverse;
   	   	}
-    	 public int compare(Object o1, Object o2) {
-             File file1 = (File)o1;
-             File file2 = (File)o2;
+    	 public int compare(File file1, File file2) {
              String file1Ext=FilenameUtils.getExtension(file1.getName());
              String file2Ext=FilenameUtils.getExtension(file2.getName());
              if (file1.isFile() && file2.isDirectory()) {
@@ -148,8 +136,14 @@ public class FileComprator {
             	 if (isReverse) return 1;
             	 return -1;
              }
-             if (isReverse) return file2Ext.compareTo(file1Ext);
-          	   return file1Ext.compareTo(file2Ext);
+             int result = 0;
+             if (isReverse) {
+            	 result = file2Ext.compareTo(file1Ext);
+             } else {
+          	   result= file1Ext.compareTo(file2Ext);
+             }
+             if (result == 0) result =1 ;
+             return result;
          }
          public boolean equals(Object obj){
              return true;  
