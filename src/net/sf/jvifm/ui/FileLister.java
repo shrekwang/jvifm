@@ -216,11 +216,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
             public void handleEvent(Event e) {
               TableItem item = (TableItem)e.item;
               int index = table.indexOf(item);
-              try {
-	              generateOneItem(item,tableContentFileArray[index],index);
-              } catch (Throwable e1) {
-            	  e1.printStackTrace();
-              }
+              generateOneItem(item,tableContentFileArray[index],index);
             }
         });
         
@@ -1145,6 +1141,15 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		}
 		table.setItemCount(files.length);
 		table.clearAll();
+		
+		for (int i=0; i<this.tableContentFileArray.length; i++) {
+			File file = this.tableContentFileArray[i];
+		 if (file.getName().equals(selectedName)||
+				 (this.winRoot==true && file.getPath().equals(selectedName+"\\"))) {
+				currentRow = i;
+				hasMatchSelectedName = true;
+			}
+		}
 	}
 	public void changePwd(String path) {
 
@@ -1164,6 +1169,8 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		if (path.equals(FS_ROOT)) {
 			if (ENV_OS.substring(0, 3).equalsIgnoreCase("win")) { //$NON-NLS-1$
 				this.winRoot = true;
+				String dirPosInfo = (String) historyManager.getSelectedItem(path);
+				this.selectedName = dirPosInfo;
 				setTableContentFiles(this.getReadAbleRoots());
 				pwd = ""; //$NON-NLS-1$
 				table.setSelection(currentRow);
@@ -1353,10 +1360,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
         String subFilePath = file.getPath().substring(nameStart);
         item.setText(0, subFilePath);
         item.setImage(0,ResourceManager.getMimeImage(file));
-        if (file.getName().equals(selectedName)) {
-			currentRow = index;
-			hasMatchSelectedName = true;
-		}
+       
         if (showDetail) {
             if (file.isDirectory()) {
                 item.setText(1, "--");
@@ -1458,6 +1462,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	}
 
 	private String getItemFullPath(int row) {
+		
 		TableItem[] items = table.getItems();
 		if (items.length == 0)
 			return null;
@@ -1473,6 +1478,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 			}
 		}
 		return nextEntry;
+		
 	}
 
 	public void enterPath() {
