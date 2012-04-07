@@ -67,6 +67,15 @@ public class BookmarkManager {
 			listener.onAddBookmark(bookmark);
 		}
 	}
+	
+	public Bookmark getBookmark(File file) {
+		for (Bookmark bm : bookmarkList) {
+			if (bm.getPath().equalsIgnoreCase(file.getAbsolutePath())) {
+				return bm;
+			}
+		}
+		return null;
+	}
 
 	public void notifyChangeBookmark(String key, Bookmark bookmark) {
 		for (BookmarkListener listener : listeners) {

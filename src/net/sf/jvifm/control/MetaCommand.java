@@ -26,6 +26,7 @@ import java.io.File;
 import net.sf.jvifm.Main;
 import net.sf.jvifm.model.Preference;
 import net.sf.jvifm.ui.FileManager;
+import net.sf.jvifm.ui.FileTree;
 import net.sf.jvifm.ui.Util;
 import net.sf.jvifm.ui.shell.AboutShell;
 
@@ -36,7 +37,7 @@ public class MetaCommand extends Command {
 
 	private static String[] cmdNames = new String[] { "quit", "quitall",
 			"hide", "only", "split", "help", "sync", "conf", "locate", "sh",
-			"bookmarks", "history", "folder", "shortcuts", "hidesidebar",
+			"bookmarks", "bmfolder","history", "folder", "shortcuts", "hidesidebar",
 			"kill", "about", "preview", "nopreview", "brief", "detail" };
 
 	private String cmd;
@@ -142,7 +143,11 @@ public class MetaCommand extends Command {
 			fileManager.activeSideView();
 		}
 		if (cmd.equals("folder") || cmd.equals("locate")) {
-			fileManager.showFileTree();
+			fileManager.showFileTree(FileTree.FS_TREE);
+			fileManager.activeSideView();
+		}
+		if (cmd.equals("bmfolder")) {
+			fileManager.showFileTree(FileTree.BM_TREE);
 			fileManager.activeSideView();
 		}
 		if (cmd.equals("hidesidebar")) {

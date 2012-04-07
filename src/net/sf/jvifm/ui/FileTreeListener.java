@@ -20,13 +20,11 @@ public class FileTreeListener extends ViKeyListener {
 		
 		switch (event.character) {
 		case 'h':
+		case 'u':
 			fileTree.selectParentDir();
 			break;
 		case 'i':
 			fileTree.filterView();
-			break;
-		case 'u':
-			fileTree.backToRoot();
 			break;
 		case 'B':
 			fileTree.listBookMarks();

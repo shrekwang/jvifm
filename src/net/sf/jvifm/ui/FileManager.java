@@ -273,7 +273,7 @@ public class FileManager implements FileListerListener {
 				.getString("FileManager.menuitemFolderTree")); //$NON-NLS-1$
 		foldertreeItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				showFileTree();
+				showFileTree(FileTree.FS_TREE);
 			}
 		});
 		MenuItem shortcutsItem = new MenuItem(menu, SWT.PUSH);
@@ -734,9 +734,9 @@ public class FileManager implements FileListerListener {
 			sideViewContentContainer.setLayoutData(GuiDataFactory
 					.createGridData(GridData.FILL, GridData.FILL, true, true));
 
-			sideViLister = new BookmarkLister(sideViewContentContainer,
-					SWT.NONE);
+			sideViLister = new FileTree(sideViewContentContainer, SWT.NONE, "", FileTree.BM_TREE);
 			sideViewContainer.layout();
+			sideviewTypeToolItem.setText(Messages.getString("FileManager.labelBmTree")); //$NON-NLS-1$
 		}
 
 		mainSashForm.setLayoutData(GuiDataFactory.createGridData(GridData.FILL,
@@ -851,21 +851,26 @@ public class FileManager implements FileListerListener {
 
 	}
 
-	public void showFileTree() {
+	public void showFileTree(int treeType) {
 		
 		String pwd=getActivePanel().getPwd();
+		/*
 		if (sideViLister !=null && sideViLister instanceof FileTree) {
 			((FileTree)sideViLister).syncView(pwd);
 			showSideBar();
 			return;
 		}
+		*/
 		
 		if (sideViLister !=null) sideViLister.dispose();
-		sideViLister = new FileTree(sideViewContentContainer, SWT.NONE, pwd);
+		sideViLister = new FileTree(sideViewContentContainer, SWT.NONE, pwd, treeType);
 		sideViewContentContainer.layout();
 
-		sideviewTypeToolItem.setText(Messages
-				.getString("FileManager.labelFolderTree")); //$NON-NLS-1$
+		if (treeType == FileTree.FS_TREE) {
+			sideviewTypeToolItem.setText(Messages.getString("FileManager.labelFolderTree")); //$NON-NLS-1$
+		} else {
+			sideviewTypeToolItem.setText(Messages.getString("FileManager.labelBmTree")); //$NON-NLS-1$
+		}
 		sideViewHeadContainer.layout();
 		showSideBar();
 	}
@@ -1170,7 +1175,7 @@ public class FileManager implements FileListerListener {
 			} else if (sideType == FileManager.SIDE_HISTORY) {
 				Main.fileManager.showHistorySideview();
 			} else if (sideType == FileManager.SIDE_FOLDER) {
-				Main.fileManager.showFileTree();
+				Main.fileManager.showFileTree(FileTree.FS_TREE);
 			} else if (sideType == FileManager.SIDE_PROGRAM) {
 				Main.fileManager.showShortcutsSideview();
 			}

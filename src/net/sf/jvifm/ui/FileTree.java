@@ -36,6 +36,7 @@ import net.sf.jvifm.control.CopyCommand;
 import net.sf.jvifm.control.MoveCommand;
 import net.sf.jvifm.control.RemoveCommand;
 import net.sf.jvifm.model.Bookmark;
+import net.sf.jvifm.model.BookmarkListener;
 import net.sf.jvifm.model.BookmarkManager;
 import net.sf.jvifm.model.FileModelListener;
 import net.sf.jvifm.model.FileModelManager;
@@ -56,8 +57,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-public class FileTree extends Canvas implements ViLister , FileModelListener {
+public class FileTree extends Canvas implements ViLister , FileModelListener,  BookmarkListener  {
 
+	private int currentTreeType=FS_TREE;
 	private Tree tree;
 	private TreeItem root;
 	private TreeItem currentItem;
@@ -66,6 +68,9 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
 	private Color treeDefaultBackground;
     private BookmarkManager bookmarkManager=BookmarkManager.getInstance();
     private FileModelManager fileModelManager=FileModelManager.getInstance();
+    
+    public static final int FS_TREE = 1;
+    public static final int BM_TREE = 2;
     
     
     private List<TreeItem> selectedItems=new ArrayList<TreeItem>();
@@ -114,7 +119,7 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
 	}
 	
 		
-	public FileTree(Composite parent, int style, String path) {
+	public FileTree(Composite parent, int style, String path, int treeType) {
 		super(parent, style);
 		folderImage = ResourceManager.getImage("folder.png");
 		driveImage = ResourceManager.getImage("drive.png");
@@ -124,10 +129,21 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
 		tree = new Tree(this, SWT.NONE);
 		this.treeDefaultBackground=tree.getBackground();
 		
-		if (Main.operatingSystem == Main.WINDOWS	) {
-			buildRootNode(null);
+		this.currentTreeType = treeType;
+		
+		if (treeType == FS_TREE) {
+			if (Main.operatingSystem == Main.WINDOWS	) {
+				buildRootNode(null);
+			} else {
+				buildRootNode(new File("/"));
+			}
 		} else {
-			buildRootNode(new File("/"));
+		 	for (Iterator<Bookmark> it=bookmarkManager.iterator(); it.hasNext(); ) {
+	    		Bookmark mark=(Bookmark)it.next();	
+	    		File file=new File(mark.getPath());
+				addFileToTree(tree, file, folderImage);
+		  	}
+			setSelection(tree.getItem(0));
 		}
 
 		tree.addTreeListener(new TreeAdapter() {
@@ -166,6 +182,7 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
 		
 		if (path != null) syncView(path);
 		fileModelManager.addListener(this);
+		bookmarkManager.addListener(this);
 	}
 	
 	public void syncView(String path) {
@@ -246,11 +263,17 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
 		else
 			throw new IllegalArgumentException(
 					"parent should be a tree or a tree item: " + parent);
-
-		if (file.getName() == null || file.getName().equals("")) {
-			item.setText(file.getPath());
+		Bookmark bm = bookmarkManager.getBookmark(file);
+		
+		if (bm!=null) {
+			item.setText("("+bm.getKey()+")"+file.getName());
 		} else {
-			item.setText(file.getName());
+
+			if (file.getName() == null || file.getName().equals("")) {
+				item.setText(file.getPath());
+			} else {
+				item.setText(file.getName());
+			}
 		}
 		item.setImage(image);
 		item.setData(file);
@@ -734,6 +757,19 @@ public class FileTree extends Canvas implements ViLister , FileModelListener {
 	public void dispose() {
 		super.dispose();
 		fileModelManager.removeListener(this);
+		bookmarkManager.removeListener(this);
+	}
+	
+	@Override
+	public void onAddBookmark(Bookmark bookmark) {
+		if (this.currentTreeType == BM_TREE) {
+			File file=new File(bookmark.getPath());
+			addFileToTree(tree, file, folderImage);
+		}
+	}
+	@Override
+	public void onChangeBookmark(String key, Bookmark bookmark) {
+		//donothing
 	}
 	
 	
