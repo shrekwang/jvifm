@@ -71,7 +71,7 @@ public class AboutShell {
 			}
 			{
 				lblName = new Label(container, SWT.WRAP);
-				lblName.setText("Jvifm 0.12b");
+				lblName.setText("Jvifm 1.0b");
 				GridData label4LData = new GridData();
 				label4LData.verticalAlignment = GridData.BEGINNING;
 				label4LData.horizontalAlignment = GridData.CENTER;
