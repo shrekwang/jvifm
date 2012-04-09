@@ -227,7 +227,7 @@ public class FileTree extends Canvas implements ViLister , FileModelListener,  B
 	}
 
 	private void showInFileLister(String path) {
-		Main.fileManager.getActivePanel().visit(path);
+		Main.fileManager.getActivePanel().visit(path,false);
 	}
 	
 	public void showCurrentNodeInFileLister() {

@@ -154,6 +154,8 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	
 	private ArrayList<FileListerListener> listeners = new ArrayList<FileListerListener>();
 	private Color tableDefaultBackground = null;
+	
+	private boolean syncWithFileTree = false;
 
 	public Control getControl() {
 		return container;
@@ -307,6 +309,12 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	public void notifyChangeSelection() {
 		for (FileListerListener listener: listeners) {
 			listener.onChangeSelection(getItemFullPath(currentRow));
+		}
+	}
+	
+	public void notifyChangePwd(String oldPath, String newPath) {
+		for (FileListerListener listener: listeners) {
+			listener.onChangePwd(oldPath, newPath);
 		}
 	}
 
@@ -1034,7 +1042,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	public void back(int count) {
 		String path = historyManager.back(count);
 		if (path != null)
-			changePwd(path);
+			changePwd(path,true);
 	}
 
 	public void back() {
@@ -1044,7 +1052,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	public void forward(int count) {
 		String path = historyManager.forward(count);
 		if (path != null)
-			changePwd(path);
+			changePwd(path,true);
 	}
 
 	public void forward() {
@@ -1107,14 +1115,17 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	}
 
 	public void visit(String path) {
+		visit(path,true);
+	}
+	
+	public void visit(String path, boolean fireChangePwd) {
+		File file = new File(path);
+		if (!file.exists() && !FS_ROOT.equals(path)) {
+			fileManager.setStatusInfo(path + " not existed.");
+			return;
+		}
 
-        File file=new File(path);
-        if (!file.exists() && !FS_ROOT.equals(path)) {
-            fileManager.setStatusInfo(path+" not existed.");
-            return;
-        }
-
-		changePwd(path);
+		changePwd(path, fireChangePwd);
 		refreshHistoryInfo();
 		historyManager.addToHistory(path);
 	}
@@ -1151,7 +1162,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 			}
 		}
 	}
-	public void changePwd(String path) {
+	public void changePwd(String path,boolean fireChangeEvent) {
 
 		if (getOperateMode() != Mode.ORIG )
 			switchToNormalMode();
@@ -1161,6 +1172,10 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 			historyManager.setSelectedItem(pwd, file.getName());
 		}
 		if (pwd.equals(""))historyManager.setSelectedItem(pwd, nextEntry); //$NON-NLS-1$
+		
+		if (fireChangeEvent && syncWithFileTree) {
+			notifyChangePwd(pwd, path);
+		}
 
 		File[] currentFiles = null;
 		// if ( path.endsWith(":")) path=path+File.separator; //$NON-NLS-1$

@@ -100,7 +100,7 @@ public class HistoryLister extends BasicViLister implements HistoryListener {
 
 	public void enterPath() {
 
-		fileLister.changePwd(table.getItem(currentRow).getText());
+		fileLister.changePwd(table.getItem(currentRow).getText(),true);
 		fileLister.active();
 		historyManager.gotoPath(table.getItem(currentRow).getText());
 	}

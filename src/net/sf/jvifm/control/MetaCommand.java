@@ -142,9 +142,12 @@ public class MetaCommand extends Command {
 			fileManager.showShortcutsSideview();
 			fileManager.activeSideView();
 		}
-		if (cmd.equals("folder") || cmd.equals("locate")) {
+		if (cmd.equals("folder")) {
 			fileManager.showFileTree(FileTree.FS_TREE);
 			fileManager.activeSideView();
+		}
+		if (cmd.equals("locate")) {
+			fileManager.locateFolderView();
 		}
 		if (cmd.equals("bmfolder")) {
 			fileManager.showFileTree(FileTree.BM_TREE);

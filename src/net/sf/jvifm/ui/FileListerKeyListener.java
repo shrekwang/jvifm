@@ -54,7 +54,7 @@ public class FileListerKeyListener extends KeyAdapter {
 	public FileListerKeyListener(FileLister fileLister) {
 		super();
 		this.fileLister = fileLister;
-		oneCharCmds = Pattern.compile("[bftvhjklorxXiHMLS^@$GpP:/nNM ]");
+		oneCharCmds = Pattern.compile("[bftvhjklorxXiHMLS^@$GpP:/nNM #]");
 		twoCharCmds = Pattern.compile("[cgdDyYzms']");
 
 	}
@@ -229,6 +229,8 @@ public class FileListerKeyListener extends KeyAdapter {
 			case 'X':
 				fileLister.doUnCompress(true);
 				break;
+			case '#':
+				fileManager.locateFolderView();
 
 			}
 		} else {

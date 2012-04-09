@@ -218,7 +218,7 @@ public class FileManager implements FileListerListener {
 			menuItem.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					MenuItem item = (MenuItem) e.widget;
-					fileLister.changePwd(item.getText());
+					fileLister.changePwd(item.getText(),true);
 					historyManager.backTo(item.getText());
 				}
 			});
@@ -239,7 +239,7 @@ public class FileManager implements FileListerListener {
 			menuItem.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					MenuItem item = (MenuItem) e.widget;
-					fileLister.changePwd(item.getText());
+					fileLister.changePwd(item.getText(),true);
 					historyManager.forwardTo(item.getText());
 				}
 			});
@@ -812,11 +812,15 @@ public class FileManager implements FileListerListener {
 	}
 
 	public void onChangePwd(String oldPath, String newPath) {
-
+		if (sideViLister !=null && sideViLister instanceof FileTree) {
+			((FileTree)sideViLister).syncView(newPath);
+			showSideBar();
+			return;
+		}
 	}
 
 	public void onChangeSelection(String fullpath) {
-		preview(fullpath);
+		//preview(fullpath);
 	}
 
 	public void showBookmarkSidevew() {
@@ -850,18 +854,18 @@ public class FileManager implements FileListerListener {
 		showSideBar();
 
 	}
-
-	public void showFileTree(int treeType) {
-		
+	
+	public void locateFolderView() {
 		String pwd=getActivePanel().getPwd();
-		/*
 		if (sideViLister !=null && sideViLister instanceof FileTree) {
 			((FileTree)sideViLister).syncView(pwd);
 			showSideBar();
 			return;
 		}
-		*/
-		
+	}
+
+	public void showFileTree(int treeType) {
+		String pwd=getActivePanel().getPwd();
 		if (sideViLister !=null) sideViLister.dispose();
 		sideViLister = new FileTree(sideViewContentContainer, SWT.NONE, pwd, treeType);
 		sideViewContentContainer.layout();
@@ -996,8 +1000,10 @@ public class FileManager implements FileListerListener {
 		sashForm.SASH_WIDTH = 6;
 
 		leftPanel = new FileLister(sashForm, SWT.BORDER, leftPath, "left"); //$NON-NLS-1$
+		((FileLister)leftPanel).addListener(this);
 
 		rightPanel = new FileLister(sashForm, SWT.BORDER, rightPath, "right"); //$NON-NLS-1$
+		((FileLister)rightPanel).addListener(this);
 
 		sashForm.setData("leftPanel", leftPanel); //$NON-NLS-1$
 		sashForm.setData("rightPanel", rightPanel); //$NON-NLS-1$
