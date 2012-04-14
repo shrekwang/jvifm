@@ -1140,17 +1140,24 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		return rootList.toArray(new File[]{});
 	}
 
-	private void setTableContentFiles(File[] files) {
+	private void setTableContentFiles(File[] files,boolean append) {
 		if (this.winRoot == true) {
 			this.tableContentFileArray = files;
 		} else {
-			this.tableContentFiles = new TreeSet<File>(FileComprator.getFileComprator(this.sortColumn, this.isReverse));
-			for (File file : files) {
-				this.tableContentFiles.add(file);
+			if (!append) {
+				this.tableContentFiles = new TreeSet<File>(FileComprator.getFileComprator(this.sortColumn, this.isReverse));
+				for (File file : files) {
+					this.tableContentFiles.add(file);
+				}
+				this.tableContentFileArray = this.tableContentFiles.toArray(new File[files.length]);
+			} else {
+				 File[] newFileContentArray = new File[tableContentFileArray.length + files.length];
+		         System.arraycopy(this.tableContentFileArray, 0, newFileContentArray, 0, this.tableContentFileArray.length);
+		         System.arraycopy(files, 0, newFileContentArray, newFileContentArray.length-1, files.length);
+		         this.tableContentFileArray =newFileContentArray;
 			}
-			this.tableContentFileArray = this.tableContentFiles.toArray(new File[files.length]);
 		}
-		table.setItemCount(files.length);
+		table.setItemCount(tableContentFileArray.length);
 		table.clearAll();
 		
 		for (int i=0; i<this.tableContentFileArray.length; i++) {
@@ -1186,7 +1193,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 				this.winRoot = true;
 				String dirPosInfo = (String) historyManager.getSelectedItem(path);
 				this.selectedName = dirPosInfo;
-				setTableContentFiles(this.getReadAbleRoots());
+				setTableContentFiles(this.getReadAbleRoots(),false);
 				pwd = ""; //$NON-NLS-1$
 				table.setSelection(currentRow);
 				return;
@@ -1331,7 +1338,10 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	}
 
 	public void removeAllItem() {
-		table.removeAll();
+		tableContentFileArray = new File[]{};;
+		table.setItemCount(tableContentFileArray.length);
+		table.clearAll();
+		
 	}
 
     public void updateStatusText() {
@@ -1394,7 +1404,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		if (subFiles == null )
 			subFiles = new File[]{};
 		hasMatchSelectedName = false;
-		this.setTableContentFiles(subFiles);
+		this.setTableContentFiles(subFiles,appendMode);
         
 		if (appendMode) {
 			currentRow=table.getItemCount()-1;
