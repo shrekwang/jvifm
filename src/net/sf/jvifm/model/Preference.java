@@ -20,10 +20,16 @@
  */
 package net.sf.jvifm.model;
 
-import java.io.*;
-import java.util.*;
+import java.util.Properties;
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.io.File;
+import net.sf.jvifm.util.HomeLocator;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.BufferedOutputStream;
 
-import net.sf.jvifm.util.*;
+
 
 public class Preference {
 

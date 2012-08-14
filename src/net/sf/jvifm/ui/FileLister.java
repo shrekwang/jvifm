@@ -1248,7 +1248,19 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	            currentPath=selectFile.getParent();
 	        }
 	    }
-        textLocation.setText(getLastLongestPath(currentPath));
+        String tmpPath = getLastLongestPath(currentPath);
+        File file = new File(tmpPath);
+        while(true) {
+            if (file.exists()) {
+                textLocation.setText(file.getAbsolutePath());
+                break;
+            }
+            file = file.getParentFile();
+            if (file == null ) {
+                textLocation.setText(currentPath);
+                break;
+            }
+        }
         if (currentPath.indexOf(File.separator) > -1) {
             int length = currentPath.substring(currentPath.lastIndexOf(File.separator))
                     .length() - 1;
@@ -1258,9 +1270,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 
                 style1.length = length;
                 style1.fontStyle = SWT.BOLD;
-                style1.background = new Color(textLocation.getDisplay(),
-                        166, 166, 166);
-
+                style1.background = new Color(textLocation.getDisplay(), 166, 166, 166);
                 textLocation.setStyleRange(style1);
             }
         }
@@ -1697,17 +1707,21 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 	public void removeFromView(File file) {
 		
 		//TableItem[] items = table.getItems();
-		
 		List<File> remainedFileList = new ArrayList<File>();
 		int firstIndex = 0;
+		boolean hasDeletedItem = false;
 		for (int i = 0; i < this.tableContentFileArray.length; i++) {
 			String abspath=this.tableContentFileArray[i].getAbsolutePath();
 			if (!abspath.equalsIgnoreCase(file.getPath())) {
 				remainedFileList.add(this.tableContentFileArray[i]);
 			} else {
-				if (firstIndex ==0) firstIndex = i;
+				if (firstIndex ==0) {
+					firstIndex = i;
+					hasDeletedItem = true;
+				}
 			}
 		}
+		if (!hasDeletedItem) return;
 		 
 		this.tableContentFileArray = new File[remainedFileList.size()];
 		for (int i=0; i<tableContentFileArray.length; i++) {
@@ -1724,6 +1738,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		table.setSelection(currentRow);
 			
         updateStatusText();
+        changeLocationText();
 
 	}
 
