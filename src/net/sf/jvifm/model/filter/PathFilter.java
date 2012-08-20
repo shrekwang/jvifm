@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.Serializable;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.AbstractFileFilter;
 
 
@@ -41,7 +42,7 @@ public class PathFilter extends AbstractFileFilter implements Serializable {
 
     public boolean accept(File file) {
     	String path=file.getPath();
-    	if (FilenameUtils.wildcardMatch(path, wildcard)) {
+    	if (FilenameUtils.wildcardMatch(path, wildcard, IOCase.INSENSITIVE)) {
 			return true;
 		}
     	return false;

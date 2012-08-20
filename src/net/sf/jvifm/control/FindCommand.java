@@ -30,6 +30,7 @@ import net.sf.jvifm.model.filter.SizeFileFilter2;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
@@ -119,7 +120,7 @@ public class FindCommand extends InterruptableCommand {
 			}
 		}
 		if (option.equals("name")) {
-			IOFileFilter filter = new WildcardFileFilter(argument);
+			IOFileFilter filter = new WildcardFileFilter(argument,IOCase.INSENSITIVE);
 			return (invert ? new NotFileFilter(filter) : filter);
 		}
 		if (option.equals("wholename")) {
