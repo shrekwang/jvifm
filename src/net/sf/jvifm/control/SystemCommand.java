@@ -31,6 +31,7 @@ public class SystemCommand extends Command {
 	private String[] cmdArray = null;
 	private String cmd = null;
 	private boolean isFileShortcut = false;
+	private boolean runInshell = false;
 
 	public SystemCommand(String cmd, String[] args, boolean isFileShortcut) {
 
@@ -51,21 +52,32 @@ public class SystemCommand extends Command {
 		}
 
 	}
+	
+	public SystemCommand(String cmd, String[] args, boolean isFileShortcut, boolean runInShell) {
+		this(cmd,args,isFileShortcut);
+		this.runInshell = runInShell;
+	}
 
 	public void execute() throws Exception {
 		String ext = FilenameUtils.getExtension(cmd);
+		
+		if (runInshell) {
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					Program.launch(cmd);
+				}
+			});
+		}
 		Program program = Program.findProgram(ext);
 		if (!isFileShortcut || cmdArray.length > 1) {
 			if (ext.equals("bat") || ext.equals("sh")) {
-				Runtime.getRuntime().exec(cmdArray, null,
-						new File(cmd).getParentFile());
+				Runtime.getRuntime().exec(cmdArray, null, new File(cmd).getParentFile());
 			} else {
 				Runtime.getRuntime().exec(cmdArray, null, new File(pwd));
 			}
 		} else {
 			if (ext.equals("bat") || ext.equals("sh") || program == null ) {
-				Runtime.getRuntime().exec(new String[] { cmd }, null,
-						new File(cmd).getParentFile());
+				Runtime.getRuntime().exec(new String[] { cmd }, null, new File(cmd).getParentFile());
 			} else {
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {

@@ -40,6 +40,28 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 
 public class AutoCompleteUtil {
+	
+	private static List<String> sysExeNameList = null;
+	
+	public  static List<String> getSysExeNameList() {
+		if (sysExeNameList != null) return sysExeNameList;
+		sysExeNameList = new ArrayList<String>();
+		
+		String pathStr = System.getenv("PATH");
+		String[] paths = pathStr.split(";");
+		for (String path : paths) {
+			File file = new File(path);
+			File[] subFiles = file.listFiles();
+			for (File subFile : subFiles) {
+				String ext = FilenameUtils.getExtension(subFile.getPath());
+				if (isExecuteFile(ext)) {
+					sysExeNameList.add(subFile.getAbsolutePath());
+				}
+			}
+		}
+		return sysExeNameList;
+		
+	}
 
 	public static List<File> getFileCompleteList(String pwd, String path,
 			boolean onlyDir) {
@@ -49,8 +71,7 @@ public class AutoCompleteUtil {
 		if (path.endsWith(":")) return null;
 
 		File file = new File(FilenameUtils.concat(pwd, path));
-		if (file == null)
-			return null;
+		
 
 		File pwdFile = null;
 		pwdFile = file;
@@ -88,7 +109,7 @@ public class AutoCompleteUtil {
 		return list;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	public static String[] getFileCompleteOptions(String pwd, String path,
 			boolean onlyDir) {
 		List list = getFileCompleteList(pwd, path, onlyDir);
@@ -103,7 +124,34 @@ public class AutoCompleteUtil {
 		return resultArray;
 	}
 
-	@SuppressWarnings("unchecked")
+	public static String[] getExeFileCompleteOptions(String name) {
+		List<String> nameList = new ArrayList<String>();
+
+		List<String> sysExeNameList = getSysExeNameList();
+		for (String exePath : sysExeNameList) {
+			String exeName = FilenameUtils.getBaseName(exePath);
+			String ext = FilenameUtils.getExtension(exePath);
+			if (exeName.equals(name) && isExecuteFile(ext)) {
+				nameList.add(exePath);
+			}
+		}
+		
+		if (nameList.size() == 0) return null;
+
+		String[] result = new String[nameList.size()];
+		for (int i = 0; i < nameList.size(); i++) {
+			result[i] = nameList.get(i);
+		}
+
+		return result;
+	}
+	
+	private static boolean isExecuteFile(String name) {
+		return name.endsWith("exe") || name.endsWith("bat") || name.endsWith("com");
+	}
+	
+	
+	@SuppressWarnings("all")
 	public static String[] getBookmarkFileOptions(String name) {
 
 		ArrayList result = new ArrayList();

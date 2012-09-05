@@ -168,7 +168,7 @@ public class QuickRunShell {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	private List buildPathOptions(String[] options) {
 		ArrayList list = new ArrayList();
 
@@ -190,7 +190,7 @@ public class QuickRunShell {
 		return list;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	private void addOptions(HashMap optionMap, List options) {
 		for (Iterator it = options.iterator(); it.hasNext();) {
 			TipOption option = (TipOption) it.next();
@@ -199,15 +199,17 @@ public class QuickRunShell {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	public TipOption[] getCompletionOptions(String text) {
 
 		HashMap optionMap = new HashMap();
-		String[] options = AutoCompleteUtil.getFileCompleteOptions(pwd, text,
-				false);
+		String[] options = AutoCompleteUtil.getFileCompleteOptions(pwd, text,false);
 		addOptions(optionMap, buildPathOptions(options));
 
 		options = AutoCompleteUtil.getBookmarkFileOptions(text);
+		addOptions(optionMap, buildPathOptions(options));
+		
+		options = AutoCompleteUtil.getExeFileCompleteOptions(text);
 		addOptions(optionMap, buildPathOptions(options));
 
 		ArrayList list = new ArrayList();
@@ -343,8 +345,30 @@ public class QuickRunShell {
 			activeLister.visit(newPath);
 			return true;
 		}
+        String abPath = findExecuteInSysPath(cmd);
+        if (abPath != null ) {
+            Command command = new SystemCommand(abPath, args, false,true);
+            command.setPwd(Main.fileManager.getActivePanel().getPwd());
+            commandRunner.run(command);
+            return true;
+        }
 		return false;
 	}
+
+    public String findExecuteInSysPath(String name) {
+        String pathStr = System.getenv("PATH");
+        String[] postfixes = {"exe","com","bat"};
+        String[] paths = pathStr.split(";");
+        for (String path: paths) {
+            for (String postfix: postfixes) {
+                File file = new File(path, name+"."+postfix);
+                if (file.exists()) {
+                    return file.getAbsolutePath();
+                }
+            }
+        }
+        return null;
+    }
 
 	public void initGUI() {
 
