@@ -64,7 +64,7 @@ public class SystemCommand extends Command {
 		if (runInshell) {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
-					Program.launch(cmd);
+					Program.launch(cmd,pwd);
 				}
 			});
 		}
@@ -81,7 +81,7 @@ public class SystemCommand extends Command {
 			} else {
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
-						Program.launch(cmd);
+						Program.launch(cmd,pwd);
 					}
 				});
 			}
