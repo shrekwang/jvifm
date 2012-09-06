@@ -67,6 +67,7 @@ public class SystemCommand extends Command {
 					Program.launch(cmd,pwd);
 				}
 			});
+			return;
 		}
 		Program program = Program.findProgram(ext);
 		if (!isFileShortcut || cmdArray.length > 1) {
