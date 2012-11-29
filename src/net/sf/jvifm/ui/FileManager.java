@@ -1165,6 +1165,7 @@ public class FileManager implements FileListerListener {
 		shell.setVisible(true);
 		shell.setActive();
 		shell.setFocus();
+        shell.forceActive();
 		activePanel();
 	}
 
