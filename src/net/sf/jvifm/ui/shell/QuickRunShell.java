@@ -76,7 +76,10 @@ public class QuickRunShell {
 		initGUI();
 		initListener();
 		shell.open();
+
+        shell.setActive();
 		shell.setFocus();
+        shell.forceActive();
 
 	}
 
