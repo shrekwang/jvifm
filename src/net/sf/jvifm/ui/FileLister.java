@@ -1163,7 +1163,7 @@ public class FileLister implements ViLister, Panel , FileModelListener {
 		for (int i=0; i<this.tableContentFileArray.length; i++) {
 			File file = this.tableContentFileArray[i];
 		 if (file.getName().equals(selectedName)||
-				 (this.winRoot==true && file.getPath().equals(selectedName+"\\"))) {
+				 (this.winRoot==true && file.getPath().equalsIgnoreCase(selectedName+"\\"))) {
 				currentRow = i;
 				hasMatchSelectedName = true;
 			}
