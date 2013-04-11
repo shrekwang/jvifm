@@ -146,9 +146,10 @@ public class Util {
 		File file = new File(path);
 		if (file.isFile() && file.canRead()) {
 			String ext = FilenameUtils.getExtension(path);
-			if (ext.equals("zip") || ext.equals("jar") || //$NON-NLS-1$ //$NON-NLS-2$
-					ext.equals("war")) { //$NON-NLS-1$
-				Main.fileManager.zipTabNew(path);
+			if (ext.equals("zip") || ext.equals("jar") || ext.equals("war")) { //$NON-NLS-1$
+				
+				Util.openFileWithDefaultApp(path);
+				//Main.fileManager.zipTabNew(path);
 			} else {
 				try {
 					String param1 = "-p";
