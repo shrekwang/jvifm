@@ -51,7 +51,9 @@ public class AutoCompleteUtil {
 		String[] paths = pathStr.split(";");
 		for (String path : paths) {
 			File file = new File(path);
+			if (!file.exists()) continue;
 			File[] subFiles = file.listFiles();
+			if (subFiles == null) continue;
 			for (File subFile : subFiles) {
 				String ext = FilenameUtils.getExtension(subFile.getPath());
 				if (isExecuteFile(ext)) {
@@ -187,7 +189,7 @@ public class AutoCompleteUtil {
 		return resultArray;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	public static String getCommandOptionTip(String cmd) {
 		Options options = CommandRegister.getInstance().getCommandOptions(cmd);
 		if (options == null)
@@ -201,7 +203,7 @@ public class AutoCompleteUtil {
 		return sb.toString();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	public static String[] getCommandCompleteList(String cmd) {
 		ArrayList result = new ArrayList();
 		String[] cmds = CommandRegister.getInstance().getCmdNames();
@@ -232,7 +234,7 @@ public class AutoCompleteUtil {
 		return resultArray;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	public static String[] getShortcutsCompleteList(String cmd) {
 		ArrayList result = new ArrayList();
 
@@ -257,7 +259,7 @@ public class AutoCompleteUtil {
 		return resultArray;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	public static Shortcut[] getShortcutsCompleteList2(String cmd) {
 		ArrayList result = new ArrayList();
 

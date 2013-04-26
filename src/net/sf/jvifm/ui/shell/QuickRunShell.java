@@ -58,7 +58,6 @@ public class QuickRunShell {
 
 	private StyledText txtCommand;
 	private CommandRunner commandRunner = CommandRunner.getInstance();
-	private Shell shell;
 	private Display display;
 	private CompletionShell completionShell;
 	private TipOption[] completeOptions = null;
@@ -66,16 +65,21 @@ public class QuickRunShell {
 	private String pwd = null;
 	private Color color = null;
 	private boolean needRefreshOptions = true;
+	
+	private static Shell shell;
+	private static volatile boolean showedUp = false;
 
 	public QuickRunShell() {
 		this.pwd = Main.fileManager.getActivePanel().getPwd();
 	}
 
 	public void open() {
-
-		initGUI();
-		initListener();
-		shell.open();
+		if (!showedUp ) {
+			showedUp = true;
+			initGUI();
+			initListener();
+			shell.open();
+		}
 
         shell.setActive();
 		shell.setFocus();
@@ -132,8 +136,8 @@ public class QuickRunShell {
 		});
 		shell.addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent event) {
-				if (color != null)
-					color.dispose();
+				if (color != null) color.dispose();
+				showedUp = false;
 			}
 		});
 	}
@@ -148,8 +152,7 @@ public class QuickRunShell {
 			}
 			shell.close();
 		} else {
-			txtCommand.setSelection(0, txtCommand.getText()
-					.length());
+			txtCommand.setSelection(0, txtCommand.getText().length());
 		}
 		return;
 	}
