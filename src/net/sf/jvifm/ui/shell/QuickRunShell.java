@@ -66,6 +66,8 @@ public class QuickRunShell {
 	private Color color = null;
 	private boolean needRefreshOptions = true;
 	
+	private int argsBeginIndex = 0;
+	
 	private static Shell shell;
 	private static volatile boolean showedUp = false;
 
@@ -257,6 +259,7 @@ public class QuickRunShell {
 			if (tmpText != null) {
 				txtCommand.setText(tmpText);
 				txtCommand.setCaretOffset(tmpText.length());
+                argsBeginIndex = tmpText.length();
 			}
 
 			if (completionShell != null) {
@@ -311,11 +314,11 @@ public class QuickRunShell {
 		*/
 		
 		cmd = txtCommand.getText();
-		if (cmd.indexOf("\"") > 0) { // arg
-			String arg = cmd.substring(cmd.indexOf("\"") + 1, cmd
-					.lastIndexOf("\""));
-			cmd = cmd.substring(0, cmd.indexOf("\"")).trim();
-			args = new String[] { arg };
+		int argsRealBegin = cmd.indexOf(" ", argsBeginIndex);
+		if ( argsRealBegin > 0) { // arg
+			String arg = cmd.substring(argsRealBegin + 1);
+			cmd = cmd.substring(0, argsRealBegin).trim();
+			args = arg.split("\\s+");
 		}
 
 		ShortcutsManager scm = ShortcutsManager.getInstance();

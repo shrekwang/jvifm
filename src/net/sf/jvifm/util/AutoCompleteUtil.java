@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
 import net.sf.jvifm.control.CommandRegister;
 import net.sf.jvifm.model.Bookmark;
@@ -41,11 +44,23 @@ import org.apache.commons.io.IOCase;
 
 public class AutoCompleteUtil {
 	
+    private static ExecutorService es = Executors.newSingleThreadExecutor();
 	private static List<String> sysExeNameList = null;
+	private static boolean loaded = false;
+    private static FutureTask<String> ft = null;
 	
-	public  static List<String> getSysExeNameList() {
-		if (sysExeNameList != null) return sysExeNameList;
-		sysExeNameList = new ArrayList<String>();
+	public static void initSysExeNameList() {
+	    Runnable loader = new Runnable() {
+            public void run() {
+                _initSysExeNameList();
+            }
+        };
+        ft = new FutureTask<String>(loader,"ok");
+        es.submit(ft);
+	}
+
+	public static void _initSysExeNameList() {
+        sysExeNameList = new ArrayList<String>();
 		
 		String pathStr = System.getenv("PATH");
 		String[] paths = pathStr.split(";");
@@ -61,8 +76,19 @@ public class AutoCompleteUtil {
 				}
 			}
 		}
-		return sysExeNameList;
-		
+	}
+	
+	public  static List<String> getSysExeNameList() {
+	    if (loaded) return sysExeNameList;
+	    try {
+	        if (ft.get().equals("ok")) {
+	            loaded = true;
+	            return sysExeNameList;
+	        }
+	    } catch (Exception e) {
+	        
+	    }
+	    return new ArrayList<String>();
 	}
 
 	public static List<File> getFileCompleteList(String pwd, String path,

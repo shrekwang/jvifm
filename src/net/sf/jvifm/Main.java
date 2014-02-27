@@ -40,6 +40,7 @@ import net.sf.jvifm.model.MimeManager;
 import net.sf.jvifm.model.ShortcutsManager;
 import net.sf.jvifm.ui.FileLister;
 import net.sf.jvifm.ui.FileManager;
+import net.sf.jvifm.util.AutoCompleteUtil;
 import net.sf.jvifm.util.FileListerServer;
 import net.sf.jvifm.util.HomeLocator;
 
@@ -75,6 +76,7 @@ public class Main {
 		
 		initCommandRegister();
         initServer();
+        initSysExeNameList();
 		
 		try {
 			File logFile=new File(HomeLocator.getConfigHome() + File.separator + "jvifm.log");
@@ -145,6 +147,10 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public static void initSysExeNameList() {
+    	AutoCompleteUtil.initSysExeNameList();
     }
     
 	

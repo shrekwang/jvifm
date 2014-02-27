@@ -32,10 +32,12 @@ public class SystemCommand extends Command {
 	private String cmd = null;
 	private boolean isFileShortcut = false;
 	private boolean runInshell = false;
+	private String[] args = null;
 
 	public SystemCommand(String cmd, String[] args, boolean isFileShortcut) {
 
 		this.cmd = cmd;
+		this.args = args;
 		this.isFileShortcut = isFileShortcut;
 
 		if (args != null && args.length > 0) {
@@ -58,13 +60,22 @@ public class SystemCommand extends Command {
 		this.runInshell = runInShell;
 	}
 
+	// ugly .. ugly ... ugly ..
 	public void execute() throws Exception {
 		String ext = FilenameUtils.getExtension(cmd);
 		
 		if (runInshell) {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
-					Program.launch(cmd,pwd);
+				    if (args != null & args.length > 0 ) {
+				        try {
+                            Runtime.getRuntime().exec(cmdArray, null, new File(pwd));
+				        } catch (Exception e) {
+				            
+				        }
+				    } else {
+                        Program.launch(cmd,pwd);
+				    }
 				}
 			});
 			return;
